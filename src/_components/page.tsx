@@ -1,4 +1,5 @@
 "use client";
+import VideoSlide from "@/swiperSide/videoSlide";
 import Image from "next/image";
 import "swiper/css";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
@@ -104,8 +105,8 @@ const Slide = () => {
                 >
                   <Image
                     src="/assets/homeSlide_image/bestseller_image.webp"
-                    width={500}
-                    height={300}
+                    width={350}
+                    height={200}
                     alt="Onam Essentials"
                     className="rounded-lg w-full h-auto object-cover transition-transform duration-300 hover:scale-105 hover:shadow-lg"
                   />
@@ -134,6 +135,9 @@ const Slide = () => {
           height={500}
           className="w-full h-full object-cover rounded-lg"
         />
+      </section>
+      <section className="text-center  pt-8 bg-[#f1f5f4]">
+        <VideoSlide />
       </section>
     </>
   );
