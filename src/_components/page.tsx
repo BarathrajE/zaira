@@ -60,123 +60,65 @@ const Slide = () => {
       </section>
 
       <section className="text-center pt-4 bg-[#f1f5f4]">
-        <p className="text-[#535e51]  font-bold text-[35px]">Recent Views</p>
+        <p className="text-[#535e51] font-bold text-[28px] sm:text-[35px]">
+          Recent Views
+        </p>
+
         <div className="flex justify-center items-center">
-          <div className="max-w-[88%] w-full overflow-x-auto">
-            <div className="flex gap-6 mt-6 flex-nowrap w-max px-4">
-              <div className="flex flex-col items-center min-w-[300px]">
-                <Image
-                  src="/assets/homeSlide_image/resent_view.webp"
-                  width={500}
-                  height={100}
-                  alt="Onam Essentials"
-                  className="rounded-lg transition-transform duration-300 hover:scale-105 hover:shadow-lg"
-                />
-                <p className="mt-2 text-lg text-[#535e51]  font-bold">Premium</p>
-              </div>
-
-              <div className="flex flex-col items-center min-w-[300px]">
-                <Image
-                  src="/assets/homeSlide_image/resent_view.webp"
-                  width={500}
-                  height={100}
-                  alt="Onam Essentials"
-                  className="rounded-lg transition-transform duration-300 hover:scale-105 hover:shadow-lg"
-                />
-                <p className="mt-2 text-lg text-[#535e51]  font-bold">Premium</p>
-              </div>
-
-              <div className="flex flex-col items-center min-w-[300px]">
-                <Image
-                  src="/assets/homeSlide_image/resent_view.webp"
-                  width={500}
-                  height={100}
-                  alt="Onam Essentials"
-                  className="rounded-lg transition-transform duration-300 hover:scale-105 hover:shadow-lg"
-                />
-                <p className="mt-2 text-lg text-[#535e51]  font-bold">Premium</p>
-              </div>
-
-              <div className="flex flex-col items-center min-w-[300px]">
-                <Image
-                  src="/assets/homeSlide_image/resent_view.webp"
-                  width={500}
-                  height={100}
-                  alt="Onam Essentials"
-                  className="rounded-lg transition-transform duration-300 hover:scale-105 hover:shadow-lg"
-                />
-                <p className="mt-2 text-lg text-[#535e51]  font-bold">Premium</p>
-              </div>
+          <div className="w-full max-w-7xl overflow-x-auto px-4 sm:px-8">
+            <div className="flex gap-6 mt-6 flex-nowrap w-max">
+              {[1, 2, 3, 4].map((_, index) => (
+                <div
+                  key={index}
+                  className="flex flex-col items-center min-w-[min(80vw,300px)]"
+                >
+                  <Image
+                    src="/assets/homeSlide_image/resent_view.webp"
+                    width={500}
+                    height={300}
+                    alt="Onam Essentials"
+                    className="rounded-lg w-full h-auto object-cover transition-transform duration-300 hover:scale-105 hover:shadow-lg"
+                  />
+                  <p className="mt-2 text-base sm:text-lg text-[#535e51] font-bold">
+                    Premium
+                  </p>
+                </div>
+              ))}
             </div>
           </div>
         </div>
       </section>
 
       <section className="text-center pt-8 bg-[#f1f5f4]">
-        <p className="text-[#535e51] text-[35px]  font-bold">Best Sellers</p>
+        <p className="text-[#535e51] font-bold text-[28px] sm:text-[35px]">
+          Best Sellers
+        </p>
 
         <div className="flex justify-center">
-          <div className="w-full max-w-[97%] overflow-x-auto px-4">
+          <div className="w-full xl:max-w-[90%] lg:max-w-7xl  overflow-x-auto px-4 sm:px-8">
             <div className="flex gap-6 mt-6 flex-nowrap w-max">
-              {/* Repeated Product Cards */}
-              <div className="flex flex-col items-center min-w-[300px]">
-                <Image
-                  src="/assets/homeSlide_image/bestseller_image.webp"
-                  width={500}
-                  height={100}
-                  alt="Onam Essentials"
-                  className="rounded-lg transition-transform duration-300 hover:scale-105 hover:shadow-lg"
-                />
-                <p className="mt-2 text-lg text-[#535e51]  font-bold">Premium</p>
-              </div>
-
-              <div className="flex flex-col items-center min-w-[300px]">
-                <Image
-                  src="/assets/homeSlide_image/bestseller_image.webp"
-                  width={500}
-                  height={100}
-                  alt="Onam Essentials"
-                  className="rounded-lg transition-transform duration-300 hover:scale-105 hover:shadow-lg"
-                />
-                <p className="mt-2 text-lg text-[#535e51]  font-bold">Premium</p>
-              </div>
-
-              <div className="flex flex-col items-center min-w-[300px]">
-                <Image
-                  src="/assets/homeSlide_image/bestseller_image.webp"
-                  width={500}
-                  height={100}
-                  alt="Onam Essentials"
-                  className="rounded-lg transition-transform duration-300 hover:scale-105 hover:shadow-lg"
-                />
-                <p className="mt-2 text-lg text-[#535e51]  font-bold">Premium</p>
-              </div>
-
-              <div className="flex flex-col items-center min-w-[300px]">
-                <Image
-                  src="/assets/homeSlide_image/bestseller_image.webp"
-                  width={500}
-                  height={100}
-                  alt="Onam Essentials"
-                  className="rounded-lg transition-transform duration-300 hover:scale-105 hover:shadow-lg"
-                />
-                <p className="mt-2 text-lg text-[#535e51]  font-bold">Premium</p>
-              </div>
-
-              <div className="flex flex-col items-center min-w-[300px]">
-                <Image
-                  src="/assets/homeSlide_image/bestseller_image.webp"
-                  width={500}
-                  height={100}
-                  alt="Onam Essentials"
-                  className="rounded-lg transition-transform duration-300 hover:scale-105 hover:shadow-lg"
-                />
-                <p className="mt-2 text-lg text-[#535e51]  font-bold">Premium</p>
-              </div>
+              {[1, 2, 3, 4, 5].map((_, index) => (
+                <div
+                  key={index}
+                  className="flex flex-col items-center min-w-[min(80vw,300px)]"
+                >
+                  <Image
+                    src="/assets/homeSlide_image/bestseller_image.webp"
+                    width={500}
+                    height={300}
+                    alt="Onam Essentials"
+                    className="rounded-lg w-full h-auto object-cover transition-transform duration-300 hover:scale-105 hover:shadow-lg"
+                  />
+                  <p className="mt-2 text-base sm:text-lg text-[#535e51] font-bold">
+                    Premium
+                  </p>
+                </div>
+              ))}
             </div>
           </div>
         </div>
       </section>
+
       <section className="pt-5">
         <Image
           src="/assets/homeSlide_image/menshop.webp"
