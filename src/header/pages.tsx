@@ -1,3 +1,4 @@
+"use client";
 import {
   Accordion,
   AccordionContent,
@@ -13,8 +14,25 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Heart, Menu, Search, ShoppingCart, UserRound } from "lucide-react";
+import { useEffect, useState } from "react";
 
 const Header = () => {
+  const [showInput, setShowInput] = useState(false);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (
+        !target.closest('[data-search="true"]') &&
+        !target.closest('[data-search-input="true"]')
+      ) {
+        setShowInput(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
   return (
     <header className="p-4 bg-[#f1f5f4]">
       {/* leftSide */}
@@ -39,7 +57,11 @@ const Header = () => {
                           MAN
                         </AccordionTrigger>
                         <AccordionContent className="p-4 bg-white shadow-md">
-                          <Accordion type="single" collapsible className="w-full">
+                          <Accordion
+                            type="single"
+                            collapsible
+                            className="w-full"
+                          >
                             {/* --- Secondary Category Example --- */}
                             <AccordionItem value="sub-1">
                               <AccordionTrigger className="text-sm text-[#052659] underline underline-offset-4">
@@ -71,7 +93,11 @@ const Header = () => {
                           WOMEN
                         </AccordionTrigger>
                         <AccordionContent className="p-4 bg-white shadow-md">
-                          <Accordion type="single" collapsible className="w-full">
+                          <Accordion
+                            type="single"
+                            collapsible
+                            className="w-full"
+                          >
                             {/* --- Secondary Category Example --- */}
                             <AccordionItem value="sub-2">
                               <AccordionTrigger className="text-sm text-[#052659] underline underline-offset-4">
@@ -100,9 +126,27 @@ const Header = () => {
             </SheetContent>
           </Sheet>
         </div>
-        <h1 className="text-[30px]">ZAIRA</h1>
-        <div className="flex gap-5 cursor-pointer">
-          <Search />
+        <h1 className="text-[30px] text-[#535e51] font-bold">ZAIRA</h1>
+        <div className="flex gap-5 justify-center items-center cursor-pointer">
+          <div className="relative flex items-center gap-2">
+            <button
+              data-search="true"
+              onClick={() => setShowInput((prev) => !prev)}
+              className="p-2 bg-white shadow-xl rounded-full"
+            >
+              <Search />
+            </button>
+
+            {showInput && (
+              <input
+                data-search-input="true"
+                type="text"
+                placeholder="Search"
+                autoFocus
+                className="border border-gray-300 rounded-lg px-4 py-2 shadow-md transition-all duration-300"
+              />
+            )}
+          </div>
           <UserRound />
           <Heart />
           <ShoppingCart />

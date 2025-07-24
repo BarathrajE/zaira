@@ -7,57 +7,192 @@ import { Swiper, SwiperSlide } from "swiper/react";
 const Slide = () => {
   return (
     <>
-    <section>
-      <Swiper
-        centeredSlides={true}
-        loop={true}
-        autoplay={{
-          delay: 2500,
-          disableOnInteraction: false,
-        }}
-        pagination={{
-          clickable: true,
-        }}
-        navigation={true}
-        modules={[Autoplay, Pagination, Navigation]}
-        className="mySwiper"
-      >
-        <SwiperSlide>
-          <div className="relative w-full min-h-screen">
-            {" "}
-            <Image
-              src="/assets/homeSlide_image/Slider-OnamEssentials.webp"
-              alt="Onam Essentials"
-              fill
-              className="object-cover"
-            />
+      {/* swiper */}
+      <section>
+        <Swiper
+          centeredSlides={true}
+          loop={true}
+          autoplay={{
+            delay: 2500,
+            disableOnInteraction: false,
+          }}
+          pagination={{
+            clickable: true,
+          }}
+          navigation={true}
+          modules={[Autoplay, Pagination, Navigation]}
+          className="mySwiper"
+        >
+          <SwiperSlide>
+            <div className="relative w-full min-h-screen">
+              {" "}
+              <Image
+                src="/assets/homeSlide_image/image.webp"
+                alt="Onam Essentials"
+                fill
+                className="object-cover"
+              />
+            </div>
+          </SwiperSlide>
+          <SwiperSlide>
+            <div className="relative w-full h-[100vh]">
+              {" "}
+              <Image
+                src="/assets/homeSlide_image/image.webp"
+                alt="Onam Essentials"
+                fill
+                className="object-cover"
+              />
+            </div>
+          </SwiperSlide>
+          <SwiperSlide>
+            <div className="relative w-full h-[100vh]">
+              {" "}
+              <Image
+                src="/assets/homeSlide_image/image.webp"
+                alt="Onam Essentials"
+                fill
+                className="object-cover"
+              />
+            </div>
+          </SwiperSlide>
+        </Swiper>
+      </section>
+
+      <section className="text-center pt-4 bg-[#f1f5f4]">
+        <p className="text-[#535e51]  font-bold text-[35px]">Recent Views</p>
+        <div className="flex justify-center items-center">
+          <div className="max-w-[88%] w-full overflow-x-auto">
+            <div className="flex gap-6 mt-6 flex-nowrap w-max px-4">
+              <div className="flex flex-col items-center min-w-[300px]">
+                <Image
+                  src="/assets/homeSlide_image/resent_view.webp"
+                  width={500}
+                  height={100}
+                  alt="Onam Essentials"
+                  className="rounded-lg transition-transform duration-300 hover:scale-105 hover:shadow-lg"
+                />
+                <p className="mt-2 text-lg text-[#535e51]  font-bold">Premium</p>
+              </div>
+
+              <div className="flex flex-col items-center min-w-[300px]">
+                <Image
+                  src="/assets/homeSlide_image/resent_view.webp"
+                  width={500}
+                  height={100}
+                  alt="Onam Essentials"
+                  className="rounded-lg transition-transform duration-300 hover:scale-105 hover:shadow-lg"
+                />
+                <p className="mt-2 text-lg text-[#535e51]  font-bold">Premium</p>
+              </div>
+
+              <div className="flex flex-col items-center min-w-[300px]">
+                <Image
+                  src="/assets/homeSlide_image/resent_view.webp"
+                  width={500}
+                  height={100}
+                  alt="Onam Essentials"
+                  className="rounded-lg transition-transform duration-300 hover:scale-105 hover:shadow-lg"
+                />
+                <p className="mt-2 text-lg text-[#535e51]  font-bold">Premium</p>
+              </div>
+
+              <div className="flex flex-col items-center min-w-[300px]">
+                <Image
+                  src="/assets/homeSlide_image/resent_view.webp"
+                  width={500}
+                  height={100}
+                  alt="Onam Essentials"
+                  className="rounded-lg transition-transform duration-300 hover:scale-105 hover:shadow-lg"
+                />
+                <p className="mt-2 text-lg text-[#535e51]  font-bold">Premium</p>
+              </div>
+            </div>
           </div>
-        </SwiperSlide>
-        <SwiperSlide>
-          <div className="relative w-full h-[100vh]">
-            {" "}
-            <Image
-              src="/assets/homeSlide_image/Slider-OnamEssentials.webp"
-              alt="Onam Essentials"
-              fill
-              className="object-cover"
-            />
+        </div>
+      </section>
+
+      <section className="text-center pt-8 bg-[#f1f5f4]">
+        <p className="text-[#535e51] text-[35px]  font-bold">Best Sellers</p>
+
+        <div className="flex justify-center">
+          <div className="w-full max-w-[97%] overflow-x-auto px-4">
+            <div className="flex gap-6 mt-6 flex-nowrap w-max">
+              {/* Repeated Product Cards */}
+              <div className="flex flex-col items-center min-w-[300px]">
+                <Image
+                  src="/assets/homeSlide_image/bestseller_image.webp"
+                  width={500}
+                  height={100}
+                  alt="Onam Essentials"
+                  className="rounded-lg transition-transform duration-300 hover:scale-105 hover:shadow-lg"
+                />
+                <p className="mt-2 text-lg text-[#535e51]  font-bold">Premium</p>
+              </div>
+
+              <div className="flex flex-col items-center min-w-[300px]">
+                <Image
+                  src="/assets/homeSlide_image/bestseller_image.webp"
+                  width={500}
+                  height={100}
+                  alt="Onam Essentials"
+                  className="rounded-lg transition-transform duration-300 hover:scale-105 hover:shadow-lg"
+                />
+                <p className="mt-2 text-lg text-[#535e51]  font-bold">Premium</p>
+              </div>
+
+              <div className="flex flex-col items-center min-w-[300px]">
+                <Image
+                  src="/assets/homeSlide_image/bestseller_image.webp"
+                  width={500}
+                  height={100}
+                  alt="Onam Essentials"
+                  className="rounded-lg transition-transform duration-300 hover:scale-105 hover:shadow-lg"
+                />
+                <p className="mt-2 text-lg text-[#535e51]  font-bold">Premium</p>
+              </div>
+
+              <div className="flex flex-col items-center min-w-[300px]">
+                <Image
+                  src="/assets/homeSlide_image/bestseller_image.webp"
+                  width={500}
+                  height={100}
+                  alt="Onam Essentials"
+                  className="rounded-lg transition-transform duration-300 hover:scale-105 hover:shadow-lg"
+                />
+                <p className="mt-2 text-lg text-[#535e51]  font-bold">Premium</p>
+              </div>
+
+              <div className="flex flex-col items-center min-w-[300px]">
+                <Image
+                  src="/assets/homeSlide_image/bestseller_image.webp"
+                  width={500}
+                  height={100}
+                  alt="Onam Essentials"
+                  className="rounded-lg transition-transform duration-300 hover:scale-105 hover:shadow-lg"
+                />
+                <p className="mt-2 text-lg text-[#535e51]  font-bold">Premium</p>
+              </div>
+            </div>
           </div>
-        </SwiperSlide>
-        <SwiperSlide>
-          <div className="relative w-full h-[100vh]">
-            {" "}
-            <Image
-              src="/assets/homeSlide_image/Slider-OnamEssentials.webp"
-              alt="Onam Essentials"
-              fill
-              className="object-cover"
-            />
-          </div>
-        </SwiperSlide>
-      </Swiper>
-    </section>
-    
+        </div>
+      </section>
+      <section className="pt-5">
+        <Image
+          src="/assets/homeSlide_image/menshop.webp"
+          alt="Onam Essentials"
+          width={1200}
+          height={500}
+          className="w-full h-full object-cover rounded-lg"
+        />
+        <Image
+          src="/assets/homeSlide_image/womenshop.webp"
+          alt="Onam Essentials"
+          width={1200}
+          height={500}
+          className="w-full h-full object-cover rounded-lg"
+        />
+      </section>
     </>
   );
 };
