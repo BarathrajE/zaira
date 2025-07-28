@@ -1,6 +1,6 @@
 "use client";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Pagination } from "swiper/modules";
+import { FreeMode, Pagination } from "swiper/modules";
 import "swiper/css";
 import Image from "next/image";
 
@@ -29,7 +29,8 @@ const CategorySlide = () => {
       <Swiper
         spaceBetween={10}
         loop={true}
-        modules={[Pagination]}
+        freeMode={true}
+        modules={[Pagination, FreeMode]}
         className="mySwiper mt-5"
         breakpoints={{
           320: { slidesPerView: 4, spaceBetween: 0 },

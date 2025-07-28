@@ -1,6 +1,6 @@
 "use client";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { EffectCoverflow, Navigation, Pagination } from "swiper/modules";
+import { EffectCoverflow, FreeMode, Navigation, Pagination } from "swiper/modules";
 import { ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import "swiper/css";
@@ -25,9 +25,10 @@ const HeritageSwiper = () => {
       </p>
       <div className="swiper-wrapper w-full">
         <Swiper
-          modules={[EffectCoverflow, Navigation, Pagination]}
+          modules={[EffectCoverflow, Navigation,FreeMode, Pagination]}
           effect="coverflow"
           loop={true}
+           freeMode={true}
           centeredSlides={true}
           grabCursor={true}
           slidesPerView={1}
