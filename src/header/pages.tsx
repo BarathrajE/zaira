@@ -34,10 +34,10 @@ const Header = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
   return (
-    <header className="p-4 bg-[#f1f5f4]">
+    <header className="p-4 bg-[#535e51] sticky top-0 z-50">
       {/* leftSide */}
       <div className="flex justify-between items-center">
-        <div className="bg-[#f1f5f4]">
+        <div className="bg-[#535e51] text-[#f1f5f4]">
           <Sheet>
             <SheetTrigger className="block ">
               <Menu className="w-6 h-6" />
@@ -126,15 +126,15 @@ const Header = () => {
             </SheetContent>
           </Sheet>
         </div>
-        <h1 className="text-[30px] text-[#535e51] font-bold">ZAIRA</h1>
+        <h1 className="text-[30px] text-[#f1f5f4] font-bold">ZAIRA</h1>
         <div className="flex gap-5 justify-center items-center cursor-pointer">
           <div className="relative flex items-center gap-2">
             <button
               data-search="true"
               onClick={() => setShowInput((prev) => !prev)}
-              className="p-2 bg-white shadow-xl rounded-full"
+              className="p-2  shadow-xl rounded-full"
             >
-              <Search />
+              <Search className="text-[#f1f5f4]" />
             </button>
 
             {showInput && (
@@ -143,13 +143,13 @@ const Header = () => {
                 type="text"
                 placeholder="Search"
                 autoFocus
-                className="border border-gray-300 rounded-lg px-4 py-2 shadow-md transition-all duration-300"
+                className=" placeholder-white rounded-lg px-4 py-2 shadow-md transition-all duration-300"
               />
             )}
           </div>
-          <UserRound />
-          <Heart />
-          <ShoppingCart />
+          <UserRound className="text-[#f1f5f4]" />
+          <Heart className="text-[#f1f5f4]" />
+          <ShoppingCart  className="text-[#f1f5f4]"/>
         </div>
       </div>
     </header>

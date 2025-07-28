@@ -82,20 +82,19 @@ const VideoSlide = () => {
   return (
     <div className="pb-5">
       <p className="text-[#535e51] pb-4 font-bold text-[28px] sm:text-[35px]">
-        Watch shop
+        WATCH SHOP
       </p>
       <Swiper
         spaceBetween={30}
-        pagination={{ clickable: true }}
         modules={[Pagination]}
         className="mySwiper"
         breakpoints={{
           320: { slidesPerView: 1, spaceBetween: 0 },
           640: { slidesPerView: 1 },
           768: { slidesPerView: 2 },
-          1024: { slidesPerView: 3 },
+          1024: { slidesPerView: 2.5 },
           1280: { slidesPerView: 3 },
-          1440: { slidesPerView: 3 },
+          1440: { slidesPerView: 3.5 },
           1600: { slidesPerView: 5 },
         }}
       >

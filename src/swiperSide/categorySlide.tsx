@@ -28,7 +28,6 @@ const CategorySlide = () => {
       </p>
       <Swiper
         spaceBetween={10}
-        pagination={{ clickable: true }}
         loop={true}
         modules={[Pagination]}
         className="mySwiper mt-5"
@@ -39,7 +38,7 @@ const CategorySlide = () => {
           1024: { slidesPerView: 5 },
           1280: { slidesPerView: 6 },
           1440: { slidesPerView: 6 },
-          1600: { slidesPerView: 8 },
+          1600: { slidesPerView: 7 },
         }}
       >
         {categories.map((item, index) => (
@@ -50,7 +49,7 @@ const CategorySlide = () => {
                 width={400}
                 height={400}
                 alt={item.title}
-                className="md:rounded-lg rounded-[50%] md:w-[200px] w-[80px] md:h-auto h-[80px]  transition-transform duration-300 hover:scale-105 hover:shadow-lg"
+                className="md:rounded-lg rounded-[50%] md:w-[200px] w-[80px] md:h-auto h-[80px]  object-cover transition-transform duration-300 hover:scale-105 hover:shadow-lg"
               />
               <p className="mt-2 text-base sm:text-lg text-[#535e51] font-bold">
                 {item.title}
