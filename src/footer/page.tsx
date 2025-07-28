@@ -61,9 +61,9 @@ export default function Footer() {
                 <input
                   type="email"
                   placeholder="Email Us"
-                  className="flex-1 px-4 py-3 text-sm border border-[#f1f5f4] rounded-l-md focus:outline-none  focus:border-transparent"
+                  className="flex-1 px-4 py-3 text-sm border border-[#6f746e] rounded-l-md focus:outline-none placeholder-white  "
                 />
-                <button className="px-4 py-3 bg-gray-900 text-[#f1f5f4] rounded-r-md hover:bg-gray-800 transition-colors duration-200">
+                <button className="px-4 py-3 bg-[#f1f5f4] text-[#000] rounded-r-md">
                   <ArrowRight size={16} />
                 </button>
               </div>
@@ -78,25 +78,25 @@ export default function Footer() {
                 href="#" 
                 className="w-10 h-10 bg-white rounded-md flex items-center justify-center hover:bg-gray-100 transition-colors duration-200 shadow-sm"
               >
-                <Facebook size={18} className="text-gray-600" />
+                <Facebook size={18} className="text-[#000]" />
               </a>
               <a 
                 href="#" 
                 className="w-10 h-10 bg-white rounded-md flex items-center justify-center hover:bg-gray-100 transition-colors duration-200 shadow-sm"
               >
-                <Instagram size={18} className="text-[#f1f5f4]" />
+                <Instagram size={18} className="text-[#000]" />
               </a>
               <a 
                 href="#" 
                 className="w-10 h-10 bg-white rounded-md flex items-center justify-center hover:bg-gray-100 transition-colors duration-200 shadow-sm"
               >
-                <Linkedin size={18} className="text-[#f1f5f4]" />
+                <Linkedin size={18} className="text-[#000]" />
               </a>
               <a 
                 href="#" 
                 className="w-10 h-10 bg-white rounded-md flex items-center justify-center hover:bg-gray-100 transition-colors duration-200 shadow-sm"
               >
-                <Youtube size={18} className="text-[#f1f5f4]" />
+                <Youtube size={18} className="text-[#000]" />
               </a>
             </div>
           </div>

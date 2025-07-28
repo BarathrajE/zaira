@@ -1,4 +1,5 @@
 "use client";
+import CategorySlide from "@/swiperSide/categorySlide";
 import VideoSlide from "@/swiperSide/videoSlide";
 import Image from "next/image";
 import "swiper/css";
@@ -58,6 +59,13 @@ const Slide = () => {
             </div>
           </SwiperSlide>
         </Swiper>
+      </section>
+
+      {/* section category */}
+
+      <section className=" pt-4 bg-[#f1f5f4]">
+        
+        <CategorySlide />
       </section>
 
       <section className="text-center pt-4 bg-[#f1f5f4]">
