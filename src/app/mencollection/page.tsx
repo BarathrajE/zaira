@@ -1,8 +1,6 @@
 "use client";
 import Footer from "@/footer/page";
 import Header from "@/header/pages";
-
-import VideoSlide from "@/swiperSide/videoSlide";
 import Image from "next/image";
 import "swiper/css";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
@@ -228,22 +226,51 @@ const MenPages = () => {
           <p className="text-[#535e51] font-bold text-[28px] text-center sm:text-[45px]">
             FOR THIS SPECIAL
           </p>
-          <div className="grid grid-cols-12 gap-4">
-            <div className="col-span-12 md:col-span-6 bg-green-200 p-4">
-              <p>photo1</p>
 
+          <div className="grid grid-cols-12 gap-4 mt-6">
+            {/* Left Side */}
+            <div className="col-span-12 md:col-span-6 p-4">
+              {/* Main Image */}
+              <Image
+                src="/assets/homeSlide_image/tShirt.webp"
+                alt="Main T-Shirt Display"
+                width={500}
+                height={500}
+                className="w-full h-[300px] md:h-[400px] object-cover rounded-lg"
+              />
+
+              {/* Two smaller images below */}
               <div className="grid grid-cols-12 gap-4 mt-4">
-                {/* Each photo as half-width column */}
-                <div className="col-span-6 bg-green-300 p-2 text-center">
-                  photo2
+                <div className="col-span-6 p-2">
+                  <Image
+                    src="/assets/homeSlide_image/resent_view.webp"
+                    alt="Recently Viewed T-Shirt 1"
+                    width={500}
+                    height={500}
+                    className="w-full h-[150px] md:h-[200px] object-cover rounded-md"
+                  />
                 </div>
-                <div className="col-span-6 bg-green-300 p-2 text-center">
-                  photo3
+                <div className="col-span-6 p-2">
+                  <Image
+                    src="/assets/homeSlide_image/resent_view.webp"
+                    alt="Recently Viewed T-Shirt 2"
+                    width={500}
+                    height={500}
+                    className="w-full h-[150px] md:h-[200px] object-cover rounded-md"
+                  />
                 </div>
               </div>
             </div>
-            <div className="col-span-12 md:col-span-6 bg-yellow-200 p-4">
-              Column 2
+
+            {/* Right Side */}
+            <div className="col-span-12 md:col-span-6 p-4">
+              <Image
+                src="/assets/homeSlide_image/bestseller_image.webp"
+                alt="Bestseller T-Shirt"
+                width={500}
+                height={500}
+                className="w-full h-full max-h-[620px] object-cover rounded-lg"
+              />
             </div>
           </div>
         </div>

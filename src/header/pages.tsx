@@ -18,7 +18,6 @@ import { useEffect, useState } from "react";
 
 const Header = () => {
   const [showInput, setShowInput] = useState(false);
-
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
