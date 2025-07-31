@@ -5,28 +5,30 @@ import "swiper/css";
 import Image from "next/image";
 
 const categories = [
-  { title: "Women", imageUrl: "/assets/homeSlide_image/womenSlide.webp" },
-  { title: "Men", imageUrl: "/assets/homeSlide_image/womenSlide.webp" },
-  { title: "Kids", imageUrl: "/assets/homeSlide_image/womenSlide.webp" },
-  { title: "Beauty", imageUrl: "/assets/homeSlide_image/womenSlide.webp" },
-  { title: "Footwear", imageUrl: "/assets/homeSlide_image/womenSlide.webp" },
-  { title: "Accessories", imageUrl: "/assets/homeSlide_image/womenSlide.webp" },
-  { title: "Jewellery", imageUrl: "/assets/homeSlide_image/womenSlide.webp" },
-  { title: "Home Decor", imageUrl: "/assets/homeSlide_image/womenSlide.webp" },
-  { title: "Grocery", imageUrl: "/assets/homeSlide_image/womenSlide.webp" },
-  { title: "Electronics", imageUrl: "/assets/homeSlide_image/womenSlide.webp" },
+  { title: "Full Sleeve", imageUrl: "/assets/homeSlide_image/tShirt.webp" },
+  { title: "Scoop Neck", imageUrl: "/assets/homeSlide_image/tShirt.webp" },
+  { title: "Crew Neck", imageUrl: "/assets/homeSlide_image/tShirt.webp" },
+  { title: "Oversized T-shirt", imageUrl: "/assets/homeSlide_image/tShirt.webp" },
+  { title: "Sleeveless", imageUrl: "/assets/homeSlide_image/tShirt.webp" },
+  { title: "Printed", imageUrl: "/assets/homeSlide_image/tShirt.webp" },
+  { title: "Checked", imageUrl: "/assets/homeSlide_image/tShirt.webp" },
+  { title: " Linen", imageUrl: "/assets/homeSlide_image/tShirt.webp" },
+  { title: "Oversized Shirt", imageUrl: "/assets/homeSlide_image/tShirt.webp" },
+  { title: "Denim", imageUrl: "/assets/homeSlide_image/tShirt.webp" },
 ];
 
-const CategorySlide = () => {
+const  MenCategorySlide = () => {
   return (
     <div className="pb-5">
        
-      <p className="text-[#535e51] font-bold text-[15px] text-center sm:text-[25px]">
-        Shop By
-      </p>
-      <p className="text-[#535e51] font-bold text-[28px] text-center sm:text-[45px]">
-        CATEGORY
-      </p>
+   <div className="flex justify-evenly flex-wrap py-3">
+        <p className="bg-[#535e51] text-[#f1f5f4] font-bold text-[28px] border-2 shadow-2xl px-8 rounded-2xl py-1 text-center sm:text-[45px]">
+          T-SHIRTS
+        </p>
+        <p className="bg-[#535e51] text-[#f1f5f4] font-bold text-[28px] border-2 shadow-2xl px-8 rounded-2xl py-1 text-center sm:text-[45px]">
+          SHIRTS
+        </p>
+      </div>
       <Swiper
         spaceBetween={10}
         loop={true}
@@ -64,4 +66,4 @@ const CategorySlide = () => {
   );
 };
 
-export default CategorySlide;
+export default MenCategorySlide;

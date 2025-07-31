@@ -8,16 +8,16 @@ import "swiper/css/effect-coverflow";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 const slideImages = [
-  "/assets/homeSlide_image/Trending.webp",
-  "/assets/homeSlide_image/Trending.webp",
-  "/assets/homeSlide_image/Trending.webp",
-  "/assets/homeSlide_image/Trending.webp",
-  "/assets/homeSlide_image/Trending.webp",
-  "/assets/homeSlide_image/Trending.webp",
-  "/assets/homeSlide_image/Trending.webp",
-  "/assets/homeSlide_image/Trending.webp",
+  "/assets/homeSlide_image/treadingmen.webp",
+  "/assets/homeSlide_image/treadingmen.webp",
+  "/assets/homeSlide_image/treadingmen.webp",
+  "/assets/homeSlide_image/treadingmen.webp",
+  "/assets/homeSlide_image/treadingmen.webp",
+  "/assets/homeSlide_image/treadingmen.webp",
+  "/assets/homeSlide_image/treadingmen.webp",
+  "/assets/homeSlide_image/treadingmen.webp",
 ];
-const HeritageSwiper = () => {
+const MenTreading = () => {
   return (
     <section className="w-full overflow-hidden py-6 bg-cover bg-center">
       <p className="text-[#535e51] font-bold text-[28px] text-center sm:text-[45px]">
@@ -71,4 +71,4 @@ const HeritageSwiper = () => {
   );
 };
 
-export default HeritageSwiper;
+export default MenTreading;
