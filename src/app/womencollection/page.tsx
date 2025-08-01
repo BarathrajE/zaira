@@ -5,9 +5,8 @@ import Image from "next/image";
 import "swiper/css";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
-import MenTreading from "./mencollectionComponents/MenTreading";
-import MenCategorySlide from "./mencollectionComponents/mensCategorys";
-
+import WomenCategorySlide from "./mencollectionComponents/womenCategorys";
+import WomenTreading from "./mencollectionComponents/womenTreading";
 
 const MenPages = () => {
   const products = [
@@ -57,7 +56,7 @@ const MenPages = () => {
           {[1, 2, 3].map((_, index) => (
             <SwiperSlide key={index}>
               <Image
-                src="/assets/homeSlide_image/menShirtcollection.webp"
+                src="/assets/homeSlide_image/womencollection.webp"
                 alt="Onam Essentials"
                 width={1200}
                 height={500}
@@ -68,8 +67,8 @@ const MenPages = () => {
         </Swiper>
       </section>
       <section className=" pt-4 bg-[#f1f5f4]">
-        <MenCategorySlide />
-        <MenTreading />
+        <WomenCategorySlide />
+        <WomenTreading />
       </section>
 
       <section className="pt-5 bg-[#f1f5f4]">

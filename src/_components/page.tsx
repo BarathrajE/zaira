@@ -11,8 +11,11 @@ import { Swiper, SwiperSlide } from "swiper/react";
 const Slide = () => {
   const router = useRouter();
   const goToMen = () => {
-  router.push("/mencollection"); 
-};
+    router.push("/mencollection");
+  };
+  const goTowomen = () => {
+    router.push("/womencollection");
+  };
   return (
     <>
       {/* swiper */}
@@ -34,13 +37,13 @@ const Slide = () => {
           {[1, 2, 3].map((_, index) => (
             <SwiperSlide key={index}>
               <div className="relative w-full h-screen">
-            <Image
-              src="/assets/homeSlide_image/image.webp"
-              alt="Onam Essentials"
-              fill
-              className="object-cover"
-            />
-          </div>
+                <Image
+                  src="/assets/homeSlide_image/image.webp"
+                  alt="Onam Essentials"
+                  fill
+                  className="object-cover"
+                />
+              </div>
             </SwiperSlide>
           ))}
         </Swiper>
@@ -61,8 +64,6 @@ const Slide = () => {
           height={500}
           className="w-full h-full object-cover rounded-lg cursor-pointer"
           onClick={goToMen}
-
-
         />
         <div className="pt-4 pb-10">
           <div>
@@ -94,7 +95,8 @@ const Slide = () => {
           alt="Onam Essentials"
           width={1200}
           height={500}
-          className="w-full h-full object-cover rounded-lg"
+          className="w-full h-full object-cover rounded-lg cursor-pointer"
+          onClick={goTowomen}
         />
         <div className="pt-4 pb-10">
           <div>

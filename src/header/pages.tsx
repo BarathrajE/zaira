@@ -5,6 +5,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Sheet,
   SheetContent,
@@ -14,9 +16,14 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Heart, Menu, Search, ShoppingCart, UserRound, X } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const Header = () => {
+   const router = useRouter();
+    const loginpage = () => {
+      router.push("/authform");
+    };
   const [showInput, setShowInput] = useState(false);
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -33,16 +40,15 @@ const Header = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
   return (
-    <header className="p-4 bg-[#535e51] sticky top-0 z-50">
-      {/* leftSide */}
-      <div className="flex flex-row justify-between items-center w-full">
+    <header className="sticky top-0 z-50 bg-[#535e51] px-2 py-1 md:p-4">
+      {/* Main Flex Container */}
+      <div className="flex md:justify-between items-center w-full md:gap-0 gap-10">
         {/* Left - Menu + Drawer */}
-        <div className="bg-[#535e51] text-[#f1f5f4] sm:order-1 order-1">
+        <div className="text-[#f1f5f4]  ">
           <Sheet>
             <SheetTrigger className="block">
               <Menu className="w-6 h-6" />
             </SheetTrigger>
-
             <SheetContent>
               <SheetHeader>
                 <SheetTitle className="text-[30px] bg-[#535e51] p-3 mt-10 text-[#f1f5f4]">
@@ -108,63 +114,81 @@ const Header = () => {
         </div>
 
         {/* Center - Title */}
-        <div className="text-[30px] text-[#f1f5f4] font-bold sm:order-2 order-2 mt-2 sm:mt-0">
+        <div className="text-[28px]  font-bold text-[#f1f5f4]   mt-1 sm:mt-0">
           ZAIRA
         </div>
 
-        {/* Right - Icons + Search */}
-        <div className="flex gap-5 justify-center items-center cursor-pointer sm:order-3 order-3">
-          <div className="relative flex items-center gap-2">
+        {/* Right - Desktop Icons */}
+        <div className="hidden md:flex gap-5 items-center sm:order-3 order-3">
+          {/* Search Icon and Input */}
+          <div className=" flex justify-center items-center gap-2">
             <button
-              data-search="true"
               onClick={() => setShowInput((prev) => !prev)}
-              className="p-2 shadow-xl rounded-full"
+              className="p-2 bg-transparent  cursor-pointer"
             >
-              <Search className="text-[#f1f5f4]" />
+              <Search className="text-[#f1f5f4] w-5 h-5" />
             </button>
-
-            {/* Desktop Search Input */}
             {showInput && (
-              <input
-                data-search-input="true"
+              <Input
                 type="text"
                 placeholder="Search"
                 autoFocus
-                className="hidden sm:block placeholder-white rounded-lg px-4 py-2 shadow-md transition-all duration-300 bg-white text-black"
+                className="  lg:w-2xl w-2xs rounded-lg py-2 px-3 shadow-md transition-all duration-300 bg-white text-black placeholder-gray-500"
               />
             )}
           </div>
 
-          <UserRound className="text-[#f1f5f4]" />
-          <Heart className="text-[#f1f5f4]" />
-          <ShoppingCart className="text-[#f1f5f4]" />
+          {/* Other Icons */}
+          <UserRound className="text-[#f1f5f4] w-5 h-5 cursor-pointer" onClick={loginpage} />
+          <Heart className="text-[#f1f5f4] w-5 h-5  cursor-pointer" />
+          <ShoppingCart className="text-[#f1f5f4] w-5 h-5  cursor-pointer" />
+        </div>
+      </div>
+
+      {/* Mobile Bottom Navigation */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#535e51] sm:hidden px-6 py-2 shadow-md">
+        <div className="flex justify-between items-center">
+          <Button
+            onClick={() => setShowInput(true)}
+            className="bg-transparent text-[#f1f5f4]"
+          >
+            <Search className="w-6 h-6  cursor-pointer" />
+          </Button>
+          <Button className="bg-transparent text-[#f1f5f4]">
+            <UserRound className="w-6 h-6  cursor-pointer" onClick={loginpage} />
+          </Button>
+          <Button className="bg-transparent text-[#f1f5f4]">
+            <Heart className="w-6 h-6  cursor-pointer" />
+          </Button>
+          <Button className="bg-transparent text-[#f1f5f4]">
+            <ShoppingCart className="w-6 h-6  cursor-pointer" />
+          </Button>
         </div>
 
-        {/* Mobile Search Input: Below the title */}
+        {/* Mobile Search Input */}
         {showInput && (
-          <div className="sm:hidden fixed top-0 left-0 w-full bg-[#f7f7e8] z-50 p-4 shadow-lg rounded-b-lg">
-            {/* Search Bar */}
+          <div className="fixed top-0 left-0 w-full bg-[#f7f7e8] z-50 p-4 shadow-lg rounded-b-lg">
             <div className="flex items-center bg-[#f7f7e8] rounded-lg px-4 py-2 shadow-md border border-gray-300">
-              <Search className="text-gray-500 w-5 h-5" />
-              <input
+              <Input
                 type="text"
                 placeholder="Search"
                 className="flex-1 bg-transparent outline-none px-2 text-sm text-gray-800"
                 autoFocus
               />
-              <button onClick={() => setShowInput(false)}>
+              <Button
+                className="bg-transparent"
+                onClick={() => setShowInput(false)}
+              >
                 <X className="text-gray-500 w-5 h-5" />
-              </button>
+              </Button>
             </div>
 
-            {/* Suggestions */}
             <div className="mt-3 bg-[#fdfdf4] rounded-lg shadow-md p-4">
               <p className="text-xs text-gray-500 tracking-widest font-semibold mb-2">
                 MOST SEARCHED
               </p>
               <ul className="text-sm text-gray-700 space-y-1">
-                <li> Do Nothing</li>
-                
+                <li>Do Nothing</li>
               </ul>
             </div>
           </div>
