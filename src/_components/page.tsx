@@ -16,6 +16,9 @@ const Slide = () => {
   const goTowomen = () => {
     router.push("/womencollection");
   };
+  const goToproductPage= () => {
+    router.push("/productdisplay");
+  };
   return (
     <>
       {/* swiper */}
@@ -79,7 +82,8 @@ const Slide = () => {
                     alt="T-Shirt"
                     width={600}
                     height={730}
-                    className="rounded-lg w-full h-auto object-cover"
+                    className="rounded-lg w-full h-auto object-cover  cursor-pointer"
+                    onClick={goToproductPage}
                   />
                   <p className="text-center  text-[#535e51]  font-bold text-[28px] sm:text-[35px]">
                     POLO T-SHIRTS
@@ -112,7 +116,8 @@ const Slide = () => {
                     alt="T-Shirt"
                     width={600}
                     height={730}
-                    className="rounded-lg w-full h-auto object-cover"
+                    className="rounded-lg w-full h-auto object-cover cursor-pointer"
+                    onClick={goToproductPage}
                   />
                   <p className="text-center  text-[#535e51] font-bold text-[28px] sm:text-[35px]">
                     WOMEN T-SHIRTS
