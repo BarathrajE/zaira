@@ -183,9 +183,7 @@ export default function ProductPage() {
                       30% OFF
                     </span>
                   </div>
-                  <p className="text-green-600 text-sm mt-1">
-                    ✓ Free shipping on orders over $50
-                  </p>
+                 
                 </div>
 
                 {/* Color Selection */}
