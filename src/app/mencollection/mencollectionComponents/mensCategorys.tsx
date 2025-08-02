@@ -41,7 +41,7 @@ const MenCategorySlide = () => {
             onClick={() => setActiveCategory("women")}
             className={`px-6 py-2 rounded-md font-semibold ${
               activeCategory === "women"
-                ? "bg-[#30ABA2] text-white"
+                ? "bg-[#535e51] text-white"
                 : "bg-gray-200 text-gray-800"
             }`}
           >
@@ -51,7 +51,7 @@ const MenCategorySlide = () => {
             onClick={() => setActiveCategory("men")}
             className={`px-6 py-2 rounded-md font-semibold ${
               activeCategory === "men"
-                ? "bg-[#30ABA2] text-white"
+                ? "bg-[#535e51] text-white"
                 : "bg-gray-200 text-gray-800"
             }`}
           >

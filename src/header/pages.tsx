@@ -27,6 +27,9 @@ const Header = () => {
   const goTowishlistPage = () => {
     router.push("/wishlist");
   };
+  const goTocartPage = () => {
+    router.push("/cart");
+  };
   const [showInput, setShowInput] = useState(false);
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -150,7 +153,10 @@ const Header = () => {
             className="text-[#f1f5f4] w-5 h-5  cursor-pointer"
             onClick={goTowishlistPage}
           />
-          <ShoppingCart className="text-[#f1f5f4] w-5 h-5  cursor-pointer" />
+          <ShoppingCart
+            className="text-[#f1f5f4] w-5 h-5  cursor-pointer"
+            onClick={goTocartPage}
+          />
         </div>
       </div>
 
@@ -176,7 +182,10 @@ const Header = () => {
             />
           </Button>
           <Button className="bg-transparent text-[#f1f5f4]">
-            <ShoppingCart className="w-6 h-6  cursor-pointer" />
+            <ShoppingCart
+              className="w-6 h-6  cursor-pointer"
+              onClick={goTocartPage}
+            />
           </Button>
         </div>
 
