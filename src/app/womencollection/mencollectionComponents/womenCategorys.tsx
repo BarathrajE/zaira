@@ -1,10 +1,11 @@
 "use client";
+import { useState } from "react";
 import { Swiper } from "swiper/react";
 import { FreeMode, Pagination } from "swiper/modules";
 import "swiper/css";
 import Image from "next/image";
 
-const categories = [
+const womenCategories = [
   { title: "Full Sleeve", imageUrl: "/assets/homeSlide_image/womenSlide.webp" },
   { title: "Scoop Neck", imageUrl: "/assets/homeSlide_image/womenSlide.webp" },
   { title: "Crew Neck", imageUrl: "/assets/homeSlide_image/womenSlide.webp" },
@@ -13,24 +14,52 @@ const categories = [
     imageUrl: "/assets/homeSlide_image/womenSlide.webp",
   },
   { title: "Sleeveless", imageUrl: "/assets/homeSlide_image/womenSlide.webp" },
-  { title: "Printed", imageUrl: "/assets/homeSlide_image/womenSlide.webp" },
-  { title: "Checked", imageUrl: "/assets/homeSlide_image/womenSlide.webp" },
-  { title: " Linen", imageUrl: "/assets/homeSlide_image/womenSlide.webp" },
-  { title: "Oversized Shirt", imageUrl: "/assets/homeSlide_image/womenSlide.webp" },
-  { title: "Denim", imageUrl: "/assets/homeSlide_image/womenSlide.webp" },
+];
+
+const menCategories = [
+  { title: "Polo",  imageUrl: "/assets/homeSlide_image/womenSlide.webp" },
+  { title: "Hoodie",  imageUrl: "/assets/homeSlide_image/womenSlide.webp" },
+  { title: "Crew Neck",  imageUrl: "/assets/homeSlide_image/womenSlide.webp" },
+  { title: "Graphic Tee",  imageUrl: "/assets/homeSlide_image/womenSlide.webp" },
+  { title: "Tank Top",  imageUrl: "/assets/homeSlide_image/womenSlide.webp" },
 ];
 
 const WomenCategorySlide = () => {
+  const [activeCategory, setActiveCategory] = useState<"women" | "men">(
+    "women"
+  );
+
+  const categories =
+    activeCategory === "women" ? womenCategories : menCategories;
+
   return (
-    <div className="pb-5">
-      <div className="flex justify-evenly flex-wrap py-3">
-        <p className="bg-[#535e51] text-[#f1f5f4] font-bold text-[20px] border-2 shadow-2xl sm:px-8 px-5 rounded-md sm:rounded-2xl py-1 text-center  sm:text-[45px]">
-          T-SHIRTS
-        </p>
-        <p className="bg-[#535e51] text-[#f1f5f4] font-bold text-[20px] border-2 shadow-2xl px-8 rounded-md sm:rounded-2xl py-1 text-center sm:text-[45px]">
-          SHIRTS
-        </p>
+    <section className="flex justify-center">
+    <div className="pb-5 max-w-7xl">
+      {/* Category Selection Buttons */}
+      <div className="flex justify-center gap-4 mt-4 mb-6">
+        <button
+          onClick={() => setActiveCategory("women")}
+          className={`px-6 py-2 rounded-md font-semibold ${
+            activeCategory === "women"
+              ? "bg-[#30ABA2] text-white"
+              : "bg-gray-200 text-gray-800"
+          }`}
+        >
+          T-SHIRT
+        </button>
+        <button
+          onClick={() => setActiveCategory("men")}
+          className={`px-6 py-2 rounded-md font-semibold ${
+            activeCategory === "men"
+              ? "bg-[#30ABA2] text-white"
+              : "bg-gray-200 text-gray-800"
+          }`}
+        >
+          SHIRT
+        </button>
       </div>
+
+      {/* Swiper Carousel */}
       <Swiper
         spaceBetween={10}
         loop={false}
@@ -51,14 +80,14 @@ const WomenCategorySlide = () => {
           {categories.map((item, index) => (
             <div
               key={index}
-              className="flex flex-col items-center justify-center flex-none"
+              className="flex flex-col items-center justify-center flex-none cursor-pointer"
             >
               <Image
                 src={item.imageUrl}
                 width={400}
                 height={400}
                 alt={item.title}
-                className="md:rounded-lg rounded-[50%] md:w-[200px] w-[80px] md:h-auto h-[80px] object-cover transition-transform duration-300 hover:scale-105 hover:shadow-lg"
+                className="md:rounded-lg rounded-[50%] md:w-[150px] w-[80px] md:h-auto h-[80px] object-cover transition-transform duration-300 hover:scale-105"
               />
               <p className="mt-2 text-base sm:text-lg text-[#535e51] font-bold">
                 {item.title}
@@ -68,6 +97,7 @@ const WomenCategorySlide = () => {
         </div>
       </Swiper>
     </div>
+    </section>
   );
 };
 

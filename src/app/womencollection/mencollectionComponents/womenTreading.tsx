@@ -1,6 +1,11 @@
 "use client";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { EffectCoverflow, FreeMode, Navigation, Pagination } from "swiper/modules";
+import {
+  EffectCoverflow,
+  FreeMode,
+  Navigation,
+
+} from "swiper/modules";
 import { ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import "swiper/css";
@@ -25,26 +30,50 @@ const WomenTreading = () => {
       </p>
       <div className="swiper-wrapper w-full">
         <Swiper
-          modules={[EffectCoverflow, Navigation,FreeMode, Pagination]}
-          effect="coverflow"
+          modules={[EffectCoverflow, Navigation, FreeMode]}
           loop={true}
-           freeMode={true}
-          centeredSlides={true}
+          freeMode={true}
           grabCursor={true}
           slidesPerView={1}
           spaceBetween={1}
-          breakpoints={{
-            330: { slidesPerView: 1.3 },
-            640: { slidesPerView: 2 },
-            768: { slidesPerView: 2.5 },
-            1024: { slidesPerView: 3.5 },
+          navigation={{
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
           }}
-          coverflowEffect={{
-            rotate: 0,
-            stretch: -40,
-            depth: 200,
-            modifier: 1.5,
-            slideShadows: false,
+          pagination={{ clickable: true }}
+          breakpoints={{
+            320: {
+              slidesPerView: 1,
+              spaceBetween: 10,
+            },
+            480: {
+              slidesPerView: 1,
+              spaceBetween: 10,
+            },
+            640: {
+              slidesPerView: 2,
+              spaceBetween: 15,
+            },
+            768: {
+              slidesPerView: 2,
+              spaceBetween: 10,
+            },
+            1024: {
+              slidesPerView: 3,
+              spaceBetween: 25,
+            },
+            1280: {
+              slidesPerView: 3.5,
+              spaceBetween: 30,
+            },
+            1440: {
+              slidesPerView: 4,
+              spaceBetween: 30,
+            },
+            1800: {
+              slidesPerView: 5,
+              spaceBetween: 30,
+            },
           }}
           className="mt-8 heritage-swiper w-full mx-auto"
         >
@@ -56,9 +85,9 @@ const WomenTreading = () => {
                   width={500}
                   height={500}
                   alt={`Slide ${index + 1}`}
-                  className="rounded-lg w-full sm:w-[400px] md:w-[450px] lg:w-[500px] h-auto object-cover transition-transform duration-300"
+                  className="rounded-lg w-full  md:w-[300px] lg:w-[400px] h-auto object-cover transition-transform duration-300"
                 />
-                <div className="shop-btn absolute bottom-5 right-30 flex bg-[#f1f5f4] px-4 gap-2 rounded-lg py-2 opacity-0 transition-opacity duration-300">
+                <div className="shop-btn absolute bottom-5 right-30 flex bg-[#f1f5f4] px-4 gap-2 rounded-lg py-2  ">
                   <ShoppingCart className="text-[#535e51] font-bold" />
                   <p className="text-[#535e51] font-bold">Shop</p>
                 </div>
@@ -66,6 +95,10 @@ const WomenTreading = () => {
             </SwiperSlide>
           ))}
         </Swiper>
+
+        {/* Add these navigation buttons */}
+        <div className="swiper-button-prev"></div>
+        <div className="swiper-button-next"></div>
       </div>
     </section>
   );

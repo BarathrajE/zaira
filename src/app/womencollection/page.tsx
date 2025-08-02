@@ -91,7 +91,7 @@ const MenPages = () => {
                   className="flex flex-col  items-center group cursor-pointer"
                 >
                   {/* Circular Image Container */}
-                  <div className="relative w-[80px] h-[80px] sm:w-[300px] sm:h-[300px] mb-6">
+                  <div className="relative w-[80px] h-[80px] sm:w-[280px] sm:h-[280px] mb-6">
                     {/* Yellow Border Ring */}
                     <div className="absolute inset-0 rounded-full border-4 border-yellow-400 opacity-90"></div>
 
@@ -136,7 +136,7 @@ const MenPages = () => {
                   className="flex flex-col  items-center group cursor-pointer"
                 >
                   {/* Circular Image Container */}
-                  <div className="relative w-[80px] h-[80px] sm:w-[300px] sm:h-[300px] mb-6">
+                  <div className="relative w-[80px] h-[80px] sm:w-[280px] sm:h-[280px] mb-6">
                     {/* Yellow Border Ring */}
                     <div className="absolute inset-0 rounded-full border-4 border-yellow-400 opacity-90"></div>
 

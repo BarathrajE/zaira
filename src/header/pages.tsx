@@ -20,10 +20,13 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const Header = () => {
-   const router = useRouter();
-    const loginpage = () => {
-      router.push("/authform");
-    };
+  const router = useRouter();
+  const loginpage = () => {
+    router.push("/authform");
+  };
+  const goTowishlistPage = () => {
+    router.push("/wishlist");
+  };
   const [showInput, setShowInput] = useState(false);
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -139,8 +142,14 @@ const Header = () => {
           </div>
 
           {/* Other Icons */}
-          <UserRound className="text-[#f1f5f4] w-5 h-5 cursor-pointer" onClick={loginpage} />
-          <Heart className="text-[#f1f5f4] w-5 h-5  cursor-pointer" />
+          <UserRound
+            className="text-[#f1f5f4] w-5 h-5 cursor-pointer"
+            onClick={loginpage}
+          />
+          <Heart
+            className="text-[#f1f5f4] w-5 h-5  cursor-pointer"
+            onClick={goTowishlistPage}
+          />
           <ShoppingCart className="text-[#f1f5f4] w-5 h-5  cursor-pointer" />
         </div>
       </div>
@@ -155,10 +164,16 @@ const Header = () => {
             <Search className="w-6 h-6  cursor-pointer" />
           </Button>
           <Button className="bg-transparent text-[#f1f5f4]">
-            <UserRound className="w-6 h-6  cursor-pointer" onClick={loginpage} />
+            <UserRound
+              className="w-6 h-6  cursor-pointer"
+              onClick={loginpage}
+            />
           </Button>
           <Button className="bg-transparent text-[#f1f5f4]">
-            <Heart className="w-6 h-6  cursor-pointer" />
+            <Heart
+              className="w-6 h-6  cursor-pointer"
+              onClick={goTowishlistPage}
+            />
           </Button>
           <Button className="bg-transparent text-[#f1f5f4]">
             <ShoppingCart className="w-6 h-6  cursor-pointer" />

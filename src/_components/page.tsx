@@ -19,6 +19,7 @@ const Slide = () => {
   const goToproductPage= () => {
     router.push("/productdisplay");
   };
+  
   return (
     <>
       {/* swiper */}
