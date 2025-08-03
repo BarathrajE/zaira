@@ -13,25 +13,25 @@ const MenPages = () => {
     {
       id: 1,
       title: "Printed T-shirts",
-      image: "/assets/homeSlide_image/treadingmen.webp",
+      image: "/assets/homeSlide_image/women/women2.avif",
       alt: "Man wearing printed t-shirt",
     },
     {
       id: 2,
       title: "Casual Trousers",
-      image: "/assets/homeSlide_image/treadingmen.webp",
+      image: "/assets/homeSlide_image/women/women4.avif",
       alt: "Casual trousers with wooden chair",
     },
     {
       id: 3,
       title: "Casual Shirts",
-      image: "/assets/homeSlide_image/treadingmen.webp",
+      image: "/assets/homeSlide_image/women/women6.avif",
       alt: "Man wearing casual shirt",
     },
     {
       id: 4,
       title: "Timeless Fit Denim",
-      image: "/assets/homeSlide_image/treadingmen.webp",
+      image: "/assets/homeSlide_image/women/women9.avif",
       alt: "Person wearing denim jeans",
     },
   ];
@@ -167,7 +167,7 @@ const MenPages = () => {
           SESSION
         </p>
         <Image
-          src="/assets/homeSlide_image/menshop.webp"
+          src="/assets/homeSlide_image/offer.avif"
           alt="Onam Essentials"
           width={1200}
           height={500}
@@ -185,7 +185,7 @@ const MenPages = () => {
             <div className="col-span-12 md:col-span-6 p-4">
               {/* Main Image */}
               <Image
-                src="/assets/homeSlide_image/tShirt.webp"
+                src="/assets/homeSlide_image/women/women3.avif"
                 alt="Main T-Shirt Display"
                 width={500}
                 height={500}
@@ -196,7 +196,7 @@ const MenPages = () => {
               <div className="grid grid-cols-12 gap-4 mt-4">
                 <div className="col-span-6 p-2">
                   <Image
-                    src="/assets/homeSlide_image/resent_view.webp"
+                    src="/assets/homeSlide_image/women/women7.avif"
                     alt="Recently Viewed T-Shirt 1"
                     width={500}
                     height={500}
@@ -205,7 +205,7 @@ const MenPages = () => {
                 </div>
                 <div className="col-span-6 p-2">
                   <Image
-                    src="/assets/homeSlide_image/resent_view.webp"
+                    src="/assets/homeSlide_image/women/women6.avif"
                     alt="Recently Viewed T-Shirt 2"
                     width={500}
                     height={500}
@@ -218,7 +218,7 @@ const MenPages = () => {
             {/* Right Side */}
             <div className="col-span-12 md:col-span-6 p-4">
               <Image
-                src="/assets/homeSlide_image/bestseller_image.webp"
+                src="/assets/homeSlide_image/women/women9.avif"
                 alt="Bestseller T-Shirt"
                 width={500}
                 height={500}

@@ -16,10 +16,10 @@ const Slide = () => {
   const goTowomen = () => {
     router.push("/womencollection");
   };
-  const goToproductPage= () => {
+  const goToproductPage = () => {
     router.push("/productdisplay");
   };
-  
+
   return (
     <>
       {/* swiper */}
@@ -79,9 +79,9 @@ const Slide = () => {
               {[1, 2, 3].map((_, index) => (
                 <div key={index} className="w-full sm:w-[45%] lg:w-[31%]">
                   <Image
-                    src="/assets/homeSlide_image/tShirt.webp"
+                    src="/assets/homeSlide_image/men/men7.jpeg"
                     alt="T-Shirt"
-                    width={600}
+                    width={800}
                     height={730}
                     className="rounded-lg w-full h-auto object-cover  cursor-pointer"
                     onClick={goToproductPage}
@@ -106,14 +106,14 @@ const Slide = () => {
         <div className="pt-4 pb-10">
           <div>
             <p className="text-[#535e51] text-center pb-4 font-bold text-[28px] sm:text-[45px]">
-              SHIRTS
+              T-SHIRTS
             </p>
 
             <div className="flex flex-wrap justify-center gap-5  px-3">
               {[1, 2, 3].map((_, index) => (
                 <div key={index} className="w-full sm:w-[45%] lg:w-[31%]">
                   <Image
-                    src="/assets/homeSlide_image/tShirt.webp"
+                    src="/assets/homeSlide_image/women/women2.avif"
                     alt="T-Shirt"
                     width={600}
                     height={730}
@@ -149,7 +149,7 @@ const Slide = () => {
             <div className="relative w-full min-h-screen">
               {" "}
               <Image
-                src="/assets/homeSlide_image/image.webp"
+                src="/assets/homeSlide_image/offer.avif"
                 alt="Onam Essentials"
                 fill
                 className="object-cover"
@@ -160,7 +160,7 @@ const Slide = () => {
             <div className="relative w-full h-[100vh]">
               {" "}
               <Image
-                src="/assets/homeSlide_image/image.webp"
+                src="/assets/homeSlide_image/offer.jpeg"
                 alt="Onam Essentials"
                 fill
                 className="object-cover"
@@ -171,7 +171,7 @@ const Slide = () => {
             <div className="relative w-full h-[100vh]">
               {" "}
               <Image
-                src="/assets/homeSlide_image/image.webp"
+                src="/assets/homeSlide_image/offer.avif"
                 alt="Onam Essentials"
                 fill
                 className="object-cover"
@@ -191,7 +191,7 @@ const Slide = () => {
               {[1, 2, 3].map((_, index) => (
                 <div key={index} className="w-full sm:w-[45%] lg:w-[31%]">
                   <Image
-                    src="/assets/homeSlide_image/BEST.webp"
+                    src="/assets/homeSlide_image/men/men10.jpeg"
                     alt="T-Shirt"
                     width={600}
                     height={730}

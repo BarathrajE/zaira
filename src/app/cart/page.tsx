@@ -21,7 +21,7 @@ const CheckoutComponent = () => {
               <div className="flex items-start space-x-4">
                 <div className="w-40 h-40 rounded-lg overflow-hidden ">
                   <Image
-                    src="/assets/homeSlide_image/tShirt.webp"
+                    src="/assets/homeSlide_image/men/men9.jpeg"
                     alt="Product"
                     width={500}
                     height={400}
@@ -32,14 +32,14 @@ const CheckoutComponent = () => {
                   <div className="flex justify-between flex-wrap gap-4">
                     {/* Left Side: Product Info */}
                     <div className="flex flex-col gap-2">
-                      <h3 className="text-xl font-semibold text-gray-900">
+                      <h3 className="text-xl font-semibold text-[#535e51]">
                         POLO SHIRT
                       </h3>
                       <p className="text-sm text-gray-600">
                         Colour: <strong>Black</strong>
                       </p>
                       <div className="mt-1">
-                        <span className="text-lg font-bold text-gray-900">
+                        <span className="text-lg font-bold text-[#535e51]">
                           ₹1710
                         </span>
                       </div>
@@ -101,14 +101,14 @@ const CheckoutComponent = () => {
           {/* Right: Order Summary (1/3 width on md+) */}
           <div className="space-y-4">
             <div className="bg-gray-50 p-4 rounded-lg shadow">
-              <h4 className="text-lg font-semibold mb-4">Order Summary</h4>
+              <h4 className="text-lg text-[#535e51] font-bold mb-4">Order Summary</h4>
               <div className="space-y-2">
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Item Total</span>
-                  <span className="font-medium">₹45,092</span>
+                  <span className="text-[#535e51]">Item Total</span>
+                  <span className="font-medium text-[#535e51]">₹45,092</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">You Saved</span>
+                  <span className="text-[#535e51]">You Saved</span>
                   <span className="font-medium text-green-600">-₹1343</span>
                 </div>
                 {/* <div className="flex justify-between">
@@ -117,8 +117,8 @@ const CheckoutComponent = () => {
                 </div> */}
                 <div className="border-t border-gray-300 pt-3">
                   <div className="flex justify-between">
-                    <span className="text-lg font-semibold">Bill Total</span>
-                    <span className="text-lg font-bold text-gray-900">
+                    <span className="text-lg text-[#535e51] font-bold">Bill Total</span>
+                    <span className="text-lg font-bold text-[#535e51]">
                       ₹43,749
                     </span>
                   </div>
@@ -127,10 +127,10 @@ const CheckoutComponent = () => {
             </div>
 
             <div className="space-y-3">
-              <button className="w-full bg-blue-900 text-white py-3 rounded-lg hover:bg-blue-800">
+              <button className="w-full bg-[#535e51]  py-3 rounded-lg text-white ">
                 Proceed to Checkout
               </button>
-              <button className="w-full border border-blue-900 text-blue-900 py-3 rounded-lg hover:bg-blue-50">
+              <button className="w-full border bg-[#535e51] py-3 rounded-lg text-white">
                 Continue Shopping
               </button>
             </div>

@@ -5,16 +5,16 @@ import "swiper/css";
 import Image from "next/image";
 
 const categories = [
-  { title: "Women", imageUrl: "/assets/homeSlide_image/womenSlide.webp" },
-  { title: "Men", imageUrl: "/assets/homeSlide_image/womenSlide.webp" },
-  { title: "Kids", imageUrl: "/assets/homeSlide_image/womenSlide.webp" },
-  { title: "Beauty", imageUrl: "/assets/homeSlide_image/womenSlide.webp" },
-  { title: "Footwear", imageUrl: "/assets/homeSlide_image/womenSlide.webp" },
-  { title: "Accessories", imageUrl: "/assets/homeSlide_image/womenSlide.webp" },
-  { title: "Jewellery", imageUrl: "/assets/homeSlide_image/womenSlide.webp" },
-  { title: "Home Decor", imageUrl: "/assets/homeSlide_image/womenSlide.webp" },
-  { title: "Grocery", imageUrl: "/assets/homeSlide_image/womenSlide.webp" },
-  { title: "Electronics", imageUrl: "/assets/homeSlide_image/womenSlide.webp" },
+  { title: "Women", imageUrl: "/assets/homeSlide_image/women/women7.avif" },
+  { title: "Men", imageUrl: "/assets/homeSlide_image/women/women2.avif" },
+  { title: "Kids", imageUrl: "/assets/homeSlide_image/women/women3.avif" },
+  { title: "Beauty", imageUrl: "/assets/homeSlide_image/women/women4.avif" },
+  { title: "Footwear", imageUrl: "/assets/homeSlide_image/women/women5.avif" },
+  { title: "Accessories", imageUrl: "/assets/homeSlide_image/women/women6.avif" },
+  { title: "Jewellery", imageUrl: "/assets/homeSlide_image/women/women7.avif" },
+  { title: "Home Decor", imageUrl: "/assets/homeSlide_image/women/women8.avif" },
+  { title: "Grocery", imageUrl: "/assets/homeSlide_image/women/women8.avif" },
+  { title: "Electronics", imageUrl: "/assets/homeSlide_image/women/women9.avif" },
 ];
 
 const CategorySlide = () => {

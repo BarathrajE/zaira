@@ -14,25 +14,25 @@ const MenPages = () => {
     {
       id: 1,
       title: "Printed T-shirts",
-      image: "/assets/homeSlide_image/treadingmen.webp",
+      image: "/assets/homeSlide_image/men/men7.jpeg",
       alt: "Man wearing printed t-shirt",
     },
     {
       id: 2,
       title: "Casual Trousers",
-      image: "/assets/homeSlide_image/treadingmen.webp",
+      image: "/assets/homeSlide_image/men/men6.jpeg",
       alt: "Casual trousers with wooden chair",
     },
     {
       id: 3,
       title: "Casual Shirts",
-      image: "/assets/homeSlide_image/treadingmen.webp",
+      image: "/assets/homeSlide_image/men/men12.jpeg",
       alt: "Man wearing casual shirt",
     },
     {
       id: 4,
       title: "Timeless Fit Denim",
-      image: "/assets/homeSlide_image/treadingmen.webp",
+      image: "/assets/homeSlide_image/men/shirt1.jpeg",
       alt: "Person wearing denim jeans",
     },
   ];
@@ -168,7 +168,7 @@ const MenPages = () => {
           SESSION
         </p>
         <Image
-          src="/assets/homeSlide_image/menshop.webp"
+          src="/assets/homeSlide_image/offer.jpeg"
           alt="Onam Essentials"
           width={1200}
           height={500}
@@ -186,7 +186,7 @@ const MenPages = () => {
             <div className="col-span-12 md:col-span-6 p-4">
               {/* Main Image */}
               <Image
-                src="/assets/homeSlide_image/tShirt.webp"
+                src="/assets/homeSlide_image/men/men10.jpeg"
                 alt="Main T-Shirt Display"
                 width={500}
                 height={500}

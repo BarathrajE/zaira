@@ -6,22 +6,22 @@ import "swiper/css";
 import Image from "next/image";
 
 const womenCategories = [
-  { title: "Full Sleeve", imageUrl: "/assets/homeSlide_image/womenSlide.webp" },
-  { title: "Scoop Neck", imageUrl: "/assets/homeSlide_image/womenSlide.webp" },
-  { title: "Crew Neck", imageUrl: "/assets/homeSlide_image/womenSlide.webp" },
+  { title: "Full Sleeve", imageUrl: "/assets/homeSlide_image/women/women7.avif" },
+  { title: "Scoop Neck", imageUrl: "/assets/homeSlide_image/women/women3.avif" },
+  { title: "Crew Neck", imageUrl: "/assets/homeSlide_image/women/women5.avif" },
   {
     title: "Oversized T-shirt",
-    imageUrl: "/assets/homeSlide_image/womenSlide.webp",
+    imageUrl: "/assets/homeSlide_image/women/women8.avif",
   },
-  { title: "Sleeveless", imageUrl: "/assets/homeSlide_image/womenSlide.webp" },
+  { title: "Sleeveless", imageUrl: "/assets/homeSlide_image/women/women9.avif" },
 ];
 
 const menCategories = [
-  { title: "Polo",  imageUrl: "/assets/homeSlide_image/womenSlide.webp" },
-  { title: "Hoodie",  imageUrl: "/assets/homeSlide_image/womenSlide.webp" },
-  { title: "Crew Neck",  imageUrl: "/assets/homeSlide_image/womenSlide.webp" },
-  { title: "Graphic Tee",  imageUrl: "/assets/homeSlide_image/womenSlide.webp" },
-  { title: "Tank Top",  imageUrl: "/assets/homeSlide_image/womenSlide.webp" },
+  { title: "Polo",  imageUrl: "/assets/homeSlide_image/women/women9.avif" },
+  { title: "Hoodie",  imageUrl: "/assets/homeSlide_image/women/women8.avif" },
+  { title: "Crew Neck",  imageUrl: "/assets/homeSlide_image/women/women7.avif" },
+  { title: "Graphic Tee",  imageUrl: "/assets/homeSlide_image/women/women2.avif" },
+  { title: "Tank Top",  imageUrl: "/assets/homeSlide_image/women/women3.avif" },
 ];
 
 const WomenCategorySlide = () => {
@@ -41,7 +41,7 @@ const WomenCategorySlide = () => {
           onClick={() => setActiveCategory("women")}
           className={`px-6 py-2 rounded-md font-semibold ${
             activeCategory === "women"
-              ? "bg-[#30ABA2] text-white"
+              ? "bg-[#535e51] text-white"
               : "bg-gray-200 text-gray-800"
           }`}
         >
@@ -51,7 +51,7 @@ const WomenCategorySlide = () => {
           onClick={() => setActiveCategory("men")}
           className={`px-6 py-2 rounded-md font-semibold ${
             activeCategory === "men"
-              ? "bg-[#30ABA2] text-white"
+              ? "bg-[#535e51] text-white"
               : "bg-gray-200 text-gray-800"
           }`}
         >

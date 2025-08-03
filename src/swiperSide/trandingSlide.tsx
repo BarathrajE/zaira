@@ -8,14 +8,14 @@ import "swiper/css/effect-coverflow";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 const slideImages = [
-  "/assets/homeSlide_image/Trending.webp",
-  "/assets/homeSlide_image/Trending.webp",
-  "/assets/homeSlide_image/Trending.webp",
-  "/assets/homeSlide_image/Trending.webp",
-  "/assets/homeSlide_image/Trending.webp",
-  "/assets/homeSlide_image/Trending.webp",
-  "/assets/homeSlide_image/Trending.webp",
-  "/assets/homeSlide_image/Trending.webp",
+  "/assets/homeSlide_image/women/women2.avif",
+  "/assets/homeSlide_image/women/women3.avif",
+  "/assets/homeSlide_image/women/women4.avif",
+  "/assets/homeSlide_image/women/women5.avif",
+  "/assets/homeSlide_image/women/women6.avif",
+  "/assets/homeSlide_image/women/women7.avif",
+  "/assets/homeSlide_image/women/women8.avif",
+  "/assets/homeSlide_image/women/women9.avif",
 ];
 const HeritageSwiper = () => {
   return (

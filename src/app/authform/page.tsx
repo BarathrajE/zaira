@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
+import { KeyRound } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import type { ChangeEvent, KeyboardEvent } from "react";
 
@@ -135,28 +136,16 @@ export default function OTPLoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[#f1f5f4] flex items-center justify-center p-4">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8">
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg
-              className="w-8 h-8 text-white"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-              />
-            </svg>
+          <div className="w-16 h-16 bg-[#535e51] rounded-full flex items-center justify-center mx-auto mb-4">
+         <KeyRound  className="text-[#f1f5f4]"/>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+          <h1 className="text-2xl font-bold text-[#535e51] mb-2">
             {isOtpSent ? "Verify OTP" : "Login with OTP"}
           </h1>
-          <p className="text-gray-600">
+          <p className="text-[#535e51]">
             {isOtpSent
               ? `Enter the 6-digit code sent to +91${phoneNumber}`
               : "Enter your mobile number to receive OTP"}
@@ -168,20 +157,20 @@ export default function OTPLoginPage() {
             <div>
               <label
                 htmlFor="phone"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm font-medium text-[#535e51] mb-2"
               >
                 Mobile Number
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <span className="text-gray-500 text-sm">+91</span>
+                  <span className="text-[#535e51] text-sm">+91</span>
                 </div>
                 <input
                   type="tel"
                   id="phone"
                   value={phoneNumber}
                   onChange={handlePhoneChange}
-                  className={`block w-full pl-12 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors ${
+                  className={`block w-full pl-12 pr-4 py-3 border rounded-lg   ${
                     errors.phone ? "border-red-500" : "border-gray-300"
                   }`}
                   placeholder="Enter 10-digit mobile number"
@@ -196,7 +185,7 @@ export default function OTPLoginPage() {
             <button
               onClick={handleSendOtp}
               disabled={isLoading || phoneNumber.length !== 10}
-              className="w-full bg-indigo-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="w-full bg-[#535e51] text-white py-3 px-4 rounded-lg font-medium  disabled:opacity-50 disabled:cursor-not-allowed "
             >
               {isLoading ? (
                 <div className="flex items-center justify-center">
@@ -225,7 +214,7 @@ export default function OTPLoginPage() {
                     value={digit}
                     onChange={(e) => handleOtpChange(index, e.target.value)}
                     onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                    className={`w-12 h-12 text-center text-lg font-semibold border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors ${
+                    className={`w-12 h-12 text-center text-lg font-semibold border rounded-lg  ${
                       errors.otp ? "border-red-500" : "border-gray-300"
                     }`}
                     maxLength={1}
@@ -243,7 +232,7 @@ export default function OTPLoginPage() {
               {!canResend ? (
                 <p className="text-sm text-gray-600">
                   Resend OTP in{" "}
-                  <span className="font-medium text-indigo-600">
+                  <span className="font-medium text-[#535e51]">
                     {formatTimer(timer)}
                   </span>
                 </p>
@@ -251,7 +240,7 @@ export default function OTPLoginPage() {
                 <button
                   onClick={handleResendOtp}
                   disabled={isLoading}
-                  className="text-indigo-600 hover:text-indigo-700 font-medium text-sm focus:outline-none focus:underline disabled:opacity-50"
+                  className="text-indigo-600  font-medium text-sm focus:outline-none focus:underline disabled:opacity-50"
                 >
                   {isLoading ? "Resending..." : "Resend OTP"}
                 </button>
@@ -261,7 +250,7 @@ export default function OTPLoginPage() {
             <button
               onClick={handleVerifyOtp}
               disabled={isVerifying || otp.join("").length !== 6}
-              className="w-full bg-indigo-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="w-full bg-[#535e51] text-white py-3 px-4 rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {isVerifying ? (
                 <div className="flex items-center justify-center">

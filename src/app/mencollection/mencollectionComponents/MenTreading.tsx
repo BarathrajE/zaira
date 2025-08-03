@@ -13,14 +13,14 @@ import "swiper/css/effect-coverflow";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 const slideImages = [
-  "/assets/homeSlide_image/treadingmen.webp",
-  "/assets/homeSlide_image/treadingmen.webp",
-  "/assets/homeSlide_image/treadingmen.webp",
-  "/assets/homeSlide_image/treadingmen.webp",
-  "/assets/homeSlide_image/treadingmen.webp",
-  "/assets/homeSlide_image/treadingmen.webp",
-  "/assets/homeSlide_image/treadingmen.webp",
-  "/assets/homeSlide_image/treadingmen.webp",
+  "/assets/homeSlide_image/men/men6.jpeg",
+  "/assets/homeSlide_image/men/men13.jpeg",
+  "/assets/homeSlide_image/men/men6.jpeg",
+  "/assets/homeSlide_image/men/shirt1.jpeg",
+  "/assets/homeSlide_image/men/men6.jpeg",
+  "/assets/homeSlide_image/men/shirt1.jpeg",
+  "/assets/homeSlide_image/men/men13.jpeg",
+  "/assets/homeSlide_image/men/men13.jpeg",
 ];
 const MenTreading = () => {
   return (
