@@ -12,19 +12,19 @@ const Wishlist = () => {
       id: 4,
       name: "Minimalist Desk Lamp",
       price: 89.5,
-      image: "/assets/homeSlide_image/men/men15.jpeg",
+      image: "/assets/homeSlide_image/projectimg/t shirt-12.jpg",
     },
     {
       id: 5,
       name: "Organic Cotton T-Shirt",
       price: 29.99,
-      image: "/assets/homeSlide_image/men/men15.jpeg",
+      image: "/assets/homeSlide_image/projectimg/t shirt-23.jpg",
     },
     {
       id: 6,
       name: "Ceramic Coffee Mug Set",
       price: 45.0,
-      image: "/assets/homeSlide_image/men/men15.jpeg",
+      image: "/assets/homeSlide_image/projectimg/t shirt-46.jpg",
     },
   ]);
 

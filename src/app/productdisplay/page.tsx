@@ -8,6 +8,7 @@ import "swiper/css";
 import Header from "@/header/pages";
 import Footer from "@/footer/page";
 import "swiper/css/navigation";
+import { useRouter } from "next/navigation";
 
 interface ColorOption {
   name: string;
@@ -52,79 +53,82 @@ export default function ProductPage() {
     }
   };
   const images = [
-    "/assets/homeSlide_image/women/women3.avif",
-    "/assets/homeSlide_image/women/women2.avif",
-    "/assets/homeSlide_image/women/women5.avif",
-    "/assets/homeSlide_image/women/women9.avif",
-    "/assets/homeSlide_image/women/women4.avif",
+    "/assets/homeSlide_image/projectimg/t shirt-12.jpg",
+    "/assets/homeSlide_image/projectimg/t shirt-6.jpg",
+    "/assets/homeSlide_image/projectimg/t shirt-23.jpg",
+    "/assets/homeSlide_image/projectimg/t shirt-48.jpg",
+    "/assets/homeSlide_image/projectimg/t shirt-18.jpg",
   ];
 
   const recommendedItems = [
     {
       title: "polo shirt",
-      imageUrl: "/assets/homeSlide_image/women/women2.avif",
+      imageUrl: "/assets/homeSlide_image/projectimg/t shirt-48.jpg",
       originalPrice: 2000,
       discountPrice: 1710,
       discount: "3%",
     },
     {
       title: "polo shirt",
-      imageUrl: "/assets/homeSlide_image/women/women2.avif",
+      imageUrl: "/assets/homeSlide_image/projectimg/t shirt-48.jpg",
       originalPrice: 2000,
       discountPrice: 1710,
       discount: "3%",
     },
     {
       title: "polo shirt",
-      imageUrl: "/assets/homeSlide_image/women/women2.avif",
+      imageUrl: "/assets/homeSlide_image/projectimg/t shirt-48.jpg",
       originalPrice: 2000,
       discountPrice: 1710,
       discount: "3%",
     },
     {
       title: "polo shirt",
-      imageUrl: "/assets/homeSlide_image/women/women2.avif",
+      imageUrl: "/assets/homeSlide_image/projectimg/t shirt-48.jpg",
       originalPrice: 2000,
       discountPrice: 1710,
       discount: "3%",
     },
     {
       title: "polo shirt",
-      imageUrl: "/assets/homeSlide_image/women/women2.avif",
+      imageUrl: "/assets/homeSlide_image/projectimg/t shirt-48.jpg",
       originalPrice: 2000,
       discountPrice: 1710,
       discount: "3%",
     },
     {
       title: "polo shirt",
-      imageUrl: "/assets/homeSlide_image/women/women2.avif",
+      imageUrl: "/assets/homeSlide_image/projectimg/t shirt-48.jpg",
       originalPrice: 2000,
       discountPrice: 1710,
       discount: "3%",
     },
     {
       title: "polo shirt",
-      imageUrl: "/assets/homeSlide_image/women/women2.avif",
+      imageUrl: "/assets/homeSlide_image/projectimg/t shirt-48.jpg",
       originalPrice: 2000,
       discountPrice: 1710,
       discount: "3%",
     },
     {
       title: "polo shirt",
-      imageUrl: "/assets/homeSlide_image/women/women2.avif",
+      imageUrl: "/assets/homeSlide_image/projectimg/t shirt-48.jpg",
       originalPrice: 2000,
       discountPrice: 1710,
       discount: "3%",
     },
   ];
   const [selectedImage, setSelectedImage] = useState(images[0]);
-
+  const router = useRouter();
+  const gotocartpage = () => {
+    router.push("/cart");
+  };
   return (
     <>
       <Header />
-      <div className="min-h-screen py-10 ">
+      <div className="min-h-screen py-10 bg-[#f1f5f4]  ">
         <div className="max-w-[85%] mx-auto px-2 lg:px-8">
-          <div className="bg-white  overflow-hidden">
+          <div className=" overflow-hidden">
             <div className="grid grid-cols-1 xl:grid-cols-2 md:gap-8">
               {/* Product Image Section */}
               <div className="relative flex flex-col-reverse md:flex-row justify-center  gap-4">
@@ -258,7 +262,7 @@ export default function ProductPage() {
                   </div>
 
                   {/* Size Selection */}
-                  <div className="mb-8">
+                  <div className="mb-8 ">
                     <h3 className="text-lg font-semibold text-gray-900 mb-3">
                       Size
                     </h3>
@@ -278,7 +282,7 @@ export default function ProductPage() {
                       ))}
                     </div>
                   </div>
-                  <div className="  bg-white">
+                  <div className="  bg-[#f1f5f4] ">
                     <div className="mb-6">
                       {/* Title */}
                       <div className="flex items-center justify-between mb-4">
@@ -360,12 +364,15 @@ export default function ProductPage() {
 
                 {/* Action Buttons */}
                 <div className=" flex gap-5 flex-wrap xl:flex-nowrap">
-                  <button className="w-full bg-blue-600 text-white py-4 px-6 rounded-xl font-semibold text-lg hover:bg-blue-700 transition-all duration-200 transform hover:scale-105 shadow-lg flex items-center justify-center space-x-2">
+                  <button className="w-full bg-[#535e51]  text-white py-4 px-6 rounded-xl font-semibold text-lg  shadow-lg flex items-center justify-center space-x-2">
                     <ShoppingCart className="w-5 h-5" />
                     <span>Buy Now</span>
                   </button>
 
-                  <button className="w-full border-2 border-blue-600 text-blue-600 py-4 px-6 rounded-xl font-semibold text-lg hover:bg-blue-50 transition-all duration-200 flex items-center justify-center space-x-2">
+                  <button
+                    className="w-full border-2 border-[#535e51]   py-4 px-6 rounded-xl font-semibold text-lg cursor-pointer hover:bg-blue-50 transition-all duration-200 flex items-center justify-center space-x-2"
+                    onClick={gotocartpage}
+                  >
                     <Plus className="w-5 h-5" />
                     <span>Add to Cart</span>
                   </button>

@@ -79,7 +79,7 @@ const Slide = () => {
               {[1, 2, 3].map((_, index) => (
                 <div key={index} className="w-full sm:w-[45%] lg:w-[31%]">
                   <Image
-                    src="/assets/homeSlide_image/men/men7.jpeg"
+                    src="/assets/homeSlide_image/projectimg/t shirt-6.jpg"
                     alt="T-Shirt"
                     width={800}
                     height={730}
@@ -113,7 +113,7 @@ const Slide = () => {
               {[1, 2, 3].map((_, index) => (
                 <div key={index} className="w-full sm:w-[45%] lg:w-[31%]">
                   <Image
-                    src="/assets/homeSlide_image/women/women2.avif"
+                    src="/assets/homeSlide_image/projectimg/t shirt-12.jpg"
                     alt="T-Shirt"
                     width={600}
                     height={730}
@@ -191,7 +191,7 @@ const Slide = () => {
               {[1, 2, 3].map((_, index) => (
                 <div key={index} className="w-full sm:w-[45%] lg:w-[31%]">
                   <Image
-                    src="/assets/homeSlide_image/men/men10.jpeg"
+                    src="/assets/homeSlide_image/projectimg/t shirt-23.jpg"
                     alt="T-Shirt"
                     width={600}
                     height={730}

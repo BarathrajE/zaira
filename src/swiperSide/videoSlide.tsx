@@ -6,7 +6,15 @@ import { Pagination } from "swiper/modules";
 import "swiper/css";
 
 // Array of video sources
-const videoSlides = Array(7).fill("/assets/homeSlide_image/demo.mp4");
+const videoSlides = [
+  "/assets/homeSlide_image/video1.webm",
+  "/assets/homeSlide_image/video2.webm",
+  "/assets/homeSlide_image/video1.webm",
+  "/assets/homeSlide_image/video2.webm",
+  "/assets/homeSlide_image/video1.webm",
+  "/assets/homeSlide_image/video2.webm",
+  "/assets/homeSlide_image/video1.webm",
+];
 
 const VideoSlide = () => {
   // One ref per video

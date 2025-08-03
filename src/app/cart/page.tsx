@@ -21,7 +21,7 @@ const CheckoutComponent = () => {
               <div className="flex items-start space-x-4">
                 <div className="w-40 h-40 rounded-lg overflow-hidden ">
                   <Image
-                    src="/assets/homeSlide_image/men/men9.jpeg"
+                    src="/assets/homeSlide_image/projectimg/t shirt-12.jpg"
                     alt="Product"
                     width={500}
                     height={400}

@@ -14,25 +14,25 @@ const MenPages = () => {
     {
       id: 1,
       title: "Printed T-shirts",
-      image: "/assets/homeSlide_image/men/men7.jpeg",
+      image: "/assets/homeSlide_image/projectimg/t shirt-12.jpg",
       alt: "Man wearing printed t-shirt",
     },
     {
       id: 2,
       title: "Casual Trousers",
-      image: "/assets/homeSlide_image/men/men6.jpeg",
+      image: "/assets/homeSlide_image/projectimg/t shirt-14.jpg",
       alt: "Casual trousers with wooden chair",
     },
     {
       id: 3,
       title: "Casual Shirts",
-      image: "/assets/homeSlide_image/men/men12.jpeg",
+      image: "/assets/homeSlide_image/projectimg/t shirt-16.jpg",
       alt: "Man wearing casual shirt",
     },
     {
       id: 4,
       title: "Timeless Fit Denim",
-      image: "/assets/homeSlide_image/men/shirt1.jpeg",
+      image: "/assets/homeSlide_image/projectimg/t shirt-38.jpg",
       alt: "Person wearing denim jeans",
     },
   ];
@@ -186,7 +186,7 @@ const MenPages = () => {
             <div className="col-span-12 md:col-span-6 p-4">
               {/* Main Image */}
               <Image
-                src="/assets/homeSlide_image/men/men10.jpeg"
+                src="/assets/homeSlide_image/projectimg/t shirt-12.jpg"
                 alt="Main T-Shirt Display"
                 width={500}
                 height={500}
@@ -197,7 +197,7 @@ const MenPages = () => {
               <div className="grid grid-cols-12 gap-4 mt-4">
                 <div className="col-span-6 p-2">
                   <Image
-                    src="/assets/homeSlide_image/resent_view.webp"
+                    src="/assets/homeSlide_image/projectimg/t shirt-28.jpg"
                     alt="Recently Viewed T-Shirt 1"
                     width={500}
                     height={500}
@@ -206,7 +206,7 @@ const MenPages = () => {
                 </div>
                 <div className="col-span-6 p-2">
                   <Image
-                    src="/assets/homeSlide_image/resent_view.webp"
+                    src="/assets/homeSlide_image/projectimg/t shirt-2.jpg"
                     alt="Recently Viewed T-Shirt 2"
                     width={500}
                     height={500}
@@ -219,7 +219,7 @@ const MenPages = () => {
             {/* Right Side */}
             <div className="col-span-12 md:col-span-6 p-4">
               <Image
-                src="/assets/homeSlide_image/bestseller_image.webp"
+                src="/assets/homeSlide_image/projectimg/t shirt-6.jpg"
                 alt="Bestseller T-Shirt"
                 width={500}
                 height={500}

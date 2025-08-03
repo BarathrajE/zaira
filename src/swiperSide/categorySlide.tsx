@@ -5,16 +5,16 @@ import "swiper/css";
 import Image from "next/image";
 
 const categories = [
-  { title: "Women", imageUrl: "/assets/homeSlide_image/women/women7.avif" },
-  { title: "Men", imageUrl: "/assets/homeSlide_image/women/women2.avif" },
-  { title: "Kids", imageUrl: "/assets/homeSlide_image/women/women3.avif" },
-  { title: "Beauty", imageUrl: "/assets/homeSlide_image/women/women4.avif" },
-  { title: "Footwear", imageUrl: "/assets/homeSlide_image/women/women5.avif" },
-  { title: "Accessories", imageUrl: "/assets/homeSlide_image/women/women6.avif" },
-  { title: "Jewellery", imageUrl: "/assets/homeSlide_image/women/women7.avif" },
-  { title: "Home Decor", imageUrl: "/assets/homeSlide_image/women/women8.avif" },
-  { title: "Grocery", imageUrl: "/assets/homeSlide_image/women/women8.avif" },
-  { title: "Electronics", imageUrl: "/assets/homeSlide_image/women/women9.avif" },
+  { title: "Women", imageUrl: "/assets/homeSlide_image/projectimg/t shirt-4.jpg" },
+  { title: "Men", imageUrl: "/assets/homeSlide_image/projectimg/t shirt-10.jpg" },
+  { title: "Kids", imageUrl: "/assets/homeSlide_image/projectimg/t shirt-6.jpg" },
+  { title: "Beauty", imageUrl: "/assets/homeSlide_image/projectimg/t shirt-12.jpg" },
+  { title: "Footwear", imageUrl: "/assets/homeSlide_image/projectimg/t shirt-16.jpg" },
+  { title: "Accessories", imageUrl: "/assets/homeSlide_image/projectimg/t shirt-48.jpg" },
+  { title: "Jewellery", imageUrl: "/assets/homeSlide_image/projectimg/t shirt-40.jpg" },
+  { title: "Home Decor", imageUrl: "/assets/homeSlide_image/projectimg/t shirt-31.jpg" },
+  { title: "Grocery", imageUrl: "/assets/homeSlide_image/projectimg/t shirt-30.jpg" },
+  { title: "Electronics", imageUrl: "/assets/homeSlide_image/projectimg/t shirt-23.jpg" },
 ];
 
 const CategorySlide = () => {

@@ -6,22 +6,22 @@ import Image from "next/image";
 import { useState } from "react";
 
 const womenCategories = [
-  { title: "Full Sleeve", imageUrl: "/assets/homeSlide_image/men/men7.jpeg" },
-  { title: "Scoop Neck", imageUrl: "/assets/homeSlide_image/men/men2.jpeg" },
-  { title: "Crew Neck", imageUrl: "/assets/homeSlide_image/men/men3.jpeg" },
+  { title: "Full Sleeve", imageUrl: "/assets/homeSlide_image/projectimg/t shirt-12.jpg" },
+  { title: "Scoop Neck", imageUrl: "/assets/homeSlide_image/projectimg/t shirt-9.jpg" },
+  { title: "Crew Neck", imageUrl: "/assets/homeSlide_image/projectimg/t shirt-23.jpg" },
   {
     title: "Oversized T-shirt",
-    imageUrl: "/assets/homeSlide_image/men/men11.jpeg",
+    imageUrl: "/assets/homeSlide_image/projectimg/t shirt-18.jpg",
   },
-  { title: "Sleeveless", imageUrl: "/assets/homeSlide_image/men/men12.jpeg" },
+  { title: "Sleeveless", imageUrl: "/assets/homeSlide_image/projectimg/t shirt-46.jpg" },
 ];
 
 const menCategories = [
-  { title: "Polo", imageUrl: "/assets/homeSlide_image/men/shirt1.jpeg" },
-  { title: "Hoodie", imageUrl: "/assets/homeSlide_image/men/shirt2.jpeg" },
-  { title: "Crew Neck", imageUrl: "/assets/homeSlide_image/men/shirt1.jpeg" },
-  { title: "Graphic Tee", imageUrl: "/assets/homeSlide_image/men/shirt2.jpeg" },
-  { title: "Tank Top", imageUrl: "/assets/homeSlide_image/men/shirt1.jpeg" },
+  { title: "Polo", imageUrl: "/assets/homeSlide_image/projectimg/t shirt-28.jpg" },
+  { title: "Hoodie", imageUrl: "/assets/homeSlide_image/projectimg/t shirt-27.jpg" },
+  { title: "Crew Neck", imageUrl: "/assets/homeSlide_image/projectimg/t shirt-33.jpg" },
+  { title: "Graphic Tee", imageUrl: "/assets/homeSlide_image/projectimg/t shirt-41.jpg" },
+  { title: "Tank Top", imageUrl: "/assets/homeSlide_image/projectimg/t shirt-35.jpg" },
 ];
 
 const MenCategorySlide = () => {
