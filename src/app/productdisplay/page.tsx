@@ -123,9 +123,9 @@ export default function ProductPage() {
     <>
       <Header />
       <div className="min-h-screen py-10 ">
-        <div className="max-w-[85%] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[85%] mx-auto px-2 lg:px-8">
           <div className="bg-white  overflow-hidden">
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 xl:grid-cols-2 md:gap-8">
               {/* Product Image Section */}
               <div className="relative flex flex-col-reverse md:flex-row justify-center  gap-4">
                 {/* Thumbnails */}
@@ -159,15 +159,16 @@ export default function ProductPage() {
                     width={0}
                     height={0}
                     sizes="100vw"
-                    className="w-full max-w-[300px] sm:max-w-[400px] md:max-w-[500px] lg:max-w-[600px] xl:max-w-[700px] 
-               h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px] xl:h-[800px] 
-               object-cover rounded-lg"
+                    className=" w-full 
+      max-w-[280px] sm:max-w-[360px] md:max-w-[440px] lg:max-w-[520px] xl:max-w-[700px] 
+      h-[320px] sm:h-[400px] md:h-[580px] lg:h-[620px] xl:h-[800px]
+      object-cover rounded-lg "
                   />
                 </div>
               </div>
 
               {/* Product Details Section */}
-              <div className="p-8 flex flex-col justify-between">
+              <div className="md:p-8 flex flex-col justify-between">
                 <div>
                   {/* Product Header */}
                   <div className="flex justify-between items-start mb-6">
@@ -217,7 +218,7 @@ export default function ProductPage() {
 
                   {/* Price */}
                   <div className="mb-6">
-                    <div className="flex items-center space-x-3">
+                    <div className="flex items-center flex-wrap sm:gap-0 gap-3 space-x-3">
                       <span className="text-3xl font-bold text-gray-900">
                         $49.99
                       </span>
@@ -235,7 +236,7 @@ export default function ProductPage() {
                     <h3 className="text-lg font-semibold text-gray-900 mb-3">
                       Color
                     </h3>
-                    <div className="flex space-x-3">
+                    <div className="flex  flex-wrap sm:gap-0 gap-2 space-x-3">
                       {colors.map((color) => (
                         <button
                           key={color.name}
@@ -261,7 +262,7 @@ export default function ProductPage() {
                     <h3 className="text-lg font-semibold text-gray-900 mb-3">
                       Size
                     </h3>
-                    <div className="grid grid-cols-6 gap-2">
+                    <div className="grid  md:grid-cols-6 grid-cols-3 gap-2">
                       {sizes.map((size: string) => (
                         <button
                           key={size}
