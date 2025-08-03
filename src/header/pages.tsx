@@ -30,6 +30,9 @@ const Header = () => {
   const goTocartPage = () => {
     router.push("/cart");
   };
+  const goTohomepage = () => {
+    router.push("/");
+  };
   const [showInput, setShowInput] = useState(false);
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -120,7 +123,7 @@ const Header = () => {
         </div>
 
         {/* Center - Title */}
-        <div className="text-[28px]  font-bold text-[#f1f5f4]   mt-1 sm:mt-0">
+        <div className="text-[28px]  font-bold text-[#f1f5f4]  cursor-pointer  mt-1 sm:mt-0" onClick={goTohomepage}>
           ZAIRA
         </div>
 

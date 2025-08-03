@@ -129,7 +129,7 @@ export default function ProductPage() {
               {/* Product Image Section */}
               <div className="relative flex flex-col-reverse md:flex-row justify-center  gap-4">
                 {/* Thumbnails */}
-                <div className="flex md:flex-col gap-4  items-center justify-center md:mt-0 ">
+                <div className="flex md:flex-col gap-4  items-center  md:mt-0 ">
                   {images.map((img, i) => (
                     <div
                       key={i}
@@ -152,13 +152,16 @@ export default function ProductPage() {
                 </div>
 
                 {/* Main Image */}
-                <div className="flex justify-center  ">
+                <div className="flex justify-center">
                   <Image
                     src={selectedImage}
                     alt="Product Image"
-                    width={700}
-                    height={750}
-                    className="object-cover rounded-lg "
+                    width={0}
+                    height={0}
+                    sizes="100vw"
+                    className="w-full max-w-[300px] sm:max-w-[400px] md:max-w-[500px] lg:max-w-[600px] xl:max-w-[700px] 
+               h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px] xl:h-[800px] 
+               object-cover rounded-lg"
                   />
                 </div>
               </div>

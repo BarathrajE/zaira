@@ -4,7 +4,6 @@ import {
   ArrowRight,
   Facebook,
   Instagram,
-  
   Mail,
   Phone,
   X,
@@ -25,57 +24,58 @@ export default function Footer() {
       <div className=" bg-[#f1f5f4] py-16 px-4">
         <div className="max-w-7xl mx-auto">
           <div className=" flex justify-around flex-wrap gap-10">
-          
             <div className="bg-white rounded-2xl p-8 shadow-xl">
               <h3 className="text-xl font-semibold text-gray-900 mb-6 text-center">
                 Stay In Touch
               </h3>
-              <div className="flex flex-wrap justify-center gap-6">
-               
+              <div className="flex justify-center gap-4 sm:gap-6 flex-wrap">
+                {/* Instagram */}
                 <a href="#" className="flex flex-col items-center group">
-                  <div className="w-12 h-12 bg-gradient-to-br from-purple-600 via-pink-600 to-orange-400 rounded-xl flex items-center justify-center mb-2 group-hover:scale-105 transition-transform">
-                    <Instagram className="text-white" />
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-gradient-to-br from-purple-600 via-pink-600 to-orange-400 rounded-xl flex items-center justify-center mb-2 group-hover:scale-105 transition-transform">
+                    <Instagram className="text-white text-lg sm:text-xl md:text-2xl" />
                   </div>
-                  <span className="text-xs text-gray-600 font-medium">
+                  <span className="text-xs sm:text-sm text-gray-600 font-medium">
                     INSTAGRAM
                   </span>
                 </a>
 
+                {/* X */}
                 <a href="#" className="flex flex-col items-center group">
-                  <div className="w-12 h-12 bg-black rounded-xl flex items-center justify-center mb-2 group-hover:scale-105 transition-transform">
-                    <X className="text-white" />
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-black rounded-xl flex items-center justify-center mb-2 group-hover:scale-105 transition-transform">
+                    <X className="text-white text-lg sm:text-xl md:text-2xl" />
                   </div>
-                  <span className="text-xs text-gray-600 font-medium">X</span>
+                  <span className="text-xs sm:text-sm text-gray-600 font-medium">
+                    X
+                  </span>
                 </a>
 
-               
+                {/* Facebook */}
                 <a href="#" className="flex flex-col items-center group">
-                  <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center mb-2 group-hover:scale-105 transition-transform">
-                    <Facebook className="text-white" />
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-blue-600 rounded-xl flex items-center justify-center mb-2 group-hover:scale-105 transition-transform">
+                    <Facebook className="text-white text-lg sm:text-xl md:text-2xl" />
                   </div>
-                  <span className="text-xs text-gray-600 font-medium">
+                  <span className="text-xs sm:text-sm text-gray-600 font-medium">
                     FACEBOOK
                   </span>
                 </a>
 
+                {/* Youtube */}
                 <a href="#" className="flex flex-col items-center group">
-                  <div className="w-12 h-12 bg-red-600 rounded-xl flex items-center justify-center mb-2 group-hover:scale-105 transition-transform">
-                    <Youtube className="text-white" />
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-red-600 rounded-xl flex items-center justify-center mb-2 group-hover:scale-105 transition-transform">
+                    <Youtube className="text-white text-lg sm:text-xl md:text-2xl" />
                   </div>
-                  <span className="text-xs text-gray-600 font-medium">
+                  <span className="text-xs sm:text-sm text-gray-600 font-medium">
                     YOUTUBE
                   </span>
                 </a>
               </div>
             </div>
             <div className="bg-white rounded-2xl p-8 shadow-xl  flex flex-col ">
-             
               <div className="mb-8">
                 <h3 className="text-xl font-semibold text-gray-900 mb-4 text-center">
                   Talk to us
                 </h3>
                 <div className="space-y-4">
-    
                   <div className="flex flex-col-reverse lg:flex-row items-center justify-center gap-3">
                     <div className="text-center lg:text-right">
                       <div className="font-semibold text-gray-900">CALL</div>
@@ -88,7 +88,6 @@ export default function Footer() {
                     </div>
                   </div>
 
-        
                   <div className="flex flex-col-reverse lg:flex-row items-center justify-center  gap-3">
                     <div className="text-center lg:text-right">
                       <div className="font-semibold text-gray-900">EMAIL</div>
@@ -97,13 +96,12 @@ export default function Footer() {
                       </div>
                     </div>
                     <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
-                     <Mail />
+                      <Mail />
                     </div>
                   </div>
                 </div>
               </div>
 
-     
               <div>
                 <h3 className="text-xl font-semibold text-gray-900 mb-4 text-center">
                   Subscribe to our newsletter
@@ -117,12 +115,12 @@ export default function Footer() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="YOUR EMAIL ADDRESS"
-                    className="  px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm"
+                    className="  px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2  focus:border-transparent text-sm"
                     required
                   />
                   <button
                     type="submit"
-                    className=" bg-teal-500 hover:bg-teal-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors text-sm"
+                    className=" bg-[#535e51]  text-white px-6 py-3 rounded-lg font-semibold transition-colors text-sm"
                   >
                     SUBSCRIBE
                   </button>
@@ -216,8 +214,6 @@ export default function Footer() {
                 and events.
               </p>
             </div>
-
-           
           </div>
 
           {/* Copyright */}
