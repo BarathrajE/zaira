@@ -78,14 +78,11 @@ const Header = () => {
                             className="w-full"
                           >
                             <AccordionItem value="sub-1">
-                              <AccordionTrigger className="text-sm text-[#052659] underline underline-offset-4">
-                                SHIRTS
-                              </AccordionTrigger>
-                              <AccordionContent className="grid grid-cols-1 gap-4 mt-2 text-[#052659]">
+                              <AccordionTrigger className="grid grid-cols-1 gap-4 mt-2 text-[#052659]">
                                 <div className="text-sm">Printed Shirt</div>
                                 <div className="text-sm">Polo Shirt</div>
                                 <div className="text-sm">Denim Shirt</div>
-                              </AccordionContent>
+                              </AccordionTrigger>
                             </AccordionItem>
                           </Accordion>
                         </AccordionContent>
@@ -94,7 +91,7 @@ const Header = () => {
                       {/* WOMEN */}
                       <AccordionItem value="cat-2">
                         <AccordionTrigger className="text-black">
-                          WOMEN
+                          MAN
                         </AccordionTrigger>
                         <AccordionContent className="p-4 bg-white shadow-md">
                           <Accordion
@@ -102,14 +99,32 @@ const Header = () => {
                             collapsible
                             className="w-full"
                           >
-                            <AccordionItem value="sub-2">
-                              <AccordionTrigger className="text-sm text-[#052659] underline underline-offset-4">
-                                T-SHIRTS
+                            <AccordionItem value="sub-1">
+                              <AccordionTrigger className="grid grid-cols-1 gap-4 mt-2 text-[#052659]">
+                                <div className="text-sm">Printed Shirt</div>
+                                <div className="text-sm">Polo Shirt</div>
+                                <div className="text-sm">Denim Shirt</div>
                               </AccordionTrigger>
-                              <AccordionContent className="grid grid-cols-1 gap-4 mt-2 text-[#052659]">
-                                <div className="text-sm">Sleeveless</div>
-                                <div className="text-sm">Half sleeves</div>
-                              </AccordionContent>
+                            </AccordionItem>
+                          </Accordion>
+                        </AccordionContent>
+                      </AccordionItem>
+                      <AccordionItem value="cat-3">
+                        <AccordionTrigger className="text-black">
+                          MAN
+                        </AccordionTrigger>
+                        <AccordionContent className="p-4 bg-white shadow-md">
+                          <Accordion
+                            type="single"
+                            collapsible
+                            className="w-full"
+                          >
+                            <AccordionItem value="sub-1">
+                              <AccordionTrigger className="grid grid-cols-1 gap-4 mt-2 text-[#052659]">
+                                <div className="text-sm">Printed Shirt</div>
+                                <div className="text-sm">Polo Shirt</div>
+                                <div className="text-sm">Denim Shirt</div>
+                              </AccordionTrigger>
                             </AccordionItem>
                           </Accordion>
                         </AccordionContent>

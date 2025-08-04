@@ -76,7 +76,8 @@ export default function Footer() {
                   Talk to us
                 </h3>
                 <div className="space-y-4">
-                  <div className="flex flex-col-reverse lg:flex-row items-center justify-center gap-3">
+                  {/* Call Section */}
+                  <div className="flex flex-col-reverse lg:flex-row items-center justify-evenly gap-3">
                     <div className="text-center lg:text-right">
                       <div className="font-semibold text-gray-900">CALL</div>
                       <div className="text-sm text-gray-600">
@@ -84,11 +85,12 @@ export default function Footer() {
                       </div>
                     </div>
                     <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
-                      <Phone />
+                      <Phone className="text-[#535e51]" />
                     </div>
                   </div>
 
-                  <div className="flex flex-col-reverse lg:flex-row items-center justify-center  gap-3">
+                  {/* Email Section */}
+                  <div className="flex flex-col-reverse lg:flex-row items-center justify-evenly gap-3">
                     <div className="text-center lg:text-right">
                       <div className="font-semibold text-gray-900">EMAIL</div>
                       <div className="text-sm text-gray-600">
@@ -96,7 +98,7 @@ export default function Footer() {
                       </div>
                     </div>
                     <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
-                      <Mail />
+                      <Mail className="text-[#535e51]" />
                     </div>
                   </div>
                 </div>

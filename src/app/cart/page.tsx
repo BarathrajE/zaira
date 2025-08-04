@@ -4,8 +4,13 @@ import Image from "next/image";
 import { Trash2 } from "lucide-react";
 import Header from "@/header/pages";
 import Footer from "@/footer/page";
+import { useRouter } from "next/navigation";
 
 const CheckoutComponent = () => {
+   const router = useRouter();
+    const goToaddressPage = () => {
+      router.push("/address");
+    };
   return (
     <section className="bg-[#f1f5f4]">
       <Header />
@@ -127,7 +132,7 @@ const CheckoutComponent = () => {
             </div>
 
             <div className="space-y-3">
-              <button className="w-full bg-[#535e51]  py-3 rounded-lg text-white ">
+              <button className="w-full bg-[#535e51]  py-3 rounded-lg text-white  cursor-pointer" onClick={goToaddressPage}>
                 Proceed to Checkout
               </button>
               <button className="w-full border bg-[#535e51] py-3 rounded-lg text-white">
