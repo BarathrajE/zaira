@@ -49,7 +49,7 @@ const Header = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
   return (
-    <header className="sticky top-0 z-50 bg-[#535e51] px-2 py-1 md:p-4">
+    <header className="sticky top-0 z-50 bg-[#535e51] px-2 py-1 md:p-5">
       {/* Main Flex Container */}
       <div className="flex md:justify-between items-center w-full md:gap-0 gap-10">
         {/* Left - Menu + Drawer */}
@@ -138,9 +138,16 @@ const Header = () => {
         </div>
 
         {/* Center - Title */}
-        <div className="text-[28px]  font-bold text-[#f1f5f4]  cursor-pointer  mt-1 sm:mt-0" onClick={goTohomepage}>
+        <div
+          className="text-[48px]  font-bold text-[#f1f5f4]  cursor-pointer  mt-1 sm:mt-0"
+          onClick={goTohomepage}
+        >
           ZAIRA
         </div>
+        <Button className="bg-transparent text-[#f1f5f4] sm:hidden ms-30 " onClick={loginpage}>
+          <UserRound className="w-10 h-10  cursor-pointer"  />
+        </Button>
+
 
         {/* Right - Desktop Icons */}
         <div className="hidden md:flex gap-5 items-center sm:order-3 order-3">
@@ -187,22 +194,17 @@ const Header = () => {
           >
             <Search className="w-6 h-6  cursor-pointer" />
           </Button>
-          <Button className="bg-transparent text-[#f1f5f4]">
-            <UserRound
-              className="w-6 h-6  cursor-pointer"
-              onClick={loginpage}
-            />
-          </Button>
-          <Button className="bg-transparent text-[#f1f5f4]">
+
+          <Button className="bg-transparent text-[#f1f5f4]"   onClick={goTowishlistPage}>
             <Heart
               className="w-6 h-6  cursor-pointer"
-              onClick={goTowishlistPage}
+            
             />
           </Button>
-          <Button className="bg-transparent text-[#f1f5f4]">
+          <Button className="bg-transparent text-[#f1f5f4]"  onClick={goTocartPage}>
             <ShoppingCart
               className="w-6 h-6  cursor-pointer"
-              onClick={goTocartPage}
+             
             />
           </Button>
         </div>

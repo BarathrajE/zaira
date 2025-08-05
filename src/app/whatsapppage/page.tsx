@@ -12,8 +12,8 @@ const WhatsAppComponent = () => {
   const handleAllow = () => {
     setShowPermissionDialog(false);
     // Replace with your WhatsApp number (without + sign)
-    const phoneNumber = "1234567890"; // Your WhatsApp business number
-    const message = "Hello! I'm interested in your services."; // Default message
+    const phoneNumber = "8778621655"; // Your WhatsApp business number
+    const message = "Welcome to Zaira clotheings."; // Default message
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
@@ -23,7 +23,7 @@ const WhatsAppComponent = () => {
   };
 
   return (
-    <div className="relative min-h-screen bg-transparent">
+    <div className="relative  bg-transparent">
       {/* Main content area */}
      
 

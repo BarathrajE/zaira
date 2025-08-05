@@ -164,6 +164,9 @@ export default function ShippingAddressManager() {
   const goTocartPage = () => {
     router.push("/cart");
   };
+  const goTopaymentPage = () => {
+    router.push("/payment");
+  };
   return (
     <>
       <Header />
@@ -416,7 +419,7 @@ export default function ShippingAddressManager() {
               </div>
 
               <div className="space-y-3">
-                <button className="w-full bg-[#535e51]  py-3 rounded-lg text-white ">
+                <button className="w-full bg-[#535e51]  py-3 rounded-lg text-white  cursor-pointer" onClick={goTopaymentPage}>
                   Proceed to Checkout
                 </button>
               </div>
