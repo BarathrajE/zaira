@@ -12,7 +12,7 @@ const WhatsAppComponent = () => {
   const handleAllow = () => {
     setShowPermissionDialog(false);
     // Replace with your WhatsApp number (without + sign)
-    const phoneNumber = "8778621655"; // Your WhatsApp business number
+    const phoneNumber = "918778621655"; // Your WhatsApp business number
     const message = "Welcome to Zaira clotheings."; // Default message
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
