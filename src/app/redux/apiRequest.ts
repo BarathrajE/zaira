@@ -5,7 +5,6 @@ import { setError } from './reducer/errorSlice';
 
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
-console.log(API_BASE_URL ,"wjhegwhjgwjegwajehwjeh");
 
 
 export const apiRequest = async (
@@ -15,13 +14,14 @@ export const apiRequest = async (
   authRequired: boolean = true
 ) => {
   try {
-    const token = Cookies.get('accessToken');
-    const isFormData = body instanceof FormData;
+    const token = Cookies.get('token');
+    console.log('Token:', token); // Debugging line
 
+    const isFormData = body instanceof FormData;
     const headers: HeadersInit = {
       Accept: 'application/json',
       ...(authRequired && token ? { Authorization: `Bearer ${token}` } : {}),
-      ...(isFormData ? {} : { 'Content-Type': 'application/json' }) 
+      ...(isFormData ? {} : { 'Content-Type': 'application/json' })
     };
 
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
@@ -44,3 +44,4 @@ export const apiRequest = async (
     throw error;
   }
 };
+

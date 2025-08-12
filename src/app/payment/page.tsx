@@ -12,6 +12,7 @@ import {
 import Footer from "@/footer/page";
 import Header from "@/header/pages";
 import { useRouter } from "next/navigation";
+import PaymentSuccessDialog from "../../swiperSide/paymentpopup";
 
 type PaymentOption = {
   id: string;
@@ -69,18 +70,34 @@ const paymentOptions: PaymentOption[] = [
 ];
 
 const PaymentPage: React.FC = () => {
-  const [selectedPayment, setSelectedPayment] = useState<string>("creditCard");
+  const [selectedPayment, setSelectedPayment] = useState("creditCard");
   const [formData, setFormData] = useState<FormData>({
     cardNumber: "",
     expiryDate: "",
     cvv: "",
     upiId: "",
   });
-
   const [errors, setErrors] = useState<FormErrors>({});
+  const [isOpen, setIsOpen] = useState(false);
 
-  const goToaddressPage = () => {
-    window.history.back(); // or use router.push("/address")
+  const router = useRouter();
+
+  const handlePaymentComplete = () => {
+    setIsOpen(true);
+  };
+
+  const goToHome = () => {
+    router.push("/");
+    setIsOpen(false);
+  };
+
+  const goToOrderPage = () => {
+    router.push("/order");
+    setIsOpen(false);
+  };
+
+  const goToAddressPage = () => {
+    window.history.back(); // or router.push("/address")
   };
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -125,13 +142,10 @@ const PaymentPage: React.FC = () => {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (validateForm()) {
-      alert(`Payment processed via ${selectedPayment}`);
+      handlePaymentComplete();
     }
   };
-  const router = useRouter();
-  const goToorderPage = () => {
-    router.push("/order");
-  };
+
   return (
     <>
       <Header />
@@ -139,15 +153,16 @@ const PaymentPage: React.FC = () => {
         <div className="container mx-auto px-4 py-8 max-w-7xl">
           <div className="flex items-center gap-6 pb-3">
             <ArrowLeft
-              onClick={goToaddressPage}
+              onClick={goToAddressPage}
               className="cursor-pointer text-[#535e51] w-8 h-8"
             />
             <h1 className="text-[#535e51] font-bold text-[28px] sm:text-[40px]">
               Payment
             </h1>
           </div>
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Left side (form) */}
+            {/* Payment Form */}
             <div className="md:col-span-2 space-y-4">
               <form
                 onSubmit={handleSubmit}
@@ -201,7 +216,7 @@ const PaymentPage: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Inputs */}
+                {/* Card Inputs */}
                 {["creditCard", "debitCard"].includes(selectedPayment) && (
                   <div className="space-y-4">
                     <input
@@ -253,6 +268,7 @@ const PaymentPage: React.FC = () => {
                   </div>
                 )}
 
+                {/* UPI Input */}
                 {selectedPayment === "upi" && (
                   <input
                     type="text"
@@ -266,17 +282,25 @@ const PaymentPage: React.FC = () => {
                   />
                 )}
 
-                <button
-                  type="submit"
-                  onClick={goToorderPage}
-                  className="w-full mt-6 py-3 bg-[#535e51] text-white font-semibold rounded-lg hover:bg-opacity-90 transition cursor-pointer"
-                >
-                  Complete Payment
-                </button>
+                <div>
+                  <button
+                    className="px-6 py-3 bg-[#535e51] text-white rounded-lg"
+                    onClick={() => setIsOpen(true)}
+                  >
+                    Complete Payment
+                  </button>
+
+                  <PaymentSuccessDialog
+                    isOpen={isOpen}
+                    setIsOpen={setIsOpen}
+                    goToOrderPage={goToOrderPage}
+                    goToHome={goToHome}
+                  />
+                </div>
               </form>
             </div>
 
-            {/* Right side (summary) */}
+            {/* Order Summary */}
             <div className="space-y-4">
               <div className="bg-gray-50 p-4 rounded-lg shadow">
                 <h4 className="text-lg text-[#535e51] font-bold mb-4">
@@ -307,6 +331,7 @@ const PaymentPage: React.FC = () => {
           </div>
         </div>
       </div>
+
       <Footer />
     </>
   );

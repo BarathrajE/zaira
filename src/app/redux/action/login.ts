@@ -1,16 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  LOGIN_REQUEST,
-  LOGIN_SUCCESS,
-  LOGIN_FAILURE,
-} from "../actiontype";
+import { LOGIN_REQUEST, LOGIN_SUCCESS, LOGIN_FAILURE } from "../actiontype";
 import { SendOtpApi, VerifyOtpApi } from "../api/login";
 import Cookies from "js-cookie";
 
 // Action creators
 export const LoginRequest = () => ({ type: LOGIN_REQUEST });
-export const LoginSuccess = (data: any) => ({ type: LOGIN_SUCCESS, payload: data });
-export const LoginFailure = (error: any) => ({ type: LOGIN_FAILURE, payload: error });
+export const LoginSuccess = (data: any) => ({
+  type: LOGIN_SUCCESS,
+  payload: data,
+});
+export const LoginFailure = (error: any) => ({
+  type: LOGIN_FAILURE,
+  payload: error,
+});
 
 // Step 1: Send OTP
 export const sendOtpAction = (phone: string) => {
@@ -19,6 +21,7 @@ export const sendOtpAction = (phone: string) => {
     try {
       const response = await SendOtpApi(phone);
       dispatch(LoginSuccess({ otpSent: true, ...response }));
+      return response;
     } catch (err: any) {
       dispatch(LoginFailure(err.message || "Failed to send OTP"));
     }
@@ -32,14 +35,16 @@ export const verifyOtpAction = (phone: string, code: string) => {
     try {
       const response = await VerifyOtpApi(phone, code);
 
-      // Save token if provided
-      if (response?.accessToken) {
-        Cookies.set("accessToken", response.accessToken, { expires: 7 });
+      if (response?.token) {
+        Cookies.set("accessToken", response.token, { expires: 7 });
       }
 
       dispatch(LoginSuccess(response));
+      console.log(response, "ototototo");
+      return response; // ✅ send back to component
     } catch (err: any) {
       dispatch(LoginFailure(err.message || "OTP verification failed"));
+      throw err; // ✅ let component handle error
     }
   };
 };

@@ -9,10 +9,10 @@ import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 const Slide = () => {
-  const router = useRouter();
-  const goToMen = () => {
-    router.push("/mencollection");
-  };
+    const router = useRouter();
+    const goToMen = () => {
+      router.push("/mencollection");
+    };
   const goTowomen = () => {
     router.push("/womencollection");
   };

@@ -1,14 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { KeyRound } from "lucide-react";
+import { ArrowLeft, KeyRound } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import type { ChangeEvent, KeyboardEvent } from "react";
 import { AppDispatch } from "../redux/store";
 import { useDispatch } from "react-redux";
 import { sendOtpAction, verifyOtpAction } from "../redux/action/login";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function OTPLoginPage() {
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -37,6 +38,10 @@ export default function OTPLoginPage() {
     return () => clearInterval(interval);
   }, [isOtpSent, timer]);
 
+  const router = useRouter();
+  const goTohome = () => {
+    router.push("/");
+  };
   const validatePhoneNumber = (phone: string) => /^[6-9]\d{9}$/.test(phone);
 
   const handlePhoneChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -90,19 +95,29 @@ export default function OTPLoginPage() {
       setErrors({ otp: "Please enter the complete 6-digit OTP" });
       return;
     }
+
     setIsLoading(true);
+
     try {
-      await dispatch(verifyOtpAction(phoneNumber, code));
-      toast.success("Login successful!");
+      const result: any = await dispatch(verifyOtpAction(phoneNumber, code));
+
+      console.log("OTP API Response:", result);
+
+      if (result?.token) {
+        // ✅ Token exists → success
+        toast.success(result?.message || "Login successful!");
+        router.push("/");
+      } else {
+        throw new Error(result?.message || "OTP verification failed");
+      }
     } catch (error: any) {
       toast.error(
-        `OTP verification failed: ${error?.message || "Unknown error"}`
+        `OTP verification failed: ${error.message || "Unknown error"}`
       );
     } finally {
       setIsLoading(false);
     }
   };
-
   const resendOtp = async () => {
     if (!phoneNumber) return;
     setIsLoading(true);
@@ -125,6 +140,7 @@ export default function OTPLoginPage() {
   return (
     <div className="min-h-screen bg-[#f1f5f4] flex items-center justify-center p-4">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8">
+        <ArrowLeft onClick={goTohome} className="cursor-pointer" />
         <div className="text-center mb-8">
           <div className="w-16 h-16 bg-[#535e51] rounded-full flex items-center justify-center mx-auto mb-4">
             <KeyRound className="text-[#f1f5f4]" />
@@ -237,3 +253,7 @@ export default function OTPLoginPage() {
     </div>
   );
 }
+
+
+
+ 

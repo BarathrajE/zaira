@@ -10,6 +10,7 @@ import {
   Youtube,
 } from "lucide-react";
 
+
 export default function Footer() {
   const [email, setEmail] = useState("");
 
@@ -19,6 +20,7 @@ export default function Footer() {
     console.log("Subscribing email:", email);
     setEmail("");
   };
+ 
   return (
     <footer className="">
       <div className=" bg-[#f1f5f4] py-16 px-4">
@@ -64,7 +66,10 @@ export default function Footer() {
                   <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-red-600 rounded-xl flex items-center justify-center mb-2 group-hover:scale-105 transition-transform">
                     <Youtube className="text-white text-lg sm:text-xl md:text-2xl" />
                   </div>
-                  <span className="text-xs sm:text-sm text-gray-600 font-medium">
+                  <span
+                    className="text-xs sm:text-sm text-gray-600 font-medium cursor-pointer"
+                   
+                  >
                     YOUTUBE
                   </span>
                 </a>
@@ -132,6 +137,7 @@ export default function Footer() {
           </div>
         </div>
       </div>
+
 
       <div className=" bg-[#535e51] py-16 px-6 lg:px-12 mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
