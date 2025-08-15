@@ -8,8 +8,10 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import MenTreading from "./mencollectionComponents/MenTreading";
 import MenCategorySlide from "./mencollectionComponents/mensCategorys";
 
-
 const MenPages = () => {
+ 
+   
+
   const products = [
     {
       id: 1,

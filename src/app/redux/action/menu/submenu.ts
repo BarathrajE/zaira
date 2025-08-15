@@ -26,7 +26,7 @@ export const submenuGetAction = () => {
       const response = await SubMenuGetApi();
       dispatch(SubMenuGetSuccess(response.data));
       console.log(response, "Fetched Submenu Data");
-      return response;
+      return response.data;
     } catch (err: any) {
       dispatch(SubMenuGetFailure(err.message || "Failed to fetch submenu"));
     }

@@ -1,58 +1,38 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode, Pagination } from "swiper/modules";
 import "swiper/css";
 import Image from "next/image";
 import { Loader2 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { AppDispatch, RootState } from "@/app/redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { submenuGetAction } from "@/app/redux/action/menu/submenu";
 
-const categories = [
-  {
-    title: "Women",
-    imageUrl: "/assets/homeSlide_image/projectimg/t shirt-4.jpg",
-  },
-  {
-    title: "Men",
-    imageUrl: "/assets/homeSlide_image/projectimg/t shirt-10.jpg",
-  },
-  {
-    title: "Kids",
-    imageUrl: "/assets/homeSlide_image/projectimg/t shirt-6.jpg",
-  },
-  {
-    title: "Beauty",
-    imageUrl: "/assets/homeSlide_image/projectimg/t shirt-12.jpg",
-  },
-  {
-    title: "Footwear",
-    imageUrl: "/assets/homeSlide_image/projectimg/t shirt-16.jpg",
-  },
-  {
-    title: "Accessories",
-    imageUrl: "/assets/homeSlide_image/projectimg/t shirt-48.jpg",
-  },
-  {
-    title: "Jewellery",
-    imageUrl: "/assets/homeSlide_image/projectimg/t shirt-40.jpg",
-  },
-  {
-    title: "Home Decor",
-    imageUrl: "/assets/homeSlide_image/projectimg/t shirt-31.jpg",
-  },
-  {
-    title: "Grocery",
-    imageUrl: "/assets/homeSlide_image/projectimg/t shirt-30.jpg",
-  },
-  {
-    title: "Electronics",
-    imageUrl: "/assets/homeSlide_image/projectimg/t shirt-23.jpg",
-  },
-];
+
+interface Submenu {
+  _id: string;
+  name: string;
+  imageUrl?: string;
+}
 
 const CategorySlide = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  useEffect(() => {
+    dispatch(submenuGetAction());
+  }, [dispatch]);
+
+  const submenuData = useSelector((state: RootState) => state.submenu.submenu);
+  const submenuValues =
+    submenuData?.map((submenu: Submenu) => ({
+      id: submenu._id,
+      name: submenu.name,
+      image: submenu.imageUrl,
+    })) ?? [];
 
   const handleMenClick = () => {
     setIsLoading(true);
@@ -98,25 +78,25 @@ const CategorySlide = () => {
           1600: { slidesPerView: 6 },
         }}
       >
-        {categories.map((item, index) => (
-          <SwiperSlide key={index}>
+        {submenuValues.map((item:any, index:number) => (
+          <SwiperSlide key={item.id ?? index}>
             <div className="flex flex-col items-center justify-center cursor-pointer">
               <Image
-                src={item.imageUrl}
+                src={item.image || "/placeholder.jpg"} // fallback if no image
                 width={200}
                 height={200}
-                alt={item.title}
+                alt={item.name}
                 onClick={
-                  item.title === "Men"
+                  item.name === "Men"
                     ? handleMenClick
-                    : item.title === "Women"
+                    : item.name === "Women"
                     ? handleWomenClick
                     : undefined
                 }
-                className="md:rounded-lg rounded-full w-[80px] md:w-[200px] h-[80px] md:h-auto object-cover transition-transform duration-300 hover:scale-105 hover:shadow-lg"
+                className="md:rounded-lg rounded-full w-[80px] md:w-[200px] h-[80px] md:h-[300px] object-cover transition-transform duration-300 hover:scale-105 hover:shadow-lg"
               />
               <p className="mt-2 text-base sm:text-lg text-[#535e51] font-bold">
-                {item.title}
+                {item.name}
               </p>
             </div>
           </SwiperSlide>

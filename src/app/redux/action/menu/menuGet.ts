@@ -23,7 +23,7 @@ export const menuGetAction = () => {
       const response = await MenuGetApi();
       dispatch(MenuGetSuccess(response.data));
       console.log(response,"jhjhgshj");
-      return response;
+      return response.data;
     } catch (err: any) {
       dispatch(MenuGetFailure(err.message || "Failed to fetch menu"));
     }

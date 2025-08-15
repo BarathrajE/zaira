@@ -11,11 +11,12 @@ export const apiRequest = async (
   endpoint: string,
   method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'HEAD' = 'GET',
   body?: any,
-  authRequired: boolean = true
+  authRequired: boolean = true,
+  noCache: boolean = true // 🚀 Added optional flag
 ) => {
   try {
     const token = Cookies.get('token');
-    console.log('Token:', token); // Debugging line
+    console.log('Token:', token);
 
     const isFormData = body instanceof FormData;
     const headers: HeadersInit = {
@@ -24,9 +25,17 @@ export const apiRequest = async (
       ...(isFormData ? {} : { 'Content-Type': 'application/json' })
     };
 
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    // 🚀 Append timestamp param to avoid caching
+    let url = `${API_BASE_URL}${endpoint}`;
+    if (noCache) {
+      const separator = url.includes('?') ? '&' : '?';
+      url += `${separator}ts=${Date.now()}`;
+    }
+
+    const response = await fetch(url, {
       method,
       headers,
+      cache: 'no-store', // 🚀 Next.js "always fresh"
       ...(method !== 'GET' && method !== 'HEAD' && body
         ? { body: isFormData ? body : JSON.stringify(body) }
         : {})

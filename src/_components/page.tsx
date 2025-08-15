@@ -1,24 +1,80 @@
 "use client";
+import { homeBannerGetAction } from "@/app/redux/action/banner/homebanner";
+import { allProductGetAction } from "@/app/redux/action/product/allProduct";
+import { AppDispatch, RootState } from "@/app/redux/store";
 import CategorySlide from "@/swiperSide/categorySlide";
 import TrendingSlide from "@/swiperSide/trandingSlide";
 import VideoSlide from "@/swiperSide/videoSlide";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import "swiper/css";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
+interface Banner {
+  _id: string;
+  title: string;
+  image: string;
+  type: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
+interface MainBanner {
+  id: string;
+  image: string;
+  title: string;
+}
 
 const Slide = () => {
-    const router = useRouter();
-    const goToMen = () => {
-      router.push("/mencollection");
-    };
+  const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();
+  const goToMen = () => {
+    router.push("/mencollection");
+  };
   const goTowomen = () => {
     router.push("/womencollection");
   };
   const goToproductPage = () => {
     router.push("/productdisplay");
   };
+
+  useEffect(() => {
+    dispatch(homeBannerGetAction());
+    dispatch(allProductGetAction());
+  }, [dispatch]);
+
+  const homebanner: Banner[] = useSelector(
+    (state: RootState) => state.home.homeBanner
+  );
+  const allProduct: Banner[] = useSelector(
+    (state: RootState) => state.allProduct.allProducts
+  );
+  console.log(allProduct, "All Products");
+
+  const mainBanners: MainBanner[] = homebanner
+    .filter((banner: Banner) => banner.title === "main banner")
+    .map((banner: Banner) => ({
+      id: banner._id,
+      image: banner.image,
+      title: banner.title,
+    }));
+
+  const womenBanners = homebanner.filter(
+    (banner: Banner) => banner.title === "women banner"
+  );
+  const firstWomenBanner = womenBanners[0];
+  const menBanners = homebanner.filter(
+    (banner: Banner) => banner.title === "men banner"
+  );
+  const firstMenBanner = menBanners[0];
+
+  const offerBanners = homebanner.filter(
+    (banner: Banner) => banner.title === "offfer banner"
+  );
+  const offerBanner = offerBanners[0];
 
   return (
     <>
@@ -38,12 +94,12 @@ const Slide = () => {
           modules={[Autoplay, Pagination, Navigation]}
           className="mySwiper w-full h-screen"
         >
-          {[1, 2, 3].map((_, index) => (
-            <SwiperSlide key={index}>
+          {mainBanners.map((banner, index) => (
+            <SwiperSlide key={banner.id || index}>
               <div className="relative w-full h-screen">
                 <Image
-                  src="/assets/homeSlide_image/image.webp"
-                  alt="Onam Essentials"
+                  src={banner.image}
+                  alt={banner.title}
                   fill
                   className="object-cover"
                 />
@@ -62,8 +118,12 @@ const Slide = () => {
 
       <section className="pt-5 bg-[#f1f5f4]">
         <Image
-          src="/assets/homeSlide_image/menshop.webp"
-          alt="Onam Essentials"
+          src={
+            firstMenBanner
+              ? firstMenBanner.image
+              : "/assets/homeSlide_image/menshop.webp"
+          }
+          alt={firstMenBanner ? firstMenBanner.title : "Onam Essentials"}
           width={1200}
           height={500}
           className="w-full h-full object-cover rounded-lg cursor-pointer"
@@ -96,8 +156,12 @@ const Slide = () => {
         </div>
 
         <Image
-          src="/assets/homeSlide_image/womenshop.webp"
-          alt="Onam Essentials"
+          src={
+            firstWomenBanner
+              ? firstWomenBanner.image
+              : "/assets/homeSlide_image/womenshop.webp"
+          }
+          alt={firstWomenBanner ? firstWomenBanner.title : "Onam Essentials"}
           width={1200}
           height={500}
           className="w-full h-full object-cover rounded-lg cursor-pointer"
@@ -143,38 +207,37 @@ const Slide = () => {
           }}
           navigation={true}
           modules={[Autoplay, Pagination, Navigation]}
-          className="mySwiper"
+          className="mySwiper w-full h-auto"
         >
           <SwiperSlide>
-            <div className="relative w-full min-h-screen">
-              {" "}
+            <div className="relative sm:w-full min-h-[50vh] sm:min-h-[70vh] lg:min-h-screen">
               <Image
-                src="/assets/homeSlide_image/offer.avif"
-                alt="Onam Essentials"
+                src={
+                  offerBanner
+                    ? offerBanner.image
+                    : "/assets/homeSlide_image/womenshop.webp"
+                }
+                alt={offerBanner ? offerBanner.title : "Onam Essentials"}
                 fill
-                className="object-cover"
+                priority
+                sizes="100vw"
+                className="object-cover cursor-pointer sm:w-full w-[200px]"
               />
             </div>
           </SwiperSlide>
+
           <SwiperSlide>
-            <div className="relative w-full h-[100vh]">
-              {" "}
+            <div className="relative sm:w-full min-h-[50vh] sm:min-h-[70vh] lg:min-h-screen">
               <Image
-                src="/assets/homeSlide_image/offer.jpeg"
-                alt="Onam Essentials"
+                src={
+                  offerBanner
+                    ? offerBanner.image
+                    : "/assets/homeSlide_image/womenshop.webp"
+                }
+                alt={offerBanner ? offerBanner.title : "Onam Essentials"}
                 fill
-                className="object-cover"
-              />
-            </div>
-          </SwiperSlide>
-          <SwiperSlide>
-            <div className="relative w-full h-[100vh]">
-              {" "}
-              <Image
-                src="/assets/homeSlide_image/offer.avif"
-                alt="Onam Essentials"
-                fill
-                className="object-cover"
+                sizes="100vw"
+                className="object-cover sm:w-full w-[200px]  cursor-pointer"
               />
             </div>
           </SwiperSlide>

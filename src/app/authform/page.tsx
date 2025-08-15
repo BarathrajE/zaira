@@ -1,17 +1,31 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-
-import { ArrowLeft, KeyRound } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import type { ChangeEvent, KeyboardEvent } from "react";
 import { AppDispatch } from "../redux/store";
 import { useDispatch } from "react-redux";
 import { sendOtpAction, verifyOtpAction } from "../redux/action/login";
-
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
-export default function OTPLoginPage() {
+interface OTPLoginDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
+export default function OTPLoginDialog({
+  open,
+  onOpenChange,
+}: OTPLoginDialogProps) {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [isOtpSent, setIsOtpSent] = useState(false);
@@ -22,6 +36,7 @@ export default function OTPLoginPage() {
 
   const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
   const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();
 
   // Countdown timer
   useEffect(() => {
@@ -38,10 +53,6 @@ export default function OTPLoginPage() {
     return () => clearInterval(interval);
   }, [isOtpSent, timer]);
 
-  const router = useRouter();
-  const goTohome = () => {
-    router.push("/");
-  };
   const validatePhoneNumber = (phone: string) => /^[6-9]\d{9}$/.test(phone);
 
   const handlePhoneChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -95,17 +106,12 @@ export default function OTPLoginPage() {
       setErrors({ otp: "Please enter the complete 6-digit OTP" });
       return;
     }
-
     setIsLoading(true);
-
     try {
       const result: any = await dispatch(verifyOtpAction(phoneNumber, code));
-
-      console.log("OTP API Response:", result);
-
       if (result?.token) {
-        // ✅ Token exists → success
         toast.success(result?.message || "Login successful!");
+        onOpenChange(false); // close dialog
         router.push("/");
       } else {
         throw new Error(result?.message || "OTP verification failed");
@@ -118,6 +124,7 @@ export default function OTPLoginPage() {
       setIsLoading(false);
     }
   };
+
   const resendOtp = async () => {
     if (!phoneNumber) return;
     setIsLoading(true);
@@ -138,82 +145,88 @@ export default function OTPLoginPage() {
     `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
 
   return (
-    <div className="min-h-screen bg-[#f1f5f4] flex items-center justify-center p-4">
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8">
-        <ArrowLeft onClick={goTohome} className="cursor-pointer" />
-        <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-[#535e51] rounded-full flex items-center justify-center mx-auto mb-4">
-            <KeyRound className="text-[#f1f5f4]" />
-          </div>
-          <h1 className="text-2xl font-bold text-[#535e51] mb-2">
+    <section className="">
+    
+    <Dialog open={open} onOpenChange={onOpenChange} >
+      <DialogContent className="w-full max-w-xm sm:max-w-md px-4   sm:px-6">
+        <DialogHeader>
+          <DialogTitle className="text-lg sm:text-xl font-semibold">
             {isOtpSent ? "Verify OTP" : "Login with OTP"}
-          </h1>
-          <p className="text-[#535e51]">
+          </DialogTitle>
+          <DialogDescription className="text-sm sm:text-base">
             {isOtpSent
               ? `Enter the 6-digit code sent to +91${phoneNumber}`
               : "Enter your mobile number to receive OTP"}
-          </p>
-        </div>
+          </DialogDescription>
+        </DialogHeader>
 
         {!isOtpSent ? (
-          <>
-            <label className="block text-sm font-medium text-[#535e51] mb-2">
-              Mobile Number
-            </label>
-            <div className="relative mb-4">
-              <span className="absolute left-3 top-3 text-[#535e51]">+91</span>
-              <input
-                type="tel"
-                value={phoneNumber}
-                onChange={handlePhoneChange}
-                className={`block w-full pl-12 pr-4 py-3 border rounded-lg ${
-                  errors.phone ? "border-red-500" : "border-gray-300"
-                }`}
-                placeholder="Enter 10-digit mobile number"
-                maxLength={10}
-              />
-            </div>
-            {errors.phone && (
-              <p className="text-sm text-red-600 mb-4">{errors.phone}</p>
-            )}
-            <button
-              onClick={sendOtp}
-              disabled={isLoading || phoneNumber.length !== 10}
-              className="w-full bg-[#535e51] text-white py-3 px-4 rounded-lg font-medium disabled:opacity-50"
-            >
-              {isLoading ? "Sending OTP..." : "Send OTP"}
-            </button>
-          </>
-        ) : (
-          <>
-            <label className="block text-sm font-medium text-gray-700 mb-4">
-              Enter OTP
-            </label>
-            <div className="flex space-x-3 justify-center mb-4">
-              {otp.map((digit, index) => (
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Mobile Number
+              </label>
+              <div className="relative">
+                <span className="absolute left-3 top-3 text-gray-500">+91</span>
                 <input
-                  key={index}
-                  ref={(el) => {
-                    otpRefs.current[index] = el;
-                  }}
-                  type="text"
-                  value={digit}
-                  onChange={(e) => handleOtpChange(index, e.target.value)}
-                  onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                  className={`w-12 h-12 text-center text-lg font-semibold border rounded-lg ${
-                    errors.otp ? "border-red-500" : "border-gray-300"
+                  type="tel"
+                  value={phoneNumber}
+                  onChange={handlePhoneChange}
+                  className={`block w-full pl-12 pr-4 py-3 border rounded-lg text-sm sm:text-base ${
+                    errors.phone ? "border-red-500" : "border-gray-300"
                   }`}
-                  maxLength={1}
+                  placeholder="Enter 10-digit mobile number"
+                  maxLength={10}
                 />
-              ))}
+              </div>
+              {errors.phone && (
+                <p className="text-sm text-red-600 mt-1">{errors.phone}</p>
+              )}
             </div>
-            {errors.otp && (
-              <p className="text-sm text-red-600 text-center mb-4">
-                {errors.otp}
-              </p>
-            )}
+
+            <DialogFooter>
+              <Button
+                onClick={sendOtp}
+                disabled={isLoading || phoneNumber.length !== 10}
+                className="bg-[#535e51] text-white w-full"
+              >
+                {isLoading ? "Sending OTP..." : "Send OTP"}
+              </Button>
+            </DialogFooter>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Enter OTP
+              </label>
+              <div className="flex flex-wrap justify-center gap-3">
+                {otp.map((digit, index) => (
+                  <input
+                    key={index}
+                    ref={(el) => {
+                      otpRefs.current[index] = el;
+                    }}
+                    type="text"
+                    value={digit}
+                    onChange={(e) => handleOtpChange(index, e.target.value)}
+                    onKeyDown={(e) => handleOtpKeyDown(index, e)}
+                    className={`w-10 h-10 sm:w-12 sm:h-12 text-center text-lg font-semibold border rounded-lg ${
+                      errors.otp ? "border-red-500" : "border-gray-300"
+                    }`}
+                    maxLength={1}
+                  />
+                ))}
+              </div>
+              {errors.otp && (
+                <p className="text-sm text-red-600 text-center mt-2">
+                  {errors.otp}
+                </p>
+              )}
+            </div>
+
             {!canResend ? (
-              <p className="text-sm text-gray-600 text-center mb-4">
+              <p className="text-sm text-gray-600 text-center">
                 Resend OTP in{" "}
                 <span className="font-medium text-[#535e51]">
                   {formatTimer(timer)}
@@ -223,37 +236,39 @@ export default function OTPLoginPage() {
               <button
                 onClick={resendOtp}
                 disabled={isLoading}
-                className="text-indigo-600 font-medium text-sm mb-4"
+                className="text-indigo-600 font-medium text-sm text-center w-full"
               >
                 {isLoading ? "Resending..." : "Resend OTP"}
               </button>
             )}
-            <button
-              onClick={verifyOtp}
-              disabled={isLoading || otp.join("").length !== 6}
-              className="w-full bg-[#535e51] text-white py-3 px-4 rounded-lg font-medium disabled:opacity-50 mb-2"
-            >
-              {isLoading ? "Verifying..." : "Verify & Login"}
-            </button>
-            <button
-              onClick={() => {
-                setIsOtpSent(false);
-                setOtp(["", "", "", "", "", ""]);
-                setTimer(60);
-                setCanResend(false);
-                setErrors({});
-              }}
-              className="w-full text-gray-600 text-sm"
-            >
-              Change Phone Number
-            </button>
-          </>
+
+            <DialogFooter className="flex flex-wrap sm:flex-row gap-2">
+              <Button
+                onClick={verifyOtp}
+                disabled={isLoading || otp.join("").length !== 6}
+                className="bg-[#535e51] text-white w-full"
+              >
+                {isLoading ? "Verifying..." : "Verify & Login"}
+              </Button>
+
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setIsOtpSent(false);
+                  setOtp(["", "", "", "", "", ""]);
+                  setTimer(60);
+                  setCanResend(false);
+                  setErrors({});
+                }}
+                className="w-full"
+              >
+                Change Phone Number
+              </Button>
+            </DialogFooter>
+          </div>
         )}
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
+    </section>
   );
 }
-
-
-
- 
