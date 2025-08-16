@@ -33,16 +33,20 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/app/redux/store";
 import { menuGetAction } from "@/app/redux/action/menu/menuGet";
 import { submenuGetAction } from "@/app/redux/action/menu/submenu";
+import { fetchSubmenusAction } from "@/app/redux/action/menu/collection";
 
-interface MenuItem {
-  id: string | number;
+interface SubMenuItem {
   name: string;
+  description: string;
+  imageUrl: string;
+  _id: string;
 }
 
-interface SubmenuItem {
-  id: string | number;
-  menuId: string | number;
+interface MenuItem {
   name: string;
+  subMenus: SubMenuItem[];
+  __v: number;
+  _id: string;
 }
 
 const Header = () => {
@@ -54,16 +58,19 @@ const Header = () => {
   const [openItem, setOpenItem] = useState<string | undefined>(undefined);
   const dispatch = useDispatch<AppDispatch>();
 
+  // ✅ Load menus and static submenus
   useEffect(() => {
     dispatch(menuGetAction());
     dispatch(submenuGetAction());
   }, [dispatch]);
 
+  // ✅ Check login token
   useEffect(() => {
     const token = Cookies.get("accessToken");
     setHasToken(!!token);
   }, []);
 
+  // ✅ Hide search input on outside click
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
@@ -96,32 +103,16 @@ const Header = () => {
   const goTocartPage = () => handleNavigation("/cart");
   const goTohomepage = () => router.push("/");
 
-  interface SubMenuItem {
-    name: string;
-    description: string;
-    imageUrl: string;
-    _id: string;
-  }
-
-  interface MenuItem {
-    name: string;
-    subMenus: SubMenuItem[];
-    __v: number;
-    _id: string;
-  }
+  // ✅ Menus with submenus from Redux
   const menuData = useSelector(
     (state: RootState) => state.menuGet.menu
   ) as MenuItem[];
-  console.log("Menu Data:", menuData);
-
- 
 
   const menuWithSubmenus = menuData.map((menu: MenuItem) => ({
+    menuId: menu._id,
     menuName: menu.name,
-    subMenuNames: menu.subMenus.map((sub: SubMenuItem) => sub.name),
+    subMenus: menu.subMenus,
   }));
-
-  console.log(menuWithSubmenus, " Menu with Submenus");
 
   const LoadingOverlay = () => (
     <div className="fixed inset-0 bg-white z-[100] flex items-center justify-center opacity-80">
@@ -137,6 +128,7 @@ const Header = () => {
       {isLoading && <LoadingOverlay />}
       <div className="sticky top-0 z-50 bg-[#535e51] px-2 py-1 md:p-5">
         <div className="flex md:justify-between items-center w-full md:gap-0 gap-10">
+          {/* Mobile Drawer */}
           <div className="text-[#f1f5f4]">
             <Sheet>
               <SheetTrigger className="block">
@@ -157,21 +149,25 @@ const Header = () => {
                     >
                       {menuWithSubmenus.map((menu) => (
                         <AccordionItem
-                          key={`menu-${menu.menuName}`}
-                          value={`menu-${menu.menuName}`}
+                          key={`menu-${menu.menuId}`}
+                          value={`menu-${menu.menuId}`}
                         >
                           <AccordionTrigger className="text-base font-medium text-black">
                             {menu.menuName}
                           </AccordionTrigger>
                           <AccordionContent className="bg-gray-50">
-                            {menu.subMenuNames.length > 0 ? (
+                            {menu.subMenus.length > 0 ? (
                               <ul className="pl-4 space-y-2">
-                                {menu.subMenuNames.map((subName) => (
+                                {menu.subMenus.map((sub) => (
                                   <li
-                                    key={`sub-${menu.menuName}-${subName}`}
+                                    key={`sub-${sub._id}`}
                                     className="text-sm text-[#052659] underline underline-offset-4 cursor-pointer hover:text-blue-600"
+                                    onClick={() => {
+                                      dispatch(fetchSubmenusAction(menu.menuId)); // ✅ Pass menuId
+                                      router.push(`/menu/${menu.menuId}/submenus`);
+                                    }}
                                   >
-                                    {subName}
+                                    {sub.name}
                                   </li>
                                 ))}
                               </ul>
@@ -190,6 +186,7 @@ const Header = () => {
             </Sheet>
           </div>
 
+          {/* Logo */}
           <div
             className="sm:text-[48px] text-[35px] font-bold text-[#f1f5f4] cursor-pointer mt-1 sm:mt-0"
             onClick={goTohomepage}
@@ -197,6 +194,7 @@ const Header = () => {
             ZAIRA
           </div>
 
+          {/* Right icons */}
           <Button
             className="bg-transparent text-[#f1f5f4] sm:hidden ms-28"
             onClick={handleClick}
@@ -238,6 +236,7 @@ const Header = () => {
           </div>
         </div>
 
+        {/* Mobile bottom nav */}
         <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#535e51] sm:hidden px-6 py-2 shadow-md">
           <div className="flex justify-between items-center">
             <Button

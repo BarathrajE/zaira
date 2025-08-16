@@ -1,9 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination } from "swiper/modules";
 import "swiper/css";
+import { AppDispatch, RootState } from "@/app/redux/store";
+
+import { useDispatch, useSelector } from "react-redux";
+import { videoGetAction } from "@/app/redux/action/videofile/video";
 
 // Array of video sources
 const videoSlides = [
@@ -17,6 +22,14 @@ const videoSlides = [
 ];
 
 const VideoSlide = () => {
+  //api call to fetch video data
+  const dispatch = useDispatch<AppDispatch>();
+  useEffect(() => {
+    dispatch(videoGetAction());
+  }, [dispatch]);
+  const videos = useSelector((state: RootState) => state.video.videos);
+  // const videoSlides = videos.map((video: any) => video.videoUrl) || [];
+
   // One ref per video
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
 
@@ -106,7 +119,7 @@ const VideoSlide = () => {
           1600: { slidesPerView: 5 },
         }}
       >
-        {videoSlides.map((videoSrc, index) => (
+        {videoSlides.map((videoSrc: string, index: number) => (
           <SwiperSlide key={index}>
             <div
               className="relative w-[340px] h-[460px] mx-5 rounded-2xl overflow-hidden shadow-xl group"

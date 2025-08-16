@@ -1,10 +1,13 @@
 "use client";
 import { homeBannerGetAction } from "@/app/redux/action/banner/homebanner";
 import { allProductGetAction } from "@/app/redux/action/product/allProduct";
+import { bestServiceGetAction } from "@/app/redux/action/product/bestservice";
+import { videoGetAction } from "@/app/redux/action/videofile/video";
 import { AppDispatch, RootState } from "@/app/redux/store";
 import CategorySlide from "@/swiperSide/categorySlide";
 import TrendingSlide from "@/swiperSide/trandingSlide";
 import VideoSlide from "@/swiperSide/videoSlide";
+import { log } from "console";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -44,6 +47,8 @@ const Slide = () => {
   useEffect(() => {
     dispatch(homeBannerGetAction());
     dispatch(allProductGetAction());
+    dispatch(bestServiceGetAction());
+    dispatch(videoGetAction());
   }, [dispatch]);
 
   const homebanner: Banner[] = useSelector(
@@ -52,7 +57,10 @@ const Slide = () => {
   const allProduct: Banner[] = useSelector(
     (state: RootState) => state.allProduct.allProducts
   );
-  console.log(allProduct, "All Products");
+  const bestService: Banner[] = useSelector(
+    (state: RootState) => state.bestService.bestServices
+  );
+  console.log("Best Service:", bestService);
 
   const mainBanners: MainBanner[] = homebanner
     .filter((banner: Banner) => banner.title === "main banner")
@@ -92,16 +100,18 @@ const Slide = () => {
           }}
           navigation={true}
           modules={[Autoplay, Pagination, Navigation]}
-          className="mySwiper w-full h-screen"
+          className="mySwiper bg-yellow-100"
         >
           {mainBanners.map((banner, index) => (
             <SwiperSlide key={banner.id || index}>
-              <div className="relative w-full h-screen">
+              <div className="relative w-full h-auto">
                 <Image
                   src={banner.image}
                   alt={banner.title}
-                  fill
-                  className="object-cover"
+                  width={1200} // Set an appropriate width
+                  height={600} // Set an appropriate height
+                  className="object-contain w-full h-auto"
+                  sizes="(max-width: 640px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, (max-width: 1280px) 70vw, 1200px"
                 />
               </div>
             </SwiperSlide>
@@ -126,7 +136,7 @@ const Slide = () => {
           alt={firstMenBanner ? firstMenBanner.title : "Onam Essentials"}
           width={1200}
           height={500}
-          className="w-full h-full object-cover rounded-lg cursor-pointer"
+          className="w-full h-full object-contain rounded-lg cursor-pointer"
           onClick={goToMen}
         />
         <div className="pt-4 pb-10">
@@ -208,9 +218,10 @@ const Slide = () => {
           navigation={true}
           modules={[Autoplay, Pagination, Navigation]}
           className="mySwiper w-full h-auto"
+          style={{ maxHeight: "80vh" }} 
         >
           <SwiperSlide>
-            <div className="relative sm:w-full min-h-[50vh] sm:min-h-[70vh] lg:min-h-screen">
+            <div className="relative w-full min-h-[50vh] sm:min-h-[70vh] lg:min-h-[80vh]">
               <Image
                 src={
                   offerBanner
@@ -218,16 +229,17 @@ const Slide = () => {
                     : "/assets/homeSlide_image/womenshop.webp"
                 }
                 alt={offerBanner ? offerBanner.title : "Onam Essentials"}
-                fill
+                width={1200}
+                height={600}
                 priority
-                sizes="100vw"
-                className="object-cover cursor-pointer sm:w-full w-[200px]"
+                sizes="(max-width: 640px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 85vw, (max-width: 1280px) 75vw, 1200px"
+                className="object-cover w-full h-full cursor-pointer"
               />
             </div>
           </SwiperSlide>
 
           <SwiperSlide>
-            <div className="relative sm:w-full min-h-[50vh] sm:min-h-[70vh] lg:min-h-screen">
+            <div className="relative w-full min-h-[50vh] sm:min-h-[70vh] lg:min-h-[80vh]">
               <Image
                 src={
                   offerBanner
@@ -235,9 +247,11 @@ const Slide = () => {
                     : "/assets/homeSlide_image/womenshop.webp"
                 }
                 alt={offerBanner ? offerBanner.title : "Onam Essentials"}
-                fill
-                sizes="100vw"
-                className="object-cover sm:w-full w-[200px]  cursor-pointer"
+                width={1200}
+                height={600}
+                priority
+                sizes="(max-width: 640px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 85vw, (max-width: 1280px) 75vw, 1200px"
+                className="object-cover w-full h-full cursor-pointer"
               />
             </div>
           </SwiperSlide>

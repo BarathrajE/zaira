@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { EffectCoverflow, FreeMode, Navigation } from "swiper/modules";
@@ -8,19 +9,18 @@ import "swiper/css/effect-coverflow";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { AppDispatch, RootState } from "@/app/redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { tradingProductGetAction } from "@/app/redux/action/product/treadingproduct";
 
-const slideImages = [
-  "/assets/homeSlide_image/projectimg/t shirt-12.jpg",
-  "/assets/homeSlide_image/projectimg/t shirt-40.jpg",
-  "/assets/homeSlide_image/projectimg/t shirt-6.jpg",
-  "/assets/homeSlide_image/projectimg/t shirt-6.jpg",
-  "/assets/homeSlide_image/projectimg/t shirt-46.jpg",
-  "/assets/homeSlide_image/projectimg/t shirt-23.jpg",
-  "/assets/homeSlide_image/projectimg/t shirt-6.jpg",
-  "/assets/homeSlide_image/projectimg/t shirt-18.jpg",
-];
 
+
+interface MainBanner {
+  id: string;
+  image: string;
+  title: string;
+}
 const HeritageSwiper = () => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -29,7 +29,19 @@ const HeritageSwiper = () => {
     setIsLoading(true);
     router.push("/productdisplay");
   };
-
+  const dispatch = useDispatch<AppDispatch>();
+  useEffect(() => {
+    dispatch(tradingProductGetAction());
+  }, [dispatch]);
+  const tradingProducts = useSelector(
+    (state: RootState) => state.tradingProduct.tradingProducts
+  );
+  const tradingProductList: MainBanner[] =
+    tradingProducts?.map((product: any) => ({
+      id: product._id,
+      image: product.imageUrl,
+      title: product.name,
+    })) || [];
   return (
     <section className="w-full overflow-hidden py-6 bg-cover bg-center relative">
       {/* Loading overlay */}
@@ -82,17 +94,17 @@ const HeritageSwiper = () => {
             }}
             className="heritage-swiper"
           >
-            {slideImages.map((src, index) => (
-              <SwiperSlide key={index}>
+            {tradingProductList.map((product, index) => (
+              <SwiperSlide key={product.id || index}>
                 <div
                   className="relative flex justify-center cursor-pointer group"
                   onClick={handleImageClick}
                 >
                   <Image
-                    src={src}
+                    src={product.image}
                     width={500}
                     height={500}
-                    alt={`Slide ${index + 1}`}
+                    alt={product.title}
                     className="rounded-lg w-full sm:w-[400px] md:w-[450px] lg:w-[500px] h-auto object-cover transition-transform duration-300"
                   />
                   <div className="shop-btn absolute bottom-5 right-10 flex bg-[#f1f5f4] px-4 gap-2 rounded-lg py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
