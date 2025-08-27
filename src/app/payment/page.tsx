@@ -1,87 +1,68 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { useState, ChangeEvent, FormEvent } from "react";
-import {
-  ArrowLeft,
-  CreditCard,
-  Smartphone,
-  Building2,
-  RefreshCw,
-  Banknote,
-} from "lucide-react";
+import React, { useState, ChangeEvent, FormEvent, useEffect } from "react";
+import { ArrowLeft, CreditCard, Banknote, Loader2 } from "lucide-react";
 import Footer from "@/footer/page";
 import Header from "@/header/pages";
 import { useRouter } from "next/navigation";
 import PaymentSuccessDialog from "../../swiperSide/paymentpopup";
+import { useSearchParams } from "next/navigation";
+import { createOrderAction } from "../redux/action/order/createOrder";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../redux/store";
+import { getAddressesAction } from "../redux/action/profile/addressGet";
+import { toast } from "sonner";
 
 type PaymentOption = {
   id: string;
   title: string;
   subtitle: string;
-  icon: React.ElementType;
+  icon: React.ComponentType<any>;
 };
 
-type FormData = {
-  cardNumber: string;
-  expiryDate: string;
-  cvv: string;
-  upiId: string;
-};
-
-type FormErrors = Partial<Record<keyof FormData, string>>;
-
+// Simplified payment options - only Cash on Delivery and Online Payment
 const paymentOptions: PaymentOption[] = [
-  {
-    id: "creditCard",
-    title: "Credit Card",
-    subtitle: "Save & Pay via Credit Cards",
-    icon: CreditCard,
-  },
-  {
-    id: "debitCard",
-    title: "Debit Card",
-    subtitle: "Save & Pay via Debit Cards",
-    icon: CreditCard,
-  },
-  {
-    id: "upi",
-    title: "UPI",
-    subtitle: "PhonePe, Google Pay, etc.",
-    icon: Smartphone,
-  },
-  {
-    id: "netBanking",
-    title: "Net Banking",
-    subtitle: "Select from bank list",
-    icon: Building2,
-  },
-  {
-    id: "exchangeOrder",
-    title: "Exchange Order",
-    subtitle: "Only for exchange orders",
-    icon: RefreshCw,
-  },
   {
     id: "cashOnDelivery",
     title: "Cash on Delivery",
-    subtitle: "Pay via cash",
+    subtitle: "Pay when your order is delivered",
     icon: Banknote,
+  },
+  {
+    id: "onlinePayment",
+    title: "Online Payment",
+    subtitle: "Pay securely via Razorpay",
+    icon: CreditCard,
   },
 ];
 
-const PaymentPage: React.FC = () => {
-  const [selectedPayment, setSelectedPayment] = useState("creditCard");
-  const [formData, setFormData] = useState<FormData>({
-    cardNumber: "",
-    expiryDate: "",
-    cvv: "",
-    upiId: "",
-  });
-  const [errors, setErrors] = useState<FormErrors>({});
+interface ProductItem {
+  productId: string;
+  quantity: number;
+}
+const PaymentPage = () => {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate page load (e.g. images, API, etc.)
+    const timer = setTimeout(() => setLoading(false), 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const [selectedPayment, setSelectedPayment] = useState("cashOnDelivery");
   const [isOpen, setIsOpen] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
 
+  const [validProducts, setValidProducts] = useState<ProductItem[]>([]);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const itemTotal = searchParams.get("itemTotal");
+  const savings = searchParams.get("savings");
+  const billTotal = searchParams.get("billTotal");
+  const productsId = searchParams.get("id");
 
+  const dispatch = useDispatch();
   const handlePaymentComplete = () => {
     setIsOpen(true);
   };
@@ -100,51 +81,123 @@ const PaymentPage: React.FC = () => {
     window.history.back(); // or router.push("/address")
   };
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    if (errors[name as keyof FormData]) {
-      setErrors((prev) => ({ ...prev, [name]: "" }));
+  // Handle Razorpay payment
+  const initiateRazorpayPayment = () => {
+    setIsProcessing(true);
+
+    const options = {
+      key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID, // Add your Razorpay key
+      amount: 4374900, // Amount in paise (₹43,749 * 100)
+      currency: "INR",
+      name: "Your Store Name",
+      description: "Order Payment",
+      order_id: "", // This should come from your backend
+      handler: function (response: any) {
+        console.log("Payment successful:", response);
+        setIsProcessing(false);
+        handlePaymentComplete();
+      },
+      prefill: {
+        name: "Customer Name",
+        email: "customer@example.com",
+        contact: "9999999999",
+      },
+      theme: {
+        color: "#535e51",
+      },
+      modal: {
+        ondismiss: function () {
+          setIsProcessing(false);
+        },
+      },
+    };
+
+    if (typeof window !== "undefined" && (window as any).Razorpay) {
+      const razorpay = new (window as any).Razorpay(options);
+      razorpay.open();
+    } else {
+      console.error("Razorpay SDK not loaded");
+      setIsProcessing(false);
     }
   };
 
-  const formatCardNumber = (value: string) =>
-    value
-      .replace(/\s+/g, "")
-      .replace(/[^0-9]/g, "")
-      .match(/.{1,4}/g)
-      ?.join(" ")
-      .substr(0, 19) || "";
+  const addresses = useSelector(
+    (state: RootState) => state.AddressGet.addresses
+  );
+  const addressId = addresses?.[0]?._id || null;
 
-  const formatExpiryDate = (value: string) => {
-    const v = value.replace(/\D/g, "");
-    return v.length >= 2 ? `${v.slice(0, 2)}/${v.slice(2, 4)}` : v;
-  };
+  const userId = useSelector(
+    (state: RootState) => state.login.login.data.user?._id
+  );
 
-  const validateForm = (): boolean => {
-    const newErrors: FormErrors = {};
-    const { cardNumber, expiryDate, cvv, upiId } = formData;
-
-    if (["creditCard", "debitCard"].includes(selectedPayment)) {
-      if (!cardNumber) newErrors.cardNumber = "Card number is required";
-      if (!expiryDate) newErrors.expiryDate = "Expiry date is required";
-      if (!cvv) newErrors.cvv = "CVV is required";
+  useEffect(() => {
+    if (userId) {
+      dispatch(getAddressesAction(userId) as any);
     }
+  }, [dispatch, userId]);
 
-    if (selectedPayment === "upi" && !upiId) {
-      newErrors.upiId = "UPI ID is required";
-    }
+  useEffect(() => {
+    if (!productsId) return;
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+    const ids = productsId.split(",").filter((id) => id);
 
-  const handleSubmit = (e: FormEvent) => {
+    const productsPayload: ProductItem[] = ids.map((id) => ({
+      productId: id,
+      quantity: 1, // default quantity
+    }));
+
+    setValidProducts(productsPayload);
+  }, [productsId]);
+
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (validateForm()) {
+
+    if (!validProducts.length) {
+      toast.error("No valid products to order.");
+      return;
+    }
+
+    const payload = {
+      user: userId,
+      products: validProducts,
+      address: addressId,
+      paymentMethod: selectedPayment === "cashOnDelivery" ? "COD" : "Online",
+      totalAmount: Number(billTotal) || 0,
+      status: "Placed",
+      designPrint: false,
+      designId: null,
+    };
+
+    if (selectedPayment === "cashOnDelivery") {
+      await dispatch<any>(createOrderAction(userId, payload));
       handlePaymentComplete();
+    } else if (selectedPayment === "onlinePayment") {
+      initiateRazorpayPayment();
     }
   };
+
+  const LoadingOverlay = () => (
+    <div className="fixed inset-0 bg-white z-[100] flex items-center justify-center opacity-80">
+      <div className="bg-white rounded-lg p-6 flex flex-col items-center gap-4 shadow-xl">
+        <Loader2 className="w-8 h-8 animate-spin text-[#535e51]" />
+        <p className="text-[#535e51] font-medium">Loading...</p>
+      </div>
+    </div>
+  );
+
+  // Add Razorpay script to head
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.async = true;
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
+  if (loading) return <LoadingOverlay />;
 
   return (
     <>
@@ -174,7 +227,7 @@ const PaymentPage: React.FC = () => {
                   </h2>
                   <div className="space-y-3">
                     {paymentOptions.map((option) => {
-                      const Icon = option.icon;
+                      const Icon = option?.icon;
                       const isSelected = selectedPayment === option.id;
                       return (
                         <div
@@ -216,78 +269,46 @@ const PaymentPage: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Card Inputs */}
-                {["creditCard", "debitCard"].includes(selectedPayment) && (
-                  <div className="space-y-4">
-                    <input
-                      type="text"
-                      name="cardNumber"
-                      value={formData.cardNumber}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          cardNumber: formatCardNumber(e.target.value),
-                        }))
-                      }
-                      className={`w-full p-3 border-2 rounded-lg bg-[#f1f5f4] ${
-                        errors.cardNumber ? "border-red-500" : "border-gray-200"
-                      }`}
-                      placeholder="Card Number"
-                    />
-                    <div className="grid grid-cols-2 gap-4">
-                      <input
-                        type="text"
-                        name="expiryDate"
-                        value={formData.expiryDate}
-                        onChange={(e) =>
-                          setFormData((prev) => ({
-                            ...prev,
-                            expiryDate: formatExpiryDate(e.target.value),
-                          }))
-                        }
-                        maxLength={5}
-                        className={`w-full p-3 border-2 rounded-lg bg-[#f1f5f4] ${
-                          errors.expiryDate
-                            ? "border-red-500"
-                            : "border-gray-200"
-                        }`}
-                        placeholder="MM/YY"
-                      />
-                      <input
-                        type="text"
-                        name="cvv"
-                        value={formData.cvv}
-                        onChange={handleInputChange}
-                        maxLength={4}
-                        className={`w-full p-3 border-2 rounded-lg bg-[#f1f5f4] ${
-                          errors.cvv ? "border-red-500" : "border-gray-200"
-                        }`}
-                        placeholder="CVV"
-                      />
+                {/* Payment Info */}
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  {selectedPayment === "cashOnDelivery" && (
+                    <div className="text-center">
+                      <h3 className="font-semibold text-[#535e51] mb-2">
+                        Cash on Delivery
+                      </h3>
+                      <p className="text-sm text-[#535e51] opacity-70">
+                        You can pay with cash when your order is delivered to
+                        your doorstep.
+                      </p>
                     </div>
-                  </div>
-                )}
-
-                {/* UPI Input */}
-                {selectedPayment === "upi" && (
-                  <input
-                    type="text"
-                    name="upiId"
-                    value={formData.upiId}
-                    onChange={handleInputChange}
-                    className={`w-full p-3 border-2 rounded-lg bg-[#f1f5f4] ${
-                      errors.upiId ? "border-red-500" : "border-gray-200"
-                    }`}
-                    placeholder="yourname@upi"
-                  />
-                )}
+                  )}
+                  {selectedPayment === "onlinePayment" && (
+                    <div className="text-center">
+                      <h3 className="font-semibold text-[#535e51] mb-2">
+                        Online Payment via Razorpay
+                      </h3>
+                      <p className="text-sm text-[#535e51] opacity-70">
+                        Pay securely using Credit/Debit Card, UPI, Net Banking,
+                        or Wallet.
+                      </p>
+                    </div>
+                  )}
+                </div>
 
                 <div>
                   <button
-                    className="px-6 py-3 bg-[#535e51] text-white rounded-lg"
-                    onClick={() => setIsOpen(true)}
+                    type="submit"
+                    disabled={isProcessing}
+                    className="w-full px-6 py-3 bg-[#535e51] text-white rounded-lg font-semibold hover:bg-[#4a5348] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
-                    Complete Payment
+                    {isProcessing && (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    )}
+                    {selectedPayment === "cashOnDelivery"
+                      ? "Place Order"
+                      : isProcessing
+                      ? "Processing..."
+                      : "Pay Now"}
                   </button>
 
                   <PaymentSuccessDialog
@@ -309,19 +330,29 @@ const PaymentPage: React.FC = () => {
                 <div className="space-y-2">
                   <div className="flex justify-between">
                     <span className="text-[#535e51]">Item Total</span>
-                    <span className="font-medium text-[#535e51]">₹45,092</span>
+                    <span className="font-medium text-[#535e51]">
+                      ₹ {itemTotal}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-[#535e51]">You Saved</span>
-                    <span className="font-medium text-green-600">-₹1343</span>
+                    <span className="font-medium text-green-600">
+                      ₹ {savings}
+                    </span>
                   </div>
+                  {selectedPayment === "cashOnDelivery" && (
+                    <div className="flex justify-between">
+                      <span className="text-[#535e51]">COD Charges</span>
+                      <span className="font-medium text-[#535e51]">₹0</span>
+                    </div>
+                  )}
                   <div className="border-t border-gray-300 pt-3">
                     <div className="flex justify-between">
                       <span className="text-lg text-[#535e51] font-bold">
                         Bill Total
                       </span>
                       <span className="text-lg font-bold text-[#535e51]">
-                        ₹43,749
+                        ₹ {billTotal}
                       </span>
                     </div>
                   </div>

@@ -22,7 +22,7 @@ export default function Footer() {
   };
  
   return (
-    <footer className="">
+    <footer>
       <div className=" bg-[#f1f5f4] py-16 px-4">
         <div className="max-w-7xl mx-auto">
           <div className=" flex justify-around flex-wrap gap-10">

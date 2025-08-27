@@ -15,8 +15,9 @@ export const apiRequest = async (
   noCache: boolean = true // 🚀 Added optional flag
 ) => {
   try {
-    const token = Cookies.get('token');
-    console.log('Token:', token);
+    const token = Cookies.get('accessToken');
+ 
+   
 
     const isFormData = body instanceof FormData;
     const headers: HeadersInit = {

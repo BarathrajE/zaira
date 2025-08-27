@@ -1,11 +1,13 @@
 import { apiRequest } from "../../apiRequest";
 
-export const collectionMenuGetApi = async (menuId: string) => {
+export const collectionMenuGetApi = async (submenuId: string) => {
   return await apiRequest(
-    `/menu/${menuId}/submenus`, // endpoint
+    `/product/submenu/${submenuId}`, // Matches backend route
+    
     "GET",
     null,
-    true, // authRequired?
-    true  // isJson?
+    true,
+    true
   );
+  
 };

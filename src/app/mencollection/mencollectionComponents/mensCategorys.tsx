@@ -3,35 +3,79 @@ import { Swiper } from "swiper/react";
 import { FreeMode, Pagination } from "swiper/modules";
 import "swiper/css";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Loader2 } from "lucide-react";
 
 const womenCategories = [
-  { title: "Full Sleeve", imageUrl: "/assets/homeSlide_image/projectimg/t shirt-12.jpg" },
-  { title: "Scoop Neck", imageUrl: "/assets/homeSlide_image/projectimg/t shirt-9.jpg" },
-  { title: "Crew Neck", imageUrl: "/assets/homeSlide_image/projectimg/t shirt-23.jpg" },
+  {
+    title: "Full Sleeve",
+    imageUrl: "/assets/homeSlide_image/projectimg/t shirt-12.jpg",
+  },
+  {
+    title: "Scoop Neck",
+    imageUrl: "/assets/homeSlide_image/projectimg/t shirt-9.jpg",
+  },
+  {
+    title: "Crew Neck",
+    imageUrl: "/assets/homeSlide_image/projectimg/t shirt-23.jpg",
+  },
   {
     title: "Oversized T-shirt",
     imageUrl: "/assets/homeSlide_image/projectimg/t shirt-18.jpg",
   },
-  { title: "Sleeveless", imageUrl: "/assets/homeSlide_image/projectimg/t shirt-46.jpg" },
+  {
+    title: "Sleeveless",
+    imageUrl: "/assets/homeSlide_image/projectimg/t shirt-46.jpg",
+  },
 ];
 
 const menCategories = [
-  { title: "Polo", imageUrl: "/assets/homeSlide_image/projectimg/t shirt-28.jpg" },
-  { title: "Hoodie", imageUrl: "/assets/homeSlide_image/projectimg/t shirt-27.jpg" },
-  { title: "Crew Neck", imageUrl: "/assets/homeSlide_image/projectimg/t shirt-33.jpg" },
-  { title: "Graphic Tee", imageUrl: "/assets/homeSlide_image/projectimg/t shirt-41.jpg" },
-  { title: "Tank Top", imageUrl: "/assets/homeSlide_image/projectimg/t shirt-35.jpg" },
+  {
+    title: "Polo",
+    imageUrl: "/assets/homeSlide_image/projectimg/t shirt-28.jpg",
+  },
+  {
+    title: "Hoodie",
+    imageUrl: "/assets/homeSlide_image/projectimg/t shirt-27.jpg",
+  },
+  {
+    title: "Crew Neck",
+    imageUrl: "/assets/homeSlide_image/projectimg/t shirt-33.jpg",
+  },
+  {
+    title: "Graphic Tee",
+    imageUrl: "/assets/homeSlide_image/projectimg/t shirt-41.jpg",
+  },
+  {
+    title: "Tank Top",
+    imageUrl: "/assets/homeSlide_image/projectimg/t shirt-35.jpg",
+  },
 ];
 
 const MenCategorySlide = () => {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate page load (e.g. images, API, etc.)
+    const timer = setTimeout(() => setLoading(false), 1500);
+    return () => clearTimeout(timer);
+  }, []);
+  const LoadingOverlay = () => (
+    <div className="fixed inset-0 bg-white z-[100] flex items-center justify-center opacity-80">
+      <div className="bg-white rounded-lg p-6 flex flex-col items-center gap-4 shadow-xl">
+        <Loader2 className="w-8 h-8 animate-spin text-[#535e51]" />
+        <p className="text-[#535e51] font-medium">Loading...</p>
+      </div>
+    </div>
+  );
+
   const [activeCategory, setActiveCategory] = useState<"women" | "men">(
     "women"
   );
 
   const categories =
     activeCategory === "women" ? womenCategories : menCategories;
-
+  if (loading) return LoadingOverlay();
   return (
     <section className="flex justify-center">
       <div className="pb-5 max-w-7xl">

@@ -17,6 +17,7 @@ export const bestServiceReducer = (state = initialState, action: any) => {
       return { ...state, loading: true, error: null };
     case BEST_SERVICE_GET_SUCCESS:
       return { ...state, loading: false, bestServices: action.payload };
+     
     case BEST_SERVICE_GET_FAILURE:
       return { ...state, loading: false, error: action.payload };
     default:

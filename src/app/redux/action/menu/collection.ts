@@ -18,13 +18,13 @@ export const fetchSubmenusFailure = (error: any) => ({
 });
 
 // Thunk action
-export const fetchSubmenusAction = (menuId: string) => {
+export const fetchSubmenusAction = (submenuId: string) => {
   return async (dispatch: any) => {
     dispatch(fetchSubmenusRequest());
     try {
-      const response = await collectionMenuGetApi(menuId);
-      dispatch(fetchSubmenusSuccess(response.data));
-      return response.data;
+      const response = await collectionMenuGetApi(submenuId);
+      dispatch(fetchSubmenusSuccess(response));
+      return response;
     } catch (err: any) {
       dispatch(fetchSubmenusFailure(err.message || "Failed to fetch submenus"));
     }

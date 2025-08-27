@@ -145,7 +145,7 @@ export default function OTPLoginDialog({
     `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
 
   return (
-    <section className="">
+    <section>
     
     <Dialog open={open} onOpenChange={onOpenChange} >
       <DialogContent className="w-full max-w-xm sm:max-w-md px-4   sm:px-6">

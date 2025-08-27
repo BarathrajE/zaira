@@ -34,6 +34,7 @@ import { AppDispatch, RootState } from "@/app/redux/store";
 import { menuGetAction } from "@/app/redux/action/menu/menuGet";
 import { submenuGetAction } from "@/app/redux/action/menu/submenu";
 import { fetchSubmenusAction } from "@/app/redux/action/menu/collection";
+import { SearchProductApi } from "@/app/redux/api/searchapi";
 
 interface SubMenuItem {
   name: string;
@@ -56,8 +57,31 @@ const Header = () => {
   const [hasToken, setHasToken] = useState<boolean | null>(null);
   const [otpDialogOpen, setOtpDialogOpen] = useState(false);
   const [openItem, setOpenItem] = useState<string | undefined>(undefined);
+  const [query, setQuery] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [results, setResults] = useState([]);
   const dispatch = useDispatch<AppDispatch>();
 
+  const handleSearch = async (value: string) => {
+    setQuery(value);
+
+    // Clear results if input is empty or too short
+    if (value.trim().length < 3) {
+      setResults([]);
+      return;
+    }
+
+    try {
+      const response = await SearchProductApi(value);
+      setResults(response?.error ? [] : response);
+    } catch (error: any) {
+      if (error.message.includes("No matching products found")) {
+        setResults([]);
+      } else {
+        console.error("Search failed:", error);
+      }
+    }
+  };
   // ✅ Load menus and static submenus
   useEffect(() => {
     dispatch(menuGetAction());
@@ -85,6 +109,21 @@ const Header = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (
+        !target.closest('[data-search="true"]') &&
+        !target.closest('[data-search-input="true"]')
+      ) {
+        setShowInput(false);
+        setResults([]); // Clear results
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   const handleClick = () => {
     const token = Cookies.get("accessToken");
     if (token) {
@@ -99,7 +138,17 @@ const Header = () => {
     router.push(path);
   };
 
-  const goTowishlistPage = () => handleNavigation("/wishlist");
+  const loginData = useSelector((state: RootState) => state.login?.login?.data);
+  const userId = loginData?.user?._id || null;
+
+  const goTowishlistPage = () => {
+    if (userId) {
+      router.push(`/wishlist/${userId}`);
+    } else {
+      setOtpDialogOpen(true);
+    }
+  };
+
   const goTocartPage = () => handleNavigation("/cart");
   const goTohomepage = () => router.push("/");
 
@@ -109,9 +158,9 @@ const Header = () => {
   ) as MenuItem[];
 
   const menuWithSubmenus = menuData.map((menu: MenuItem) => ({
-    menuId: menu._id,
+    menuId: menu._id, // Use main menu _id instead of first submenu
     menuName: menu.name,
-    subMenus: menu.subMenus,
+    subMenus: menu.subMenus || [], // Ensure array
   }));
 
   const LoadingOverlay = () => (
@@ -139,56 +188,57 @@ const Header = () => {
                   <SheetTitle className="text-[30px] bg-[#535e51] p-3 mt-10 text-[#f1f5f4]">
                     ZAIRA
                   </SheetTitle>
-                  <SheetDescription>
-                    <Accordion
-                      type="single"
-                      collapsible
-                      value={openItem}
-                      onValueChange={setOpenItem}
-                      className="w-full"
-                    >
-                      {menuWithSubmenus.map((menu) => (
-                        <AccordionItem
-                          key={`menu-${menu.menuId}`}
-                          value={`menu-${menu.menuId}`}
-                        >
-                          <AccordionTrigger className="text-base font-medium text-black">
-                            {menu.menuName}
-                          </AccordionTrigger>
-                          <AccordionContent className="bg-gray-50">
-                            {menu.subMenus.length > 0 ? (
-                              <ul className="pl-4 space-y-2">
-                                {menu.subMenus.map((sub) => (
-                                  <li
-                                    key={`sub-${sub._id}`}
-                                    className="text-sm text-[#052659] underline underline-offset-4 cursor-pointer hover:text-blue-600"
-                                    onClick={() => {
-                                      dispatch(fetchSubmenusAction(menu.menuId)); // ✅ Pass menuId
-                                      router.push(`/menu/${menu.menuId}/submenus`);
-                                    }}
-                                  >
-                                    {sub.name}
-                                  </li>
-                                ))}
-                              </ul>
-                            ) : (
-                              <p className="pl-4 text-gray-500 text-sm">
-                                No submenus available
-                              </p>
-                            )}
-                          </AccordionContent>
-                        </AccordionItem>
-                      ))}
-                    </Accordion>
-                  </SheetDescription>
+                  <SheetDescription></SheetDescription>
                 </SheetHeader>
+                <div className=" px-4">
+                  <Accordion
+                    type="single"
+                    collapsible
+                    value={openItem}
+                    onValueChange={setOpenItem}
+                    className="w-full"
+                  >
+                    {menuWithSubmenus.map((menu) => (
+                      <AccordionItem
+                        key={`menu-${menu.menuId}`}
+                        value={`menu-${menu.menuId}`}
+                      >
+                        <AccordionTrigger className="text-base font-medium text-black">
+                          {menu.menuName}
+                        </AccordionTrigger>
+                        <AccordionContent className="bg-gray-50">
+                          {menu.subMenus.length > 0 ? (
+                            <ul className="pl-4 space-y-2">
+                              {menu.subMenus.map((sub: SubMenuItem) => (
+                                <li
+                                  key={`sub-${sub._id}`}
+                                  className="text-sm text-[#052659] underline underline-offset-4 cursor-pointer hover:text-blue-600"
+                                  onClick={() => {
+                                    dispatch(fetchSubmenusAction(sub._id)); // Fetch products for submenu
+                                    router.push(`/product/submenu/${sub._id}`);
+                                  }}
+                                >
+                                  {sub.name}
+                                </li>
+                              ))}
+                            </ul>
+                          ) : (
+                            <span className="pl-4 text-gray-500 text-sm">
+                              No submenus available
+                            </span>
+                          )}
+                        </AccordionContent>
+                      </AccordionItem>
+                    ))}
+                  </Accordion>
+                </div>
               </SheetContent>
             </Sheet>
           </div>
 
           {/* Logo */}
           <div
-            className="sm:text-[48px] text-[35px] font-bold text-[#f1f5f4] cursor-pointer mt-1 sm:mt-0"
+            className="sm:text-[35px] text-[24px] font-bold text-[#f1f5f4] cursor-pointer mt-1 sm:mt-0"
             onClick={goTohomepage}
           >
             ZAIRA
@@ -203,24 +253,39 @@ const Header = () => {
           </Button>
 
           <div className="hidden md:flex gap-5 items-center">
-            <div className="flex justify-center items-center gap-2">
-              <button
-                onClick={() => setShowInput((prev) => !prev)}
-                className="p-2 bg-transparent cursor-pointer"
-                data-search="true"
-              >
-                <Search className="text-[#f1f5f4] w-5 h-5" />
-              </button>
-              {showInput && (
-                <Input
-                  type="text"
-                  placeholder="Search"
-                  autoFocus
-                  className="lg:w-2xl w-2xs rounded-lg py-2 px-3 shadow-md transition-all duration-300 bg-white text-black placeholder-gray-500"
-                  data-search-input="true"
-                />
+            <div className="flex flex-col items-center gap-2 relative">
+              <div className="flex justify-center items-center gap-2">
+                <button
+                  onClick={() => setShowInput((prev) => !prev)}
+                  className="p-2 bg-transparent cursor-pointer"
+                  data-search="true"
+                >
+                  <Search className="text-[#f1f5f4] w-5 h-5" />
+                </button>
+                {showInput && (
+                  <input
+                    type="text"
+                    placeholder="Search"
+                    value={query}
+                    onChange={(e) => handleSearch(e.target.value)}
+                    autoFocus
+                    className="lg:w-2xl w-2xs rounded-lg py-2 px-3 shadow-md transition-all duration-300 bg-white text-black placeholder-gray-500"
+                    data-search-input="true"
+                  />
+                )}
+              </div>
+
+              {results.length > 0 && (
+                <ul className="absolute top-14 left-12 bg-white p-3 z-50 rounded shadow-md w-[calc(100%-3rem)] max-h-60 overflow-y-auto">
+                  {results.map((item: any, index: number) => (
+                    <li key={index} className="p-2 border-b last:border-none">
+                      {item.name}
+                    </li>
+                  ))}
+                </ul>
               )}
             </div>
+
             <UserRound
               className="text-[#f1f5f4] w-5 h-5 cursor-pointer"
               onClick={handleClick}
@@ -264,6 +329,8 @@ const Header = () => {
                 <Input
                   type="text"
                   placeholder="Search"
+                  value={query}
+                  onChange={(e) => handleSearch(e.target.value)}
                   className="flex-1 bg-transparent outline-none px-2 text-sm text-gray-800"
                   autoFocus
                 />
@@ -274,13 +341,26 @@ const Header = () => {
                   <X className="text-gray-500 w-5 h-5" />
                 </Button>
               </div>
+
               <div className="mt-3 bg-[#fdfdf4] rounded-lg shadow-md p-4">
-                <p className="text-xs text-gray-500 tracking-widest font-semibold mb-2">
-                  MOST SEARCHED
-                </p>
-                <ul className="text-sm text-gray-700 space-y-1">
-                  <li>Do Nothing</li>
-                </ul>
+                {loading ? (
+                  <p className="text-sm text-gray-500">Searching...</p>
+                ) : results.length > 0 ? (
+                  <ul className="text-sm text-gray-700 space-y-1">
+                    {results.map((item: any, index) => (
+                      <li
+                        key={index}
+                        className="hover:text-[#535e51] cursor-pointer"
+                      >
+                        {item.name}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-xs text-gray-500 tracking-widest font-semibold">
+                    MOST SEARCHED
+                  </p>
+                )}
               </div>
             </div>
           )}

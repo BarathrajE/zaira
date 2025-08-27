@@ -1,16 +1,21 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
+
+import SubmenusPage from "@/app/product/submenu/[submenuId]/page";
 import { homeBannerGetAction } from "@/app/redux/action/banner/homebanner";
-import { allProductGetAction } from "@/app/redux/action/product/allProduct";
+import { homeTshirtGetAction } from "@/app/redux/action/banner/homeTshirt";
+import { menuGetAction } from "@/app/redux/action/menu/menuGet";
+
 import { bestServiceGetAction } from "@/app/redux/action/product/bestservice";
 import { videoGetAction } from "@/app/redux/action/videofile/video";
 import { AppDispatch, RootState } from "@/app/redux/store";
 import CategorySlide from "@/swiperSide/categorySlide";
 import TrendingSlide from "@/swiperSide/trandingSlide";
 import VideoSlide from "@/swiperSide/videoSlide";
-import { log } from "console";
+import { Loader2 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "swiper/css";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
@@ -40,27 +45,52 @@ const Slide = () => {
   const goTowomen = () => {
     router.push("/womencollection");
   };
-  const goToproductPage = () => {
-    router.push("/productdisplay");
+  const goToproductPage = (id: string) => {
+    router.push(`/productdisplay/${id}`);
   };
+
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate page load (e.g. images, API, etc.)
+    const timer = setTimeout(() => setLoading(false), 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const LoadingOverlay = () => (
+    <div className="fixed inset-0 bg-white z-[100] flex items-center justify-center opacity-80">
+      <div className="bg-white rounded-lg p-6 flex flex-col items-center gap-4 shadow-xl">
+        <Loader2 className="w-8 h-8 animate-spin text-[#535e51]" />
+        <p className="text-[#535e51] font-medium">Loading...</p>
+      </div>
+    </div>
+  );
+
+  const menuData = useSelector((state: RootState) => state.menuGet.menu);
+
+  const userId: any = menuData && menuData.length > 0 ? menuData[0]._id : null;
 
   useEffect(() => {
     dispatch(homeBannerGetAction());
-    dispatch(allProductGetAction());
     dispatch(bestServiceGetAction());
     dispatch(videoGetAction());
-  }, [dispatch]);
+    dispatch(menuGetAction());
+
+    if (userId) {
+      homeTshirtGetAction(userId)(dispatch);
+    }
+  }, [dispatch, userId]);
 
   const homebanner: Banner[] = useSelector(
     (state: RootState) => state.home.homeBanner
   );
-  const allProduct: Banner[] = useSelector(
-    (state: RootState) => state.allProduct.allProducts
+  const homeTshirt = useSelector(
+    (state: RootState) => state.homeTshirt.homeTshirt
   );
+
   const bestService: Banner[] = useSelector(
     (state: RootState) => state.bestService.bestServices
   );
-  console.log("Best Service:", bestService);
 
   const mainBanners: MainBanner[] = homebanner
     .filter((banner: Banner) => banner.title === "main banner")
@@ -83,6 +113,8 @@ const Slide = () => {
     (banner: Banner) => banner.title === "offfer banner"
   );
   const offerBanner = offerBanners[0];
+
+  if (loading) return LoadingOverlay();
 
   return (
     <>
@@ -139,31 +171,46 @@ const Slide = () => {
           className="w-full h-full object-contain rounded-lg cursor-pointer"
           onClick={goToMen}
         />
-        <div className="pt-4 pb-10">
-          <div>
-            <p className="text-[#535e51] text-center pb-4 font-bold text-[28px] sm:text-[45px]">
-              T-SHIRTS
-            </p>
 
-            <div className="flex flex-wrap justify-center gap-5 px-3 ">
-              {[1, 2, 3].map((_, index) => (
-                <div key={index} className="w-full sm:w-[45%] lg:w-[31%]">
-                  <Image
-                    src="/assets/homeSlide_image/projectimg/t shirt-6.jpg"
-                    alt="T-Shirt"
-                    width={800}
-                    height={730}
-                    className="rounded-lg w-full h-auto object-cover  cursor-pointer"
-                    onClick={goToproductPage}
-                  />
-                  <p className="text-center  text-[#535e51]  font-bold text-[28px] sm:text-[35px]">
-                    POLO T-SHIRTS
-                  </p>
-                </div>
-              ))}
+        {loading ? (
+          LoadingOverlay()
+        ) : (
+          <div className="pt-4 pb-10">
+            <div>
+              <p className="text-[#535e51] text-center pb-4 font-bold text-[28px] sm:text-[45px]">
+                T-SHIRTS
+              </p>
+
+              <div className="flex flex-wrap justify-center gap-5 px-3">
+                {homeTshirt && homeTshirt.length > 0 ? (
+                  homeTshirt.map((item: any, index: number) => (
+                    <div
+                      key={item._id || index}
+                      className="w-full sm:w-[40%] lg:w-[26%]"
+                    >
+                      <Image
+                        src={
+                          item.imageUrl ||
+                          ""
+                        }
+                        alt={item.name || "T-Shirt"}
+                        width={800}
+                        height={730}
+                        className="rounded-lg w-full h-auto object-cover cursor-pointer"
+                        onClick={() => goToproductPage(item._id)}
+                      />
+                      <p className="text-center text-[#535e51] font-bold text-[28px] sm:text-[35px]">
+                        {item.name || "POLO T-SHIRTS"}
+                      </p>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-center text-gray-500">No T-Shirts found</p>
+                )}
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         <Image
           src={
@@ -177,31 +224,7 @@ const Slide = () => {
           className="w-full h-full object-cover rounded-lg cursor-pointer"
           onClick={goTowomen}
         />
-        <div className="pt-4 pb-10">
-          <div>
-            <p className="text-[#535e51] text-center pb-4 font-bold text-[28px] sm:text-[45px]">
-              T-SHIRTS
-            </p>
-
-            <div className="flex flex-wrap justify-center gap-5  px-3">
-              {[1, 2, 3].map((_, index) => (
-                <div key={index} className="w-full sm:w-[45%] lg:w-[31%]">
-                  <Image
-                    src="/assets/homeSlide_image/projectimg/t shirt-12.jpg"
-                    alt="T-Shirt"
-                    width={600}
-                    height={730}
-                    className="rounded-lg w-full h-auto object-cover cursor-pointer"
-                    onClick={goToproductPage}
-                  />
-                  <p className="text-center  text-[#535e51] font-bold text-[28px] sm:text-[35px]">
-                    WOMEN T-SHIRTS
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+        <div className="pt-4 pb-10"></div>
       </section>
       {/* swiper */}
       <section>
@@ -217,43 +240,27 @@ const Slide = () => {
           }}
           navigation={true}
           modules={[Autoplay, Pagination, Navigation]}
-          className="mySwiper w-full h-auto"
-          style={{ maxHeight: "80vh" }} 
+          className="mySwiper relative w-full h-auto"
         >
           <SwiperSlide>
-            <div className="relative w-full min-h-[50vh] sm:min-h-[70vh] lg:min-h-[80vh]">
-              <Image
-                src={
-                  offerBanner
-                    ? offerBanner.image
-                    : "/assets/homeSlide_image/womenshop.webp"
-                }
-                alt={offerBanner ? offerBanner.title : "Onam Essentials"}
-                width={1200}
-                height={600}
-                priority
-                sizes="(max-width: 640px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 85vw, (max-width: 1280px) 75vw, 1200px"
-                className="object-cover w-full h-full cursor-pointer"
-              />
-            </div>
+            <Image
+              src={offerBanner ? offerBanner.image : "/assets/homeSlide_image/"}
+              alt={offerBanner ? offerBanner.title : "Onam Essentials"}
+              width={1200} // Set an appropriate width
+              height={600} // Set an appropriate height
+              className="object-contain w-full h-auto"
+              sizes="(max-width: 640px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, (max-width: 1280px) 70vw, 1200px"
+            />
           </SwiperSlide>
-
           <SwiperSlide>
-            <div className="relative w-full min-h-[50vh] sm:min-h-[70vh] lg:min-h-[80vh]">
-              <Image
-                src={
-                  offerBanner
-                    ? offerBanner.image
-                    : "/assets/homeSlide_image/womenshop.webp"
-                }
-                alt={offerBanner ? offerBanner.title : "Onam Essentials"}
-                width={1200}
-                height={600}
-                priority
-                sizes="(max-width: 640px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 85vw, (max-width: 1280px) 75vw, 1200px"
-                className="object-cover w-full h-full cursor-pointer"
-              />
-            </div>
+            <Image
+              src={offerBanner ? offerBanner.image : "/assets/homeSlide_image/"}
+              alt={offerBanner ? offerBanner.title : "Onam Essentials"}
+              width={1200} // Set an appropriate width
+              height={600} // Set an appropriate height
+              className="object-contain w-full h-auto"
+              sizes="(max-width: 640px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, (max-width: 1280px) 70vw, 1200px"
+            />
           </SwiperSlide>
         </Swiper>
       </section>
@@ -265,17 +272,23 @@ const Slide = () => {
             </p>
 
             <div className="flex flex-wrap justify-center gap-5 ">
-              {[1, 2, 3].map((_, index) => (
-                <div key={index} className="w-full sm:w-[45%] lg:w-[31%]">
+              {bestService.map((service: any, index: number) => (
+                <div
+                  key={service.id || index}
+                  className="w-full sm:w-[40%] lg:w-[26%]"
+                >
                   <Image
-                    src="/assets/homeSlide_image/projectimg/t shirt-23.jpg"
-                    alt="T-Shirt"
+                    src={
+                      service.imageUrl ||
+                      "/assets/homeSlide_image/projectimg/t shirt-23.jp"
+                    }
+                    alt={service.title || "Service"}
                     width={600}
                     height={730}
                     className="rounded-lg w-full h-auto object-cover"
                   />
-                  <p className="text-center  text-[#535e51] font-bold text-[28px] sm:text-[35px]">
-                    SERVICES
+                  <p className="text-center text-[#535e51] font-bold text-[28px] sm:text-[35px]">
+                    {service.title || "SERVICES"}
                   </p>
                 </div>
               ))}

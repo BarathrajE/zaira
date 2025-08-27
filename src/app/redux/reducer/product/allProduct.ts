@@ -7,7 +7,7 @@ import {
 
 const initialState = {
   loading: false,
-  allProducts: [], 
+  product: null, // stores single product details
   error: null,
 };
 
@@ -16,7 +16,7 @@ export const allProductReducer = (state = initialState, action: any) => {
     case ALL_PRODUCT_GET_REQUEST:
       return { ...state, loading: true, error: null };
     case ALL_PRODUCT_GET_SUCCESS:
-      return { ...state, loading: false, allProducts: action.payload };
+      return { ...state, loading: false, product: action.payload, error: null };
     case ALL_PRODUCT_GET_FAILURE:
       return { ...state, loading: false, error: action.payload };
     default:

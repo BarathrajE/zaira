@@ -14,8 +14,6 @@ import { AppDispatch, RootState } from "@/app/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { tradingProductGetAction } from "@/app/redux/action/product/treadingproduct";
 
-
-
 interface MainBanner {
   id: string;
   image: string;
@@ -25,9 +23,9 @@ const HeritageSwiper = () => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  const handleImageClick = () => {
+  const handleImageClick = (id: string) => {
     setIsLoading(true);
-    router.push("/productdisplay");
+    router.push(`/productdisplay/${id}`);
   };
   const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
@@ -94,11 +92,11 @@ const HeritageSwiper = () => {
             }}
             className="heritage-swiper"
           >
-            {tradingProductList.map((product, index) => (
+            {tradingProductList.map((product: any, index: number) => (
               <SwiperSlide key={product.id || index}>
                 <div
                   className="relative flex justify-center cursor-pointer group"
-                  onClick={handleImageClick}
+                  onClick={() => handleImageClick(product.id)}
                 >
                   <Image
                     src={product.image}

@@ -1,28 +1,50 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { Swiper, SwiperSlide } from "swiper/react";
-import {
-  EffectCoverflow,
-  FreeMode,
-  Navigation,
-  Pagination,
-} from "swiper/modules";
-import { ShoppingCart } from "lucide-react";
+import { EffectCoverflow, FreeMode, Navigation } from "swiper/modules";
+import { Loader2, ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import "swiper/css";
 import "swiper/css/effect-coverflow";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
-const slideImages = [
-  "/assets/homeSlide_image/projectimg/t shirt-6.jpg",
-  "/assets/homeSlide_image/projectimg/t shirt-46.jpg",
-  "/assets/homeSlide_image/projectimg/t shirt-18.jpg",
-  "/assets/homeSlide_image/projectimg/t shirt-48.jpg",
-  "/assets/homeSlide_image/projectimg/t shirt-40.jpg",
-  "/assets/homeSlide_image/projectimg/t shirt-39.jpg",
-  "/assets/homeSlide_image/projectimg/t shirt-12.jpg",
-  "/assets/homeSlide_image/projectimg/t shirt-6.jpg",
-];
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/app/redux/store";
+import { fetchTrendingProducts } from "@/app/redux/action/mens/tranding";
+import { useRouter } from "next/navigation";
+
 const MenTreading = () => {
+  const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
+  const LoadingOverlay = () => (
+    <div className="fixed inset-0 bg-white z-[100] flex items-center justify-center opacity-80">
+      <div className="bg-white rounded-lg p-6 flex flex-col items-center gap-4 shadow-xl">
+        <Loader2 className="w-8 h-8 animate-spin text-[#535e51]" />
+        <p className="text-[#535e51] font-medium">Loading...</p>
+      </div>
+    </div>
+  );
+
+  useEffect(() => {
+    dispatch(fetchTrendingProducts());
+  }, [dispatch]);
+
+  const trendingProducts = useSelector(
+    (state: RootState) => state.getTrendingProducts.trendingProducts
+  );
+  console.log("Trending Products from store:", trendingProducts);
+
+  const handleImageClick = (id: string) => {
+    router.push(`/productdisplay/${id}`);
+  };
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (loading) return LoadingOverlay();
   return (
     <section className="w-full overflow-hidden py-6 bg-cover bg-center">
       <p className="text-[#535e51] font-bold text-[28px] text-center sm:text-[45px]">
@@ -77,17 +99,22 @@ const MenTreading = () => {
           }}
           className="mt-8 heritage-swiper w-full mx-auto"
         >
-          {slideImages.map((src, index) => (
-            <SwiperSlide key={index}>
+          {trendingProducts.map((product: any, index: number) => (
+            <SwiperSlide key={product._id || index}>
               <div className="relative flex justify-center">
                 <Image
-                  src={src}
+                  src={product.imageUrl}
                   width={500}
                   height={500}
-                  alt={`Slide ${index + 1}`}
-                  className="rounded-lg w-full  md:w-[300px] lg:w-[400px] h-auto object-cover transition-transform duration-300"
+                  alt={product.name}
+                  className="rounded-lg w-full md:w-[300px] lg:w-[400px] h-auto object-cover transition-transform duration-300"
                 />
-                <div className="shop-btn absolute bottom-5 right-30 flex bg-[#f1f5f4] px-4 gap-2 rounded-lg py-2  ">
+                <div
+                  className="shop-btn absolute bottom-5 right-5 flex bg-[#f1f5f4] px-4 gap-2 rounded-lg py-2"
+                  onClick={() => {
+                    handleImageClick(product._id);
+                  }}
+                >
                   <ShoppingCart className="text-[#535e51] font-bold" />
                   <p className="text-[#535e51] font-bold">Shop</p>
                 </div>

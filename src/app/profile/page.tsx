@@ -17,9 +17,7 @@ export default function HeaderWithButtons() {
   const orderpage = () => {
     router.push("/order");
   };
-  const handleContinueShopping = (): void => {
-    alert("Redirecting to home page...");
-  };
+   const goTohomepage = () => router.push("/");
 
  
 
@@ -106,7 +104,7 @@ export default function HeaderWithButtons() {
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
-              onClick={handleContinueShopping}
+              onClick={goTohomepage}
               className="inline-flex items-center justify-center px-6 py-3 border text-base font-medium rounded-lg transition-colors duration-200"
               style={{
                 borderColor: "#535e51",

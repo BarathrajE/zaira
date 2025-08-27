@@ -6,11 +6,12 @@ export function middleware(req: NextRequest) {
   // Define your public routes from the actual folders
   const publicRoutes = [
     "/",
-    "/authform", // renamed from /auth based on your folder
+    "/authform", 
     "/womencollection",
     "/mencollection",
     "/productdisplay",
     "/whatsapppage",
+    "/dashboard",
   ];
   // Allow access to proposal/details sub-routes (optional)
   const isProposalFormRoute = (path: string) => {
@@ -23,7 +24,7 @@ export function middleware(req: NextRequest) {
   const isPublicRoute =
     publicRoutes.includes(pathname) || isProposalFormRoute(pathname);
   if (!isPublicRoute && !token) {
-    return NextResponse.redirect(new URL("/authform", req.url)); // match your actual folder
+    return NextResponse.redirect(new URL("/authform", req.url)); 
   }
   return NextResponse.next();
 }

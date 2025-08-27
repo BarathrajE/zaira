@@ -11,7 +11,6 @@ import { AppDispatch, RootState } from "@/app/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { submenuGetAction } from "@/app/redux/action/menu/submenu";
 
-
 interface Submenu {
   _id: string;
   name: string;
@@ -22,6 +21,7 @@ const CategorySlide = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+
   useEffect(() => {
     dispatch(submenuGetAction());
   }, [dispatch]);
@@ -42,6 +42,16 @@ const CategorySlide = () => {
   const handleWomenClick = () => {
     setIsLoading(true);
     router.push("/womencollection");
+  };
+
+  const handleMenClicks = (id: string) => {
+    // Handle Men click, e.g., navigate or open a submenu
+    router.push(`/product/submenu/men/${id}`);
+  };
+
+  const handleWomenClicks = (id: string) => {
+    // Handle Women click, e.g., navigate or open a submenu
+    router.push(`/product/submenu/women/${id}`);
   };
 
   // Loading overlay
@@ -78,7 +88,7 @@ const CategorySlide = () => {
           1600: { slidesPerView: 6 },
         }}
       >
-        {submenuValues.map((item:any, index:number) => (
+        {submenuValues.map((item: any, index: number) => (
           <SwiperSlide key={item.id ?? index}>
             <div className="flex flex-col items-center justify-center cursor-pointer">
               <Image
@@ -88,10 +98,10 @@ const CategorySlide = () => {
                 alt={item.name}
                 onClick={
                   item.name === "Men"
-                    ? handleMenClick
+                    ? () => handleMenClicks(item.id)
                     : item.name === "Women"
-                    ? handleWomenClick
-                    : undefined
+                    ? () => handleWomenClicks(item.id)
+                    : () => router.push(`/product/submenu/${item.id}`)
                 }
                 className="md:rounded-lg rounded-full w-[80px] md:w-[200px] h-[80px] md:h-[300px] object-cover transition-transform duration-300 hover:scale-105 hover:shadow-lg"
               />
@@ -103,7 +113,7 @@ const CategorySlide = () => {
         ))}
       </Swiper>
 
-      {isLoading && <LoadingOverlay />}
+      {isLoading && LoadingOverlay()}
     </div>
   );
 };

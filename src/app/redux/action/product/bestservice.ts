@@ -28,12 +28,11 @@ export const bestServiceGetAction = () => {
     try {
       const services = await BestServiceGetApi();
       dispatch(BestServiceGetSuccess(services.data));
+      console.log("✅ Best Services fetched successfully:", services.data);
       return services.data;
     } catch (err: any) {
       dispatch(
-        BestServiceGetFailure(
-          err.message || "Failed to fetch best services"
-        )
+        BestServiceGetFailure(err.message || "Failed to fetch best services")
       );
     }
   };

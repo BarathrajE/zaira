@@ -6,6 +6,7 @@ import {
 } from "../../actiontype";
 import { AllProductGetApi } from "../../api/product/allProduct";
 
+// Action creators
 export const AllProductGetRequest = () => ({ type: ALL_PRODUCT_GET_REQUEST });
 export const AllProductGetSuccess = (data: any) => ({
   type: ALL_PRODUCT_GET_SUCCESS,
@@ -16,19 +17,18 @@ export const AllProductGetFailure = (error: any) => ({
   payload: error,
 });
 
-// Step 1: Get All Products
-export const allProductGetAction = () => {
+// Thunk for fetching product by ID
+export const allProductGetAction = (id: string) => {
   return async (dispatch: any) => {
     dispatch(AllProductGetRequest());
     try {
-      const products = await AllProductGetApi();
-      dispatch(AllProductGetSuccess(products)); // No .data here
-      return products;
+      const product = await AllProductGetApi(id); // id passed here
+      dispatch(AllProductGetSuccess(product));
+      return product;
     } catch (err: any) {
       dispatch(
-        AllProductGetFailure(err.message || "Failed to fetch all products")
+        AllProductGetFailure(err.message || "Failed to fetch product details")
       );
     }
   };
 };
-

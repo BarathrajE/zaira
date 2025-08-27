@@ -16,6 +16,7 @@ export const menuReducer = (state = initialState, action: any) => {
     case MENU_GET_REQUEST:
       return { ...state, loading: true, error: null };
     case MENU_GET_SUCCESS:
+
       return { ...state, loading: false, menu: action.payload };
     case MENU_GET_FAILURE:
       return { ...state, loading: false, error: action.payload };
