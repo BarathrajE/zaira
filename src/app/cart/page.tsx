@@ -163,7 +163,7 @@ const CheckoutComponent = () => {
 
       // Extract quantity mapping (productId:quantity)
       const quantityParam = productsPayload
-        .map((p) => `${encodeURIComponent(p.productId)}:${p.quantity}`)
+        .map((p) => `${p.quantity}`)
         .join("|");
 
       router.push(

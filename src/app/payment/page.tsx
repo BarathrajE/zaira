@@ -210,7 +210,7 @@ const PaymentPage = () => {
         const result = await dispatch<any>(createOrderAction(userId, payload));
         setIsProcessing(false);
 
-        if (result?.success) {
+        if (result?.status === 200) {
           setIsOpen(true);
         } else {
         }

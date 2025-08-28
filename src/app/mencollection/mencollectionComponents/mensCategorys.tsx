@@ -10,58 +10,14 @@ import { menuGetAction } from "@/app/redux/action/menu/menuGet";
 import { fetchSubmenusAction } from "@/app/redux/action/menu/collection";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/app/redux/store";
-
-const womenCategories = [
-  {
-    title: "Full Sleeve",
-    imageUrl: "/assets/homeSlide_image/projectimg/t shirt-12.jpg",
-  },
-  {
-    title: "Scoop Neck",
-    imageUrl: "/assets/homeSlide_image/projectimg/t shirt-9.jpg",
-  },
-  {
-    title: "Crew Neck",
-    imageUrl: "/assets/homeSlide_image/projectimg/t shirt-23.jpg",
-  },
-  {
-    title: "Oversized T-shirt",
-    imageUrl: "/assets/homeSlide_image/projectimg/t shirt-18.jpg",
-  },
-  {
-    title: "Sleeveless",
-    imageUrl: "/assets/homeSlide_image/projectimg/t shirt-46.jpg",
-  },
-];
-
-const menCategories = [
-  {
-    title: "Polo",
-    imageUrl: "/assets/homeSlide_image/projectimg/t shirt-28.jpg",
-  },
-  {
-    title: "Hoodie",
-    imageUrl: "/assets/homeSlide_image/projectimg/t shirt-27.jpg",
-  },
-  {
-    title: "Crew Neck",
-    imageUrl: "/assets/homeSlide_image/projectimg/t shirt-33.jpg",
-  },
-  {
-    title: "Graphic Tee",
-    imageUrl: "/assets/homeSlide_image/projectimg/t shirt-41.jpg",
-  },
-  {
-    title: "Tank Top",
-    imageUrl: "/assets/homeSlide_image/projectimg/t shirt-35.jpg",
-  },
-];
+import { useRouter } from "next/navigation";
 
 interface SubMenuItem {
   name: string;
   description: string;
   imageUrl: string;
   _id: string;
+  productCount?: number; // Add this - API should return this!
 }
 
 interface MenuItem {
@@ -73,89 +29,94 @@ interface MenuItem {
 
 const MenCategorySlide = () => {
   const [loading, setLoading] = useState(true);
+  const [activeCategory, setActiveCategory] = useState<"T-Shirt" | "Shirt">("T-Shirt");
   const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();
 
+  // Fetch menu once
   useEffect(() => {
     dispatch(menuGetAction());
   }, [dispatch]);
 
-  const menuData = useSelector(
-    (state: RootState) => state.menuGet.menu
-  ) as MenuItem[];
+  const menuData = useSelector((state: RootState) => state.menuGet.menu) as MenuItem[];
 
-  const submenuData = menuData.flatMap((menu: MenuItem) => menu.subMenus || []);
+  // Flatten all submenus
+  const submenuData = menuData.flatMap((menu) => menu.subMenus || []);
 
-  console.log("All fetched submenus:", submenuData);
+  // Get T-Shirt and Shirt submenu objects
+  const tShirtSubmenu = submenuData.find((submenu) => submenu.name === "T-Shirt");
+  const shirtSubmenu = submenuData.find((submenu) => submenu.name === "Shirt");
 
-  const menuWithSubmenus = menuData.map((menu: MenuItem) => ({
-    menuId: menu._id,
-    menuName: menu.name,
-    subMenus: menu.subMenus?.map((submenu: any) => submenu._id) || [],
+  // Fetch submenus for the active category
+  useEffect(() => {
+    if (activeCategory === "T-Shirt" && tShirtSubmenu?._id) {
+      dispatch(fetchSubmenusAction(tShirtSubmenu._id));
+    } else if (activeCategory === "Shirt" && shirtSubmenu?._id) {
+      dispatch(fetchSubmenusAction(shirtSubmenu._id));
+    }
+  }, [activeCategory, tShirtSubmenu?._id, shirtSubmenu?._id, dispatch]);
+
+  // Get fetched submenus from Redux
+  const fetchedSubmenus = useSelector(
+    (state: RootState) => Object.values(state.collection.submenus || {})
+  );
+
+  // Map fetched submenus to match your UI structure, using productCount
+  const dynamicCategories = fetchedSubmenus.map((submenu: any) => ({
+    title: submenu.name,
+    imageUrl: submenu.imageUrl,
+    id: submenu._id,
+    hasProducts:
+      typeof submenu.productCount === "number"
+        ? submenu.productCount > 0
+        : false // If optional, fallback is "no products"
   }));
-  console.log("Menu with Submenu IDs:", menuWithSubmenus);
 
+  // Loading overlay
   useEffect(() => {
-    if (!menuData.length) return;
-
-    const menMenu = menuData.find((menu) => menu.name === "Men");
-    if (!menMenu) return;
-
-    menMenu.subMenus?.forEach((submenu) => {
-      if (submenu._id) {
-        dispatch(fetchSubmenusAction(submenu._id));
-      }
-    });
-  }, [menuData, dispatch]);
-
-  useEffect(() => {
-    // Simulate page load (e.g. images, API, etc.)
     const timer = setTimeout(() => setLoading(false), 1500);
     return () => clearTimeout(timer);
   }, []);
-  const LoadingOverlay = () => (
-    <div className="fixed inset-0 bg-white z-[100] flex items-center justify-center opacity-80">
-      <div className="bg-white rounded-lg p-6 flex flex-col items-center gap-4 shadow-xl">
-        <Loader2 className="w-8 h-8 animate-spin text-[#535e51]" />
-        <p className="text-[#535e51] font-medium">Loading...</p>
+
+  if (loading) {
+    return (
+      <div className="fixed inset-0 bg-white z- flex items-center justify-center opacity-80">
+        <div className="bg-white rounded-lg p-6 flex flex-col items-center gap-4 shadow-xl">
+          <Loader2 className="w-8 h-8 animate-spin text-[#535e51]" />
+          <p className="text-[#535e51] font-medium">Loading...</p>
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
 
-  const [activeCategory, setActiveCategory] = useState<"women" | "men">(
-    "women"
-  );
-
-  const categories =
-    activeCategory === "women" ? womenCategories : menCategories;
-  if (loading) return LoadingOverlay();
   return (
     <section className="flex justify-center">
       <div className="pb-5 max-w-7xl">
-        {/* Category Selection Buttons */}
+        {/* Category buttons */}
         <div className="flex justify-center gap-4 mt-4 mb-6">
           <button
-            onClick={() => setActiveCategory("women")}
+            onClick={() => setActiveCategory("T-Shirt")}
             className={`px-6 py-2 rounded-md font-semibold ${
-              activeCategory === "women"
+              activeCategory === "T-Shirt"
                 ? "bg-[#535e51] text-white"
                 : "bg-gray-200 text-gray-800"
             }`}
           >
-            T-SHIRT
+            {tShirtSubmenu?.name || "T-Shirt"}
           </button>
           <button
-            onClick={() => setActiveCategory("men")}
+            onClick={() => setActiveCategory("Shirt")}
             className={`px-6 py-2 rounded-md font-semibold ${
-              activeCategory === "men"
+              activeCategory === "Shirt"
                 ? "bg-[#535e51] text-white"
                 : "bg-gray-200 text-gray-800"
             }`}
           >
-            SHIRT
+            {shirtSubmenu?.name || "Shirt"}
           </button>
         </div>
 
-        {/* Swiper Carousel */}
+        {/* Swiper */}
         <Swiper
           spaceBetween={10}
           loop={false}
@@ -173,16 +134,23 @@ const MenCategorySlide = () => {
           }}
         >
           <div className="flex overflow-x-auto space-x-4 mt-5 md:ps-15 px-3 md:gap-15 scrollbar-hide">
-            {categories.map((item, index) => (
+            {dynamicCategories.map((item) => (
               <div
-                key={index}
-                className="flex flex-col items-center justify-center flex-none cursor-pointer"
+                key={item.id}
+                className={`flex flex-col items-center justify-center flex-none cursor-pointer`}
               >
                 <Image
                   src={item.imageUrl}
                   width={400}
                   height={400}
                   alt={item.title}
+                  onClick={() => {
+                    if (!item.hasProducts) {
+                      alert("No products available under this submenu.");
+                      return;
+                    }
+                    router.push(`/product/submenu/${item.id}`);
+                  }}
                   className="md:rounded-lg rounded-[50%] md:w-[150px] w-[80px] md:h-auto h-[80px] object-cover transition-transform duration-300 hover:scale-105"
                 />
                 <p className="mt-2 text-base sm:text-lg text-[#535e51] font-bold">

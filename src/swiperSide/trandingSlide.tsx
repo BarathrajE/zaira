@@ -94,10 +94,7 @@ const HeritageSwiper = () => {
           >
             {tradingProductList.map((product: any, index: number) => (
               <SwiperSlide key={product.id || index}>
-                <div
-                  className="relative flex justify-center cursor-pointer group"
-                  onClick={() => handleImageClick(product.id)}
-                >
+                <div className="relative flex justify-center  group">
                   <Image
                     src={product.image}
                     width={500}
@@ -105,7 +102,10 @@ const HeritageSwiper = () => {
                     alt={product.title}
                     className="rounded-lg w-full sm:w-[400px] md:w-[450px] lg:w-[500px] h-auto object-cover transition-transform duration-300"
                   />
-                  <div className="shop-btn absolute bottom-5 right-10 flex bg-[#f1f5f4] px-4 gap-2 rounded-lg py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div
+                    className="shop-btn absolute bottom-5 right-10 flex bg-[#f1f5f4] px-4 gap-2 rounded-lg py-2 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    onClick={() => handleImageClick(product.id)}
+                  >
                     <ShoppingCart className="text-[#535e51]" />
                     <p className="text-[#535e51] font-bold">Shop</p>
                   </div>
