@@ -18,6 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../redux/store";
 import { getAllOrdersAction } from "../redux/action/order/allUserOrder";
 import { updateOrderAction } from "../redux/action/order/updateOrder";
+import { getAddressesAction } from "../redux/action/profile/addressGet";
 
 type OrderStatus = "Placed" | "Shipped" | "Out of Delivery" | "Delivered";
 
@@ -40,6 +41,7 @@ const OrderManagement: NextPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState<ModalType>("create");
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [localOrders, setLocalOrders] = useState<Order[]>([]);
   const [newOrder, setNewOrder] = useState<Omit<Order, "id" | "date">>({
     customer: "",
     email: "",
@@ -64,6 +66,34 @@ const OrderManagement: NextPage = () => {
   useEffect(() => {
     dispatch(getAllOrdersAction());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (Array.isArray(allorder)) {
+      setLocalOrders(
+        allorder.map((order: any) => ({
+          id: order._id,
+          customer: order.userId || "Guest",
+          email: order.userEmail || "N/A",
+          status: normalizeStatus(order.status),
+          total: order.totalAmount,
+          items: order.products.length,
+          date: new Date(order.createdAt).toLocaleDateString(),
+          address: order.address || "N/A",
+        }))
+      );
+    }
+  }, [allorder]);
+
+  const normalizeStatus = (status: string): OrderStatus => {
+    const statusMap: Record<string, OrderStatus> = {
+      placed: "Placed",
+      shipped: "Shipped",
+      "out of delivery": "Out of Delivery",
+      delivered: "Delivered",
+      delevered: "Delivered",
+    };
+    return statusMap[status.toLowerCase().trim()] || "Placed";
+  };
 
   const getStatusIcon = (status: OrderStatus) => {
     switch (status) {
@@ -95,41 +125,43 @@ const OrderManagement: NextPage = () => {
     }
   };
 
-  const filteredOrders = Array.isArray(allorder)
-    ? allorder.map((order: any) => ({
-        id: order._id,
-        customer: order.userId || "Guest",
-        email: order.userEmail || "N/A",
-        status: order.status,
-        total: order.totalAmount,
-        items: order.products.length,
-        date: new Date(order.createdAt).toLocaleDateString(),
-        address: order.address || "N/A",
-      }))
-    : [];
+  const userId =
+    useSelector((state: RootState) => state.login.login.data?.user?._id) ??
+    null;
+  const addressgetID = useSelector(
+    (state: RootState) => state.AddressGet.addresses
+  );
 
-  const countOrdersByStatus = (orders: Order[]) => {
-    const counts: Record<OrderStatus, number> = {
-      Placed: 0,
-      Shipped: 0,
-      "Out of Delivery": 0,
-      Delivered: 0,
-    };
+  const addressDetails = addressgetID.map((address: any) => ({
+    id: address._id,
+    addressname: address.name,
+    city: address.city,
+    state: address.state,
+    country: address.country,
+    phone: address.phone,
+    userId: address.userId,
+  }));
 
-    orders.forEach((order) => {
-      if (counts.hasOwnProperty(order.status)) {
-        counts[order.status]++;
-      }
-    });
+  useEffect(() => {
+    if (userId) dispatch(getAddressesAction(userId) as any);
+  }, [dispatch, userId]);
 
-    return counts;
-  };
-
-  const statusCounts = countOrdersByStatus(filteredOrders);
+  const statusCounts = localOrders.reduce((acc, order) => {
+    acc[order.status] = (acc[order.status] || 0) + 1;
+    return acc;
+  }, {} as Record<OrderStatus, number>);
 
   const openModal = (type: ModalType, order: Order | null = null) => {
+    if (order) {
+      const normalizedOrder = {
+        ...order,
+        status: normalizeStatus(order.status),
+      };
+      setSelectedOrder(normalizedOrder);
+    } else {
+      setSelectedOrder(null);
+    }
     setModalType(type);
-    setSelectedOrder(order);
     setShowModal(true);
   };
 
@@ -147,9 +179,14 @@ const OrderManagement: NextPage = () => {
     }
   };
 
+  const handleDeleteOrder = (orderId: string) => {
+    if (window.confirm("Are you sure you want to delete this order?")) {
+      setLocalOrders(localOrders.filter((order) => order.id !== orderId));
+    }
+  };
+
   const handleCreateOrder = () => {
     setShowModal(false);
-    // API call to create order can be added here
   };
 
   const handleUpdateOrder = async () => {
@@ -164,22 +201,22 @@ const OrderManagement: NextPage = () => {
           status: selectedOrder.status,
         }) as any
       );
-      console.log("Update response:", response);
       if (response) {
+        setLocalOrders(localOrders.map(order =>
+          order.id === selectedOrder.id ? selectedOrder : order
+        ));
         setShowModal(false);
-        dispatch(getAllOrdersAction());
+        alert("Order updated successfully!");
       }
     } catch (error) {
       console.error("Order update failed:", error);
-      // Optionally, show an error message to the user
+      alert("Failed to update order. Please try again.");
     }
   };
 
-  const handleDeleteOrder = (orderId: string) => {
-    if (window.confirm("Are you sure you want to delete this order?")) {
-      // API call to delete order can be added here
-    }
-  };
+  const matchedAddress = addressDetails.find(
+    (a: any) => a.id === selectedOrder?.address
+  );
 
   return (
     <div className="p-4 bg-gray-50">
@@ -247,13 +284,7 @@ const OrderManagement: NextPage = () => {
                 </select>
               </div>
             </div>
-            <button
-              onClick={() => openModal("create")}
-              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
-            >
-              <Plus className="w-4 h-4" />
-              Create Order
-            </button>
+          
           </div>
         </div>
 
@@ -287,7 +318,7 @@ const OrderManagement: NextPage = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {filteredOrders.map((order: Order) => (
+                {localOrders.map((order: Order) => (
                   <tr key={order.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4">{order.id}</td>
                     <td className="px-6 py-4">
@@ -295,7 +326,7 @@ const OrderManagement: NextPage = () => {
                     </td>
                     <td className="px-6 py-4">
                       <span
-                        className={`inline-flex items-center gap-2 px-2 py-1 text-sm border rounded  ${getStatusColor(
+                        className={`inline-flex items-center gap-2 px-2 py-1 text-sm border rounded ${getStatusColor(
                           order.status
                         )}`}
                       >
@@ -375,7 +406,16 @@ const OrderManagement: NextPage = () => {
                     <strong>Date:</strong> {selectedOrder?.date}
                   </div>
                   <div>
-                    <strong>Address:</strong> {selectedOrder?.address}
+                    <strong>Address: </strong>
+                    {matchedAddress ? (
+                      <>
+                        {matchedAddress.addressname}, {matchedAddress.city},{" "}
+                        {matchedAddress.state}, {matchedAddress.country} -{" "}
+                        {matchedAddress.phone}
+                      </>
+                    ) : (
+                      "Unknown"
+                    )}
                   </div>
                 </div>
               ) : modalType === "edit" ? (
@@ -389,7 +429,7 @@ const OrderManagement: NextPage = () => {
                     </label>
                     <select
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                      value={selectedOrder?.status || "Placed"}
+                      value={selectedOrder?.status}
                       onChange={(e) =>
                         setSelectedOrder({
                           ...selectedOrder!,
@@ -404,7 +444,6 @@ const OrderManagement: NextPage = () => {
                       ))}
                     </select>
                   </div>
-                  {/* Display other fields as read-only */}
                   <div>
                     <strong>Customer:</strong> {selectedOrder?.customer}
                   </div>

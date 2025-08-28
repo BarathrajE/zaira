@@ -21,8 +21,8 @@ export const createOrderAction = (userId: string, payload: any) => {
     dispatch(createOrderRequest());
     try {
       const response = await createOrderApi(userId, payload);
-      dispatch(createOrderSuccess(response));
-      return response; // useful for redirecting after success
+      dispatch(createOrderSuccess(response.data));
+      return response.data; // useful for redirecting after success
     } catch (error: any) {
       dispatch(createOrderFailure(error?.response?.data || error.message));
     }

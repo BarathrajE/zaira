@@ -11,12 +11,13 @@ export const createOrderApi = async (
     status?: string;
     designPrint?: boolean;
     designId?: string | null;
+    Size?: string;
   }
 ) => {
   return await apiRequest(
-    `/order/create/${userId}`, // Corrected endpoint
-    "POST",                    // Correct method
-    payload,                   // Sending order payload
+    `/order/create/${userId}`,
+    "POST",
+    payload,
     true,
     true
   );

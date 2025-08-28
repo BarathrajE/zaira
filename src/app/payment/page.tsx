@@ -38,8 +38,9 @@ const paymentOptions: PaymentOption[] = [
 ];
 
 interface ProductItem {
-  productId: string;
-  quantity: number;
+  productId: string | null;
+  quantity: number | string | null;
+  size?: string | null;
 }
 const PaymentPage = () => {
   const [loading, setLoading] = useState(true);
@@ -60,7 +61,12 @@ const PaymentPage = () => {
   const itemTotal = searchParams.get("itemTotal");
   const savings = searchParams.get("savings");
   const billTotal = searchParams.get("billTotal");
-  const productsId = searchParams.get("id");
+  const productsId = searchParams.get("ids");
+  const productsIds = searchParams.get("id");
+  const Sizeid = searchParams.get("sizeId");
+  console.log("Sizeid:", Sizeid);
+
+  const quantity = searchParams.get("quantity");
 
   const dispatch = useDispatch();
   const handlePaymentComplete = () => {
@@ -87,7 +93,7 @@ const PaymentPage = () => {
 
     const options = {
       key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID, // Add your Razorpay key
-      amount: 4374900, // Amount in paise (₹43,749 * 100)
+      amount: 4374900,
       currency: "INR",
       name: "Your Store Name",
       description: "Order Payment",
@@ -96,6 +102,7 @@ const PaymentPage = () => {
         console.log("Payment successful:", response);
         setIsProcessing(false);
         handlePaymentComplete();
+        setIsOpen(true);
       },
       prefill: {
         name: "Customer Name",
@@ -137,17 +144,26 @@ const PaymentPage = () => {
   }, [dispatch, userId]);
 
   useEffect(() => {
-    if (!productsId) return;
+    const rawIds = productsId || productsIds;
 
-    const ids = productsId.split(",").filter((id) => id);
+    if (!rawIds) {
+      console.error("Missing product ID");
+      return;
+    }
+
+    const ids = rawIds
+      .split(",")
+      .map((id) => id.trim())
+      .filter((id) => id !== "");
 
     const productsPayload: ProductItem[] = ids.map((id) => ({
       productId: id,
-      quantity: 1, // default quantity
+      quantity: Number(quantity) || 1,
+      size: Sizeid || null,
     }));
 
     setValidProducts(productsPayload);
-  }, [productsId]);
+  }, [productsId, productsIds, quantity, Sizeid]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -157,22 +173,52 @@ const PaymentPage = () => {
       return;
     }
 
+    if (!userId) {
+      toast.error("User not logged in.");
+      return;
+    }
+
+    if (!addressId) {
+      toast.error("Please select a delivery address.");
+      return;
+    }
+
+    console.log("Submitting order with:", {
+      userId,
+      validProducts,
+      addressId,
+      selectedPayment,
+      billTotal,
+    });
+
     const payload = {
-      user: userId,
       products: validProducts,
       address: addressId,
       paymentMethod: selectedPayment === "cashOnDelivery" ? "COD" : "Online",
-      totalAmount: Number(billTotal) || 0,
       status: "Placed",
       designPrint: false,
       designId: null,
     };
 
-    if (selectedPayment === "cashOnDelivery") {
-      await dispatch<any>(createOrderAction(userId, payload));
-      handlePaymentComplete();
-    } else if (selectedPayment === "onlinePayment") {
-      initiateRazorpayPayment();
+    console.log("Final payload:", payload);
+
+    try {
+      if (selectedPayment === "cashOnDelivery") {
+        setIsProcessing(true);
+        const result = await dispatch<any>(createOrderAction(userId, payload));
+        setIsProcessing(false);
+
+        if (result?.success) {
+          setIsOpen(true);
+        } else {
+        }
+      } else if (selectedPayment === "onlinePayment") {
+        initiateRazorpayPayment();
+      }
+    } catch (error) {
+      setIsProcessing(false);
+      console.error("Order submission error:", error);
+      toast.error("Failed to place order. Please try again.");
     }
   };
 

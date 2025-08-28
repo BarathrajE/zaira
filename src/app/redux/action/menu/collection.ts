@@ -6,7 +6,6 @@ import {
 } from "../../actiontype";
 import { collectionMenuGetApi } from "../../api/menu/collectionapi";
 
-
 export const fetchSubmenusRequest = () => ({ type: FETCH_SUBMENUS_REQUEST });
 export const fetchSubmenusSuccess = (data: any) => ({
   type: FETCH_SUBMENUS_SUCCESS,
@@ -17,7 +16,6 @@ export const fetchSubmenusFailure = (error: any) => ({
   payload: error,
 });
 
-// Thunk action
 export const fetchSubmenusAction = (submenuId: string) => {
   return async (dispatch: any) => {
     dispatch(fetchSubmenusRequest());
@@ -26,7 +24,13 @@ export const fetchSubmenusAction = (submenuId: string) => {
       dispatch(fetchSubmenusSuccess(response));
       return response;
     } catch (err: any) {
+      if (err.response?.status === 404) {
+        console.warn(`No products for submenu: ${submenuId}`);
+        dispatch(fetchSubmenusSuccess([])); // dispatch empty data
+        return;
+      }
       dispatch(fetchSubmenusFailure(err.message || "Failed to fetch submenus"));
     }
   };
 };
+

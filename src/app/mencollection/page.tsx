@@ -113,7 +113,7 @@ const MenPages = () => {
           }}
           navigation={true}
           modules={[Autoplay, Pagination, Navigation]}
-          className="mySwiper relative w-full h-auto"
+          className="mySwiper relative w-full "
         >
           {mainBanners.map((banner: any) => (
             <SwiperSlide key={banner.id}>
@@ -121,9 +121,9 @@ const MenPages = () => {
                 src={banner.image}
                 alt={banner.title}
                 width={1200}
-                height={600}
-                className="object-contain w-full h-auto"
-                sizes="(max-width: 640px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, (max-width: 1280px) 70vw, 1200px"
+                height={400}
+                className="object-contain w-full h-full"
+                
               />
             </SwiperSlide>
           ))}

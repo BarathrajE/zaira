@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { Swiper } from "swiper/react";
 import { FreeMode, Pagination } from "swiper/modules";
@@ -5,6 +6,10 @@ import "swiper/css";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
+import { menuGetAction } from "@/app/redux/action/menu/menuGet";
+import { fetchSubmenusAction } from "@/app/redux/action/menu/collection";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/app/redux/store";
 
 const womenCategories = [
   {
@@ -52,8 +57,55 @@ const menCategories = [
   },
 ];
 
+interface SubMenuItem {
+  name: string;
+  description: string;
+  imageUrl: string;
+  _id: string;
+}
+
+interface MenuItem {
+  name: string;
+  subMenus: SubMenuItem[];
+  __v: number;
+  _id: string;
+}
+
 const MenCategorySlide = () => {
   const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    dispatch(menuGetAction());
+  }, [dispatch]);
+
+  const menuData = useSelector(
+    (state: RootState) => state.menuGet.menu
+  ) as MenuItem[];
+
+  const submenuData = menuData.flatMap((menu: MenuItem) => menu.subMenus || []);
+
+  console.log("All fetched submenus:", submenuData);
+
+  const menuWithSubmenus = menuData.map((menu: MenuItem) => ({
+    menuId: menu._id,
+    menuName: menu.name,
+    subMenus: menu.subMenus?.map((submenu: any) => submenu._id) || [],
+  }));
+  console.log("Menu with Submenu IDs:", menuWithSubmenus);
+
+  useEffect(() => {
+    if (!menuData.length) return;
+
+    const menMenu = menuData.find((menu) => menu.name === "Men");
+    if (!menMenu) return;
+
+    menMenu.subMenus?.forEach((submenu) => {
+      if (submenu._id) {
+        dispatch(fetchSubmenusAction(submenu._id));
+      }
+    });
+  }, [menuData, dispatch]);
 
   useEffect(() => {
     // Simulate page load (e.g. images, API, etc.)

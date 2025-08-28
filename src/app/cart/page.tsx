@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-
 import Image from "next/image";
 import { Trash2, Loader2 } from "lucide-react";
 import Header from "@/header/pages";
@@ -18,36 +17,44 @@ interface CartProduct {
     _id: string;
     name: string;
     heading?: string;
-    // other product fields if needed
+    price?: number;
+    imageUrl?: string;
+    sizes?: Array<{ _id: string; size: string }>;
   };
   quantity: number;
+  color?: string;
+  size?: string;
 }
+
 const CheckoutComponent = () => {
   const router = useRouter();
-
-  const goToAddressPage = () => {
-    if (productsPayload && productsPayload.length > 0) {
-      const ids = productsPayload.map((p) => p.productId).join(",");
-      router.push(`/address?id=${ids}`);
-    } else {
-      router.push("/address"); // fallback if no products
-    }
-  };
-
+  const [selectedSizes, setSelectedSizes] = useState<Record<string, string>>(
+    {}
+  );
   const [loading, setLoading] = useState(true);
-  const [updatingItems, setUpdatingItems] = useState<string[]>([]); // Track items being updated
-  const dispatch = useDispatch();
+  const [updatingItems, setUpdatingItems] = useState<string[]>([]);
 
+  const dispatch = useDispatch();
   const userId = useSelector(
     (state: RootState) => state.login.login.data.user?._id
   );
-  console.log("userId:", userId);
-
   const getcartdata = useSelector((state: RootState) => state.getcart.cart);
-  const productsPayload: { productId: any; quantity: number }[] =
+
+  const productsPayload: { productId: string; quantity: number }[] =
     getcartdata?.items?.map((item: CartProduct) => ({
       productId: item.productId._id,
+      quantity: item.quantity,
     })) || [];
+
+  useEffect(() => {
+    if (getcartdata?.items) {
+      const initialSizes = getcartdata.items.reduce((acc: any, item: any) => {
+        acc[item.productId._id] = item.size || "";
+        return acc;
+      }, {} as Record<string, string>);
+      setSelectedSizes(initialSizes);
+    }
+  }, [getcartdata?.items]);
 
   // Fetch cart on page load if userId exists
   useEffect(() => {
@@ -69,167 +76,107 @@ const CheckoutComponent = () => {
     </div>
   );
 
-  if (loading) return LoadingOverlay();
+  if (loading) return <LoadingOverlay />;
 
-  // Calculate total price locally (for immediate UI updates)
-  const calculateTotalPrice = (items: any[]) => {
+  // Calculate total price locally
+  const calculateTotalPrice = (items: CartProduct[]) => {
     return items.reduce((total, item) => {
       return total + (item.productId?.price || 0) * (item.quantity || 1);
     }, 0);
   };
 
-  // Update quantity handler with optimistic updates
+  // Update quantity handler
   const handleQtyChange = async (
     e: React.ChangeEvent<HTMLInputElement>,
     productId: string
   ) => {
     const newQty = parseInt(e.target.value);
-    if (newQty < 1) return; // prevent invalid quantity
+    if (newQty < 1) return;
 
     if (userId && getcartdata?.items) {
-      // Add to updating items
       setUpdatingItems((prev) => [...prev, productId]);
-
       try {
-        // Prepare updated items array with all required fields
-        const updatedItems = getcartdata.items.map((item: any) => {
-          if (
-            item.productId._id === productId ||
-            item.productId === productId
-          ) {
+        const updatedItems = getcartdata.items.map((item: CartProduct) => {
+          if (item.productId._id === productId) {
             return {
-              productId: item.productId._id || item.productId,
+              productId: item.productId._id,
               quantity: newQty,
               color: item.color,
               size: item.size,
             };
           }
           return {
-            productId: item.productId._id || item.productId,
+            productId: item.productId._id,
             quantity: item.quantity,
             color: item.color,
             size: item.size,
           };
         });
 
-        console.log("Sending updated items:", updatedItems);
-
-        // Dispatch updateCartAction and wait for completion
         await dispatch(updateCartAction(userId, updatedItems) as any);
-
-        // Refresh cart data to get updated totals from server
         await dispatch(fetchCart(userId) as any);
       } catch (error) {
         console.error("Error updating quantity:", error);
-        // Optionally show error message to user
       } finally {
-        // Remove from updating items
         setUpdatingItems((prev) => prev.filter((id) => id !== productId));
       }
     }
   };
 
-  // Remove item handler with comprehensive debugging and fallback methods
+  // Remove item handler
   const handleRemoveItem = async (productId: string) => {
-    if (!userId || !productId || !getcartdata?.items) {
-      console.error("Missing required data for item removal:", {
-        userId,
-        productId,
-        hasItems: !!getcartdata?.items,
-      });
-      return;
-    }
+    if (!userId || !productId || !getcartdata?.items) return;
 
-    console.log("Starting removal process for productId:", productId);
-    console.log("Current cart items:", getcartdata.items);
-
-    // Add to updating items for loading state
     setUpdatingItems((prev) => [...prev, productId]);
-
     try {
-      // Skip the DELETE action entirely and go straight to the update method
-      console.log("Using update method to remove item");
-
-      // Filter out the item to be removed
-      const filteredItems = getcartdata.items.filter((item: any) => {
-        const itemProductId = item.productId?._id || item.productId;
-        const shouldKeep = itemProductId !== productId;
-        console.log(
-          `Item ${itemProductId} === ${productId}? ${
-            itemProductId === productId
-          }, keeping: ${shouldKeep}`
-        );
-        return shouldKeep;
-      });
-
-      console.log("Items after filtering:", filteredItems);
-
-      // Map to proper format with all required fields
-      const updatedItems = filteredItems.map((item: any) => {
-        const mappedItem = {
-          productId: item.productId?._id || item.productId,
-          quantity: item.quantity || 1,
-          color: item.color || "",
-          size: item.size || "",
-        };
-        console.log("Mapped item:", mappedItem);
-        return mappedItem;
-      });
-
-      console.log("Final items to send:", updatedItems);
-
-      if (updatedItems.length === getcartdata.items.length) {
-        console.error("No items were filtered out - item not found!");
-        return;
-      }
-
-      // Update cart with filtered items
-      const updateResult = await dispatch(
-        updateCartAction(userId, updatedItems) as any
+      const filteredItems = getcartdata.items.filter(
+        (item: CartProduct) => item.productId._id !== productId
       );
-      console.log("Update result:", updateResult);
 
-      // Refresh cart data
-      const fetchResult = await dispatch(fetchCart(userId) as any);
-      console.log("Fetch result:", fetchResult);
+      const updatedItems = filteredItems.map((item: CartProduct) => ({
+        productId: item.productId._id,
+        quantity: item.quantity,
+        color: item.color,
+        size: item.size,
+      }));
+
+      await dispatch(updateCartAction(userId, updatedItems) as any);
+      await dispatch(fetchCart(userId) as any);
     } catch (error) {
       console.error("Error removing item:", error);
-
-      // Try one more time with a simpler approach - set quantity to 0
-      try {
-        console.log("Trying to set quantity to 0 method");
-        const updatedItems = getcartdata.items.map((item: any) => {
-          const itemProductId = item.productId?._id || item.productId;
-          if (itemProductId === productId) {
-            return {
-              productId: itemProductId,
-              quantity: 0, // Set to 0 to effectively remove
-              color: item.color || "",
-              size: item.size || "",
-            };
-          }
-          return {
-            productId: itemProductId,
-            quantity: item.quantity || 1,
-            color: item.color || "",
-            size: item.size || "",
-          };
-        });
-
-        await dispatch(updateCartAction(userId, updatedItems) as any);
-        await dispatch(fetchCart(userId) as any);
-      } catch (finalError) {
-        console.error("All removal methods failed:", finalError);
-        // You might want to show a user-friendly error message here
-        alert("Failed to remove item from cart. Please try again.");
-      }
+      alert("Failed to remove item. Please try again.");
     } finally {
-      // Remove from updating items
       setUpdatingItems((prev) => prev.filter((id) => id !== productId));
     }
   };
 
-  // Get current total price (use calculated if items exist, otherwise use server value)
+  // Navigate to address page
+  const goToAddressPage = () => {
+  if (Array.isArray(productsPayload) && productsPayload.length > 0) {
+    const ids = productsPayload
+      .map((p) => encodeURIComponent(p.productId))
+      .join(",");
+
+    const sizes = Object.entries(selectedSizes)
+      .map(
+        ([productId, size]) =>
+          `${encodeURIComponent(productId)}:${encodeURIComponent(size)}`
+      )
+      .join("|");
+
+    // Extract quantity mapping (productId:quantity)
+    const quantityParam = productsPayload
+      .map((p) => `${p.quantity}`)
+      .join("|");
+
+    router.push(`/address?ids=${ids}&sizes=${sizes}&quantity=${quantityParam}`);
+  } else {
+    router.push("/address");
+  }
+};
+
+
+  // Calculate current total price
   const currentTotalPrice =
     getcartdata?.items?.length > 0
       ? calculateTotalPrice(getcartdata.items)
@@ -238,17 +185,15 @@ const CheckoutComponent = () => {
   return (
     <section className="bg-[#f1f5f4] min-h-screen">
       <Header />
-
       <div className="max-w-6xl mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Left: Cart Items */}
         <div className="md:col-span-2 space-y-4">
           {getcartdata?.items?.length > 0 ? (
-            getcartdata.items.map((item: any, index: number) => {
-              const isUpdating = updatingItems.includes(item.productId?._id);
-
+            getcartdata.items.map((item: CartProduct, index: number) => {
+              const isUpdating = updatingItems.includes(item.productId._id);
               return (
                 <div
-                  key={item.productId?._id || index}
+                  key={item.productId._id || index}
                   className="p-4 bg-white rounded-lg shadow relative"
                 >
                   {isUpdating && (
@@ -256,7 +201,6 @@ const CheckoutComponent = () => {
                       <Loader2 className="w-6 h-6 animate-spin text-[#535e51]" />
                     </div>
                   )}
-
                   <div className="flex items-start space-x-4">
                     <div className="w-40 h-40 rounded-lg overflow-hidden">
                       <Image
@@ -267,7 +211,6 @@ const CheckoutComponent = () => {
                         className="object-contain w-full h-full"
                       />
                     </div>
-
                     <div className="flex-1">
                       <div className="flex justify-between flex-wrap gap-4">
                         {/* Product Info */}
@@ -280,20 +223,19 @@ const CheckoutComponent = () => {
                           </p>
                           <div className="mt-1">
                             <span className="text-lg font-bold text-[#535e51]">
-                              ₹{item.productId?.price}
+                              ₹{item.productId?.price?.toLocaleString()}
                             </span>
                             {item.quantity > 1 && (
                               <span className="text-sm text-gray-500 ml-2">
                                 (₹
                                 {(
-                                  item.productId?.price * item.quantity
+                                  (item.productId?.price || 0) * item.quantity
                                 ).toLocaleString()}{" "}
                                 total)
                               </span>
                             )}
                           </div>
                         </div>
-
                         {/* Controls: Size, Qty, Remove */}
                         <div className="flex items-start gap-4">
                           <div>
@@ -306,12 +248,22 @@ const CheckoutComponent = () => {
                             <select
                               id={`size-${index}`}
                               className="rounded-md px-2 py-1 text-sm border border-gray-300"
-                              defaultValue={item.size || "xl"}
+                              value={
+                                selectedSizes[item.productId._id] ||
+                                item.size ||
+                                ""
+                              }
+                              onChange={(e) =>
+                                setSelectedSizes((prev) => ({
+                                  ...prev,
+                                  [item.productId._id]: e.target.value,
+                                }))
+                              }
                               disabled={isUpdating}
                             >
-                              {item.productId?.sizes?.map((s: any) => (
+                              {item.productId?.sizes?.map((s) => (
                                 <option key={s._id} value={s.size}>
-                                  {s.size.toUpperCase()}
+                                  {s.size}
                                 </option>
                               ))}
                             </select>
@@ -331,26 +283,16 @@ const CheckoutComponent = () => {
                               value={item.quantity}
                               className="w-16 rounded-md px-2 py-1 text-sm border border-gray-300"
                               onChange={(e) =>
-                                handleQtyChange(e, item.productId?._id)
+                                handleQtyChange(e, item.productId._id)
                               }
                               disabled={isUpdating}
                             />
                           </div>
-
                           <button
                             className={`text-red-500 hover:text-red-700 mt-6 ${
                               isUpdating ? "opacity-50 cursor-not-allowed" : ""
                             }`}
-                            onClick={() => {
-                              const productIdToRemove =
-                                item.productId?._id || item.productId;
-                              console.log(
-                                "Delete button clicked for productId:",
-                                productIdToRemove
-                              );
-                              console.log("Full item data:", item);
-                              handleRemoveItem(productIdToRemove);
-                            }}
+                            onClick={() => handleRemoveItem(item.productId._id)}
                             disabled={isUpdating}
                           >
                             <Trash2 size={20} />
@@ -386,7 +328,8 @@ const CheckoutComponent = () => {
                 <span>Items ({getcartdata?.items?.length || 0})</span>
                 <span>
                   {getcartdata?.items?.reduce(
-                    (total: number, item: any) => total + (item.quantity || 1),
+                    (total: number, item: CartProduct) =>
+                      total + (item.quantity || 1),
                     0
                   )}{" "}
                   units
@@ -403,7 +346,6 @@ const CheckoutComponent = () => {
                 </div>
               </div>
             </div>
-
             <button
               className={`w-full py-3 rounded-lg text-white mt-4 ${
                 getcartdata?.items?.length > 0
@@ -418,7 +360,6 @@ const CheckoutComponent = () => {
           </div>
         </div>
       </div>
-
       <Footer />
     </section>
   );

@@ -26,7 +26,7 @@ export default function SubmenusPage() {
   const dispatch = useDispatch<AppDispatch>();
   const submenuId = params?.submenuId as string;
   const submenuData = useSelector((state: RootState) => state.collection.submenus);
-  console.log("Redux submenus:", submenuData);
+  
 
   useEffect(() => {
     if (submenuId) {
