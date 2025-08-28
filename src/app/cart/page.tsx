@@ -152,29 +152,27 @@ const CheckoutComponent = () => {
 
   // Navigate to address page
   const goToAddressPage = () => {
-  if (Array.isArray(productsPayload) && productsPayload.length > 0) {
-    const ids = productsPayload
-      .map((p) => encodeURIComponent(p.productId))
-      .join(",");
+    if (Array.isArray(productsPayload) && productsPayload.length > 0) {
+      const ids = productsPayload
+        .map((p) => encodeURIComponent(p.productId))
+        .join(",");
 
-    const sizes = Object.entries(selectedSizes)
-      .map(
-        ([productId, size]) =>
-          `${encodeURIComponent(productId)}:${encodeURIComponent(size)}`
-      )
-      .join("|");
+      const sizes = Object.entries(selectedSizes)
+        .map(([size]) => `${encodeURIComponent(size)}`)
+        .join("|");
 
-    // Extract quantity mapping (productId:quantity)
-    const quantityParam = productsPayload
-      .map((p) => `${p.quantity}`)
-      .join("|");
+      // Extract quantity mapping (productId:quantity)
+      const quantityParam = productsPayload
+        .map((p) => `${encodeURIComponent(p.productId)}:${p.quantity}`)
+        .join("|");
 
-    router.push(`/address?ids=${ids}&sizes=${sizes}&quantity=${quantityParam}`);
-  } else {
-    router.push("/address");
-  }
-};
-
+      router.push(
+        `/address?ids=${ids}&sizes=${sizes}&quantity=${quantityParam}`
+      );
+    } else {
+      router.push("/address");
+    }
+  };
 
   // Calculate current total price
   const currentTotalPrice =

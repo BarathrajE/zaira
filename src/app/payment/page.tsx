@@ -162,6 +162,8 @@ const PaymentPage = () => {
       size: Sizeid || null,
     }));
 
+ 
+
     setValidProducts(productsPayload);
   }, [productsId, productsIds, quantity, Sizeid]);
 
