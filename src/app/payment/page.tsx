@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { getAddressesAction } from "../redux/action/profile/addressGet";
 import { toast } from "sonner";
+import Checkout from "../onlinePayment/page";
 
 type PaymentOption = {
   id: string;
@@ -162,8 +163,6 @@ const PaymentPage = () => {
       size: Sizeid || null,
     }));
 
- 
-
     setValidProducts(productsPayload);
   }, [productsId, productsIds, quantity, Sizeid]);
 
@@ -232,18 +231,6 @@ const PaymentPage = () => {
       </div>
     </div>
   );
-
-  // Add Razorpay script to head
-  useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "https://checkout.razorpay.com/v1/checkout.js";
-    script.async = true;
-    document.body.appendChild(script);
-
-    return () => {
-      document.body.removeChild(script);
-    };
-  }, []);
 
   if (loading) return <LoadingOverlay />;
 
@@ -344,20 +331,20 @@ const PaymentPage = () => {
                 </div>
 
                 <div>
-                  <button
-                    type="submit"
-                    disabled={isProcessing}
-                    className="w-full px-6 py-3 bg-[#535e51] text-white rounded-lg font-semibold hover:bg-[#4a5348] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                  >
-                    {isProcessing && (
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                    )}
-                    {selectedPayment === "cashOnDelivery"
-                      ? "Place Order"
-                      : isProcessing
-                      ? "Processing..."
-                      : "Pay Now"}
-                  </button>
+                  {selectedPayment === "cashOnDelivery" ? (
+                    <button
+                      type="submit"
+                      disabled={isProcessing}
+                      className="w-full px-6 py-3 bg-[#535e51] text-white rounded-lg font-semibold hover:bg-[#4a5348] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    >
+                      {isProcessing && (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      )}
+                      Place Order
+                    </button>
+                  ) : (
+                    <Checkout />
+                  )}
 
                   <PaymentSuccessDialog
                     isOpen={isOpen}

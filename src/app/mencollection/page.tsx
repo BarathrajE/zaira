@@ -8,32 +8,61 @@ import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import MenTreading from "./mencollectionComponents/MenTreading";
 import MenCategorySlide from "./mencollectionComponents/mensCategorys";
-import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { homeBannerGetAction } from "../redux/action/banner/homebanner";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../redux/store";
 import { fetchGallery } from "../redux/action/mens/gallery";
+import { useRouter } from "next/navigation";
+import LoadingOverlay from "@/_components/LoadingOverlay";
 
 const MenPages = () => {
   const [loading, setLoading] = useState(true);
-
+  const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
 
+  // Initial page loading timeout
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 1500);
     return () => clearTimeout(timer);
   }, []);
 
-  const LoadingOverlay = () => (
-    <div className="fixed inset-0 bg-white z-[100] flex items-center justify-center opacity-80">
-      <div className="bg-white rounded-lg p-6 flex flex-col items-center gap-4 shadow-xl">
-        <Loader2 className="w-8 h-8 animate-spin text-[#535e51]" />
-        <p className="text-[#535e51] font-medium">Loading...</p>
-      </div>
-    </div>
-  );
+  // Fetching banners and gallery
+  useEffect(() => {
+    dispatch(homeBannerGetAction());
+    dispatch(fetchGallery());
+  }, [dispatch]);
 
+  // Redux selectors
+  const homebanner = useSelector((state: RootState) => state.home.homeBanner);
+  const gallery = useSelector((state: RootState) => state.getgallery.gallery);
+
+  // Derived data
+  const productsFromGallery = gallery
+    .filter((item: any) => item.title === "mens gallery" && item.image)
+    .map((item: any) => ({
+      id: item.id,
+      name: item.name,
+      image: item.image,
+    }));
+
+  const mainBanners = homebanner
+    .filter((banner: any) => banner.title === "men-main-banner" && banner.image)
+    .map((banner: any) => ({
+      id: banner._id,
+      image: banner.image,
+      title: banner.title,
+    }));
+
+  const offerBanners = homebanner
+    .filter((banner: any) => banner.title === "offfer banner" && banner.image)
+    .map((banner: any) => ({
+      id: banner._id,
+      image: banner.image,
+      title: banner.title,
+    }));
+
+  // Products list
   const products = [
     {
       id: 1,
@@ -61,37 +90,13 @@ const MenPages = () => {
     },
   ];
 
-  useEffect(() => {
-    dispatch(homeBannerGetAction());
-    dispatch(fetchGallery());
-  }, [dispatch]);
-
-  const homebanner = useSelector((state: RootState) => state.home.homeBanner);
-  const gallery = useSelector((state: RootState) => state.getgallery.gallery);
-
-  const productsFromGallery = gallery
-    .filter((item: any) => item.title === "mens gallery" && item.image)
-    .map((item: any) => ({
-      id: item.id,
-      name: item.name,
-      image: item.image,
-    }));
-
-  const mainBanners = homebanner
-    .filter((banner: any) => banner.title === "men-main-banner" && banner.image)
-    .map((banner: any) => ({
-      id: banner._id,
-      image: banner.image,
-      title: banner.title,
-    }));
-
-  const offerBanners = homebanner
-    .filter((banner: any) => banner.title === "offfer banner" && banner.image)
-    .map((banner: any) => ({
-      id: banner._id,
-      image: banner.image,
-      title: banner.title,
-    }));
+  // Navigation handler with loading overlay
+  const handleNavigation = (path: string) => {
+    setLoading(true);
+    setTimeout(() => {
+      router.push(path);
+    }, 500); // Small delay to show loading
+  };
 
   if (loading) return <LoadingOverlay />;
 
@@ -123,7 +128,6 @@ const MenPages = () => {
                 width={1200}
                 height={400}
                 className="object-contain w-full h-full"
-                
               />
             </SwiperSlide>
           ))}
@@ -158,7 +162,12 @@ const MenPages = () => {
                     key={product.id}
                     className="flex flex-col items-center group cursor-pointer"
                   >
-                    <div className="relative w-[80px] h-[80px] sm:w-[280px] sm:h-[280px] mb-6">
+                    <div
+                      className="relative w-[80px] h-[80px] sm:w-[280px] sm:h-[280px] mb-6"
+                      onClick={() =>
+                        handleNavigation("product/submenu/6899b99eea940da2664470ae")
+                      }
+                    >
                       <div className="absolute inset-0 rounded-full border-4 border-yellow-400 opacity-90"></div>
                       <div className="absolute inset-2 rounded-full overflow-hidden bg-white shadow-lg group-hover:shadow-xl transition-shadow duration-300">
                         <Image
@@ -192,6 +201,7 @@ const MenPages = () => {
             width={1200}
             height={500}
             className="w-full h-full object-cover rounded-lg"
+            onClick={() => handleNavigation("/offers")}
           />
         ) : (
           <Image
@@ -200,6 +210,7 @@ const MenPages = () => {
             width={1200}
             height={500}
             className="w-full h-full object-cover rounded-lg"
+            onClick={() => handleNavigation("/offers")}
           />
         )}
       </section>
@@ -215,7 +226,6 @@ const MenPages = () => {
             <div className="grid grid-cols-12 gap-4 mt-6">
               {/* Left Side */}
               <div className="col-span-12 md:col-span-6 p-4">
-                {/* Dynamic Main Image */}
                 {productsFromGallery[0]?.image ? (
                   <Image
                     src={productsFromGallery[0].image}
@@ -223,19 +233,19 @@ const MenPages = () => {
                     width={500}
                     height={500}
                     className="w-full h-[300px] md:h-[400px] object-cover rounded-lg mb-4"
+                    onClick={() => handleNavigation(`/gallery/${productsFromGallery[0].id}`)}
                   />
                 ) : (
-                  // Fallback / Hardcoded Main Image
                   <Image
                     src="/assets/homeSlide_image/projectimg/t shirt-12.jpg"
                     alt="Main T-Shirt Display"
                     width={500}
                     height={500}
                     className="w-full h-[300px] md:h-[400px] object-cover rounded-lg mb-4"
+                    onClick={() => handleNavigation("/gallery")}
                   />
                 )}
 
-                {/* Dynamic/Static Two Smaller Images */}
                 <div className="grid grid-cols-12 gap-4 mt-4">
                   {(productsFromGallery.slice(1, 3).length
                     ? productsFromGallery.slice(1, 3)
@@ -254,7 +264,11 @@ const MenPages = () => {
                         },
                       ]
                   ).map((item: any, index: number) => (
-                    <div key={item.id || index} className="col-span-6 p-2">
+                    <div
+                      key={item.id || index}
+                      className="col-span-6 p-2"
+                      onClick={() => handleNavigation(`/gallery/${item.id || index}`)}
+                    >
                       <Image
                         src={item.image}
                         alt={item.name || "Gallery Image"}
@@ -268,7 +282,12 @@ const MenPages = () => {
               </div>
 
               {/* Right Side */}
-              <div className="col-span-12 md:col-span-6 p-4">
+              <div
+                className="col-span-12 md:col-span-6 p-4"
+                onClick={() =>
+                  handleNavigation(`/gallery/${productsFromGallery[3]?.id || "default"}`)
+                }
+              >
                 {productsFromGallery[3]?.image ? (
                   <Image
                     src={productsFromGallery[3].image}
@@ -278,7 +297,6 @@ const MenPages = () => {
                     className="w-full h-full max-h-[620px] object-cover rounded-lg"
                   />
                 ) : (
-                  // Fallback / Hardcoded Right Image
                   <Image
                     src="/assets/homeSlide_image/projectimg/t shirt-6.jpg"
                     alt="Bestseller T-Shirt"

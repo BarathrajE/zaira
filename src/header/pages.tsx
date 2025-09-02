@@ -35,6 +35,9 @@ import { menuGetAction } from "@/app/redux/action/menu/menuGet";
 import { submenuGetAction } from "@/app/redux/action/menu/submenu";
 import { fetchSubmenusAction } from "@/app/redux/action/menu/collection";
 import { SearchProductApi } from "@/app/redux/api/searchapi";
+import { Badge } from "@/components/ui/badge";
+import { fetchCart } from "@/app/redux/action/cart/getCart";
+import LoadingOverlay from "@/_components/LoadingOverlay";
 
 interface SubMenuItem {
   name: string;
@@ -64,14 +67,12 @@ const Header = () => {
 
   const handleSearch = async (value: string) => {
     setQuery(value);
-
-    // Clear results if input is empty or too short
     if (value.trim().length < 3) {
       setResults([]);
       return;
     }
-
     try {
+      setLoading(true);
       const response = await SearchProductApi(value);
       setResults(response?.error ? [] : response);
     } catch (error: any) {
@@ -80,44 +81,34 @@ const Header = () => {
       } else {
         console.error("Search failed:", error);
       }
+    } finally {
+      setLoading(false);
     }
   };
-  // ✅ Load menus and static submenus
-  useEffect(() => {
-    dispatch(menuGetAction());
-    dispatch(submenuGetAction());
-  }, [dispatch]);
 
-  // ✅ Check login token
+  const handleItemClick = (id: string) => {
+    setIsLoading(true);
+    setShowInput(false);
+    setResults([]);
+    router.push(`/productdisplay/${id}`);
+    setTimeout(() => setIsLoading(false), 1000);
+  };
+
   useEffect(() => {
     const token = Cookies.get("accessToken");
     setHasToken(!!token);
   }, []);
 
-  // ✅ Hide search input on outside click
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
       if (
         !target.closest('[data-search="true"]') &&
-        !target.closest('[data-search-input="true"]')
+        !target.closest('[data-search-input="true"]') &&
+        !target.closest('[data-search-results="true"]')
       ) {
         setShowInput(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as HTMLElement;
-      if (
-        !target.closest('[data-search="true"]') &&
-        !target.closest('[data-search-input="true"]')
-      ) {
-        setShowInput(false);
-        setResults([]); // Clear results
+        setResults([]);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -125,52 +116,65 @@ const Header = () => {
   }, []);
 
   const handleClick = () => {
+    setIsLoading(true);
     const token = Cookies.get("accessToken");
     if (token) {
       router.push("/profile");
     } else {
       setOtpDialogOpen(true);
     }
+    setTimeout(() => setIsLoading(false), 1000);
   };
 
   const handleNavigation = (path: string) => {
     setIsLoading(true);
     router.push(path);
+    setTimeout(() => setIsLoading(false), 1000);
   };
 
   const loginData = useSelector((state: RootState) => state.login?.login?.data);
   const userId = loginData?.user?._id || null;
+  const cartItems = useSelector(
+    (state: RootState) => state.getcart?.cart?.items || []
+  );
+  const cartCount = cartItems.length;
+
+  useEffect(() => {
+    dispatch(menuGetAction());
+    dispatch(submenuGetAction());
+    dispatch(fetchCart(userId));
+  }, [userId, dispatch, cartItems.length]);
 
   const goTowishlistPage = () => {
+    setIsLoading(true);
     if (userId) {
       router.push(`/wishlist/${userId}`);
     } else {
       setOtpDialogOpen(true);
     }
+    setTimeout(() => setIsLoading(false), 1000);
   };
 
-  const goTocartPage = () => handleNavigation("/cart");
-  const goTohomepage = () => router.push("/");
+  const goTocartPage = () => {
+    setIsLoading(true);
+    handleNavigation("/cart");
+  };
 
-  // ✅ Menus with submenus from Redux
+  const goTohomepage = () => {
+    setIsLoading(true);
+    router.push("/");
+    setTimeout(() => setIsLoading(false), 1000);
+  };
+
   const menuData = useSelector(
     (state: RootState) => state.menuGet.menu
   ) as MenuItem[];
 
   const menuWithSubmenus = menuData.map((menu: MenuItem) => ({
-    menuId: menu._id, // Use main menu _id instead of first submenu
+    menuId: menu._id,
     menuName: menu.name,
-    subMenus: menu.subMenus || [], // Ensure array
+    subMenus: menu.subMenus || [],
   }));
-
-  const LoadingOverlay = () => (
-    <div className="fixed inset-0 bg-white z-[100] flex items-center justify-center opacity-80">
-      <div className="bg-white rounded-lg p-6 flex flex-col items-center gap-4 shadow-xl">
-        <Loader2 className="w-8 h-8 animate-spin text-[#535e51]" />
-        <p className="text-[#535e51] font-medium">Loading...</p>
-      </div>
-    </div>
-  );
 
   return (
     <>
@@ -190,7 +194,7 @@ const Header = () => {
                   </SheetTitle>
                   <SheetDescription></SheetDescription>
                 </SheetHeader>
-                <div className=" px-4">
+                <div className="px-4">
                   <Accordion
                     type="single"
                     collapsible
@@ -214,8 +218,10 @@ const Header = () => {
                                   key={`sub-${sub._id}`}
                                   className="text-sm text-[#052659] underline underline-offset-4 cursor-pointer hover:text-blue-600"
                                   onClick={() => {
-                                    dispatch(fetchSubmenusAction(sub._id)); // Fetch products for submenu
+                                    setIsLoading(true);
+                                    dispatch(fetchSubmenusAction(sub._id));
                                     router.push(`/product/submenu/${sub._id}`);
+                                    setTimeout(() => setIsLoading(false), 1000);
                                   }}
                                 >
                                   {sub.name}
@@ -235,7 +241,6 @@ const Header = () => {
               </SheetContent>
             </Sheet>
           </div>
-
           {/* Logo */}
           <div
             className="sm:text-[35px] text-[24px] font-bold text-[#f1f5f4] cursor-pointer mt-1 sm:mt-0"
@@ -243,7 +248,6 @@ const Header = () => {
           >
             ZAIRA
           </div>
-
           {/* Right icons */}
           <Button
             className="bg-transparent text-[#f1f5f4] sm:hidden ms-28"
@@ -251,7 +255,6 @@ const Header = () => {
           >
             <UserRound className="w-6 h-6 cursor-pointer" />
           </Button>
-
           <div className="hidden md:flex gap-5 items-center">
             <div className="flex flex-col items-center gap-2 relative">
               <div className="flex justify-center items-center gap-2">
@@ -274,18 +277,25 @@ const Header = () => {
                   />
                 )}
               </div>
-
               {results.length > 0 && (
-                <ul className="absolute top-14 left-12 bg-white p-3 z-50 rounded shadow-md w-[calc(100%-3rem)] max-h-60 overflow-y-auto">
+                <ul
+                  data-search-results="true"
+                  className="absolute top-14 left-12 bg-white p-3 z-50 rounded shadow-md w-[calc(100%-3rem)] max-h-60 overflow-y-auto"
+                >
                   {results.map((item: any, index: number) => (
-                    <li key={index} className="p-2 border-b last:border-none">
+                    <li
+                      key={item._id ?? index}
+                      className="p-2 border-b last:border-none cursor-pointer hover:bg-gray-100"
+                      onClick={() => handleItemClick(item._id)}
+                      role="button"
+                      tabIndex={0}
+                    >
                       {item.name}
                     </li>
                   ))}
                 </ul>
               )}
             </div>
-
             <UserRound
               className="text-[#f1f5f4] w-5 h-5 cursor-pointer"
               onClick={handleClick}
@@ -294,18 +304,31 @@ const Header = () => {
               className="text-[#f1f5f4] w-5 h-5 cursor-pointer"
               onClick={goTowishlistPage}
             />
-            <ShoppingCart
-              className="text-[#f1f5f4] w-5 h-5 cursor-pointer"
-              onClick={goTocartPage}
-            />
+            <div className="relative inline-block">
+              <ShoppingCart
+                className="text-[#f1f5f4] w-5 h-5 cursor-pointer"
+                onClick={goTocartPage}
+              />
+              {cartCount > 0 && (
+                <Badge
+                  className="absolute -top-3 -right-3 h-4 min-w-[10px] rounded-full px-1 font-mono tabular-nums text-xs leading-none flex items-center justify-center"
+                  variant="destructive"
+                >
+                  {cartCount > 20 ? "20" : cartCount}
+                </Badge>
+              )}
+            </div>
           </div>
         </div>
-
         {/* Mobile bottom nav */}
         <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#535e51] sm:hidden px-6 py-2 shadow-md">
           <div className="flex justify-between items-center">
             <Button
-              onClick={() => setShowInput(true)}
+              onClick={() => {
+                setIsLoading(true);
+                setShowInput(true);
+                setTimeout(() => setIsLoading(false), 1000);
+              }}
               className="bg-transparent text-[#f1f5f4]"
             >
               <Search className="w-6 h-6 cursor-pointer" />
@@ -320,7 +343,20 @@ const Header = () => {
               className="bg-transparent text-[#f1f5f4]"
               onClick={goTocartPage}
             >
-              <ShoppingCart className="w-6 h-6 cursor-pointer" />
+              <div className="relative inline-block">
+                <ShoppingCart
+                  className="text-[#f1f5f4] w-5 h-5 cursor-pointer"
+                  onClick={goTocartPage}
+                />
+                {cartCount > 0 && (
+                  <Badge
+                    className="absolute -top-3 -right-3 h-4 min-w-[10px] rounded-full px-1 font-mono tabular-nums text-xs leading-none flex items-center justify-center"
+                    variant="destructive"
+                  >
+                    {cartCount > 20 ? "20" : cartCount}
+                  </Badge>
+                )}
+              </div>
             </Button>
           </div>
           {showInput && (
@@ -341,16 +377,19 @@ const Header = () => {
                   <X className="text-gray-500 w-5 h-5" />
                 </Button>
               </div>
-
               <div className="mt-3 bg-[#fdfdf4] rounded-lg shadow-md p-4">
                 {loading ? (
                   <p className="text-sm text-gray-500">Searching...</p>
                 ) : results.length > 0 ? (
-                  <ul className="text-sm text-gray-700 space-y-1">
+                  <ul
+                    data-search-results="true"
+                    className="text-sm text-gray-700 space-y-1"
+                  >
                     {results.map((item: any, index) => (
                       <li
-                        key={index}
+                        key={item._id ?? index}
                         className="hover:text-[#535e51] cursor-pointer"
+                        onClick={() => handleItemClick(item._id)}
                       >
                         {item.name}
                       </li>

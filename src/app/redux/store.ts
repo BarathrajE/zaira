@@ -28,6 +28,8 @@ import { orderReducer } from "./reducer/order/createOrder";
 import { getOrdersReducer } from "./reducer/order/getOrder";
 import { getAllOrdersReducer } from "./reducer/order/allUserOrder";
 import { updateOrderReducer } from "./reducer/order/updateOrder";
+import { verifyPaymentReducer } from "./reducer/order/patmentorder";
+import { paymentrazorReducer } from "./reducer/order/paymentrayzorpay";
 
 const persistConfig = {
   key: "root",
@@ -66,6 +68,8 @@ export const Store = configureStore({
     Getorders: getOrdersReducer,
     getAllorders: getAllOrdersReducer,
     updateOrder: updateOrderReducer,
+    paymentverifly: verifyPaymentReducer,
+    paymentrazorpay: paymentrazorReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
