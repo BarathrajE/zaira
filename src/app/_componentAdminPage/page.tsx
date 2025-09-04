@@ -7,7 +7,6 @@ import {
   Eye,
   Edit,
   Trash2,
-  Plus,
   Package,
   Truck,
   CheckCircle,
@@ -31,6 +30,7 @@ interface Order {
   date: string;
   items: number;
   address: string;
+  size: string;
 }
 
 type ModalType = "create" | "edit" | "view";
@@ -42,6 +42,7 @@ const OrderManagement: NextPage = () => {
   const [modalType, setModalType] = useState<ModalType>("create");
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [localOrders, setLocalOrders] = useState<Order[]>([]);
+  const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
   const [newOrder, setNewOrder] = useState<Omit<Order, "id" | "date">>({
     customer: "",
     email: "",
@@ -49,6 +50,7 @@ const OrderManagement: NextPage = () => {
     status: "Placed",
     items: 0,
     address: "",
+    size: "",
   });
 
   const statusTypes: OrderStatus[] = [
@@ -70,19 +72,56 @@ const OrderManagement: NextPage = () => {
   useEffect(() => {
     if (Array.isArray(allorder)) {
       setLocalOrders(
-        allorder.map((order: any) => ({
-          id: order._id,
-          customer: order.userId || "Guest",
-          email: order.userEmail || "N/A",
-          status: normalizeStatus(order.status),
-          total: order.totalAmount,
-          items: order.products.length,
-          date: new Date(order.createdAt).toLocaleDateString(),
-          address: order.address || "N/A",
-        }))
+        allorder.map((order: any) => {
+          // Extract size for each product in the order
+          const productSizes = order.products.map((product: any) => {
+            const sizeObj = product.productId.sizes.find(
+              (s: any) => s._id === product.size
+            );
+            return sizeObj ? sizeObj.size : "N/A";
+          });
+
+          return {
+            id: order._id,
+            customer: order.userId || "Guest",
+            email: order.userEmail || "N/A",
+            status: normalizeStatus(order.status),
+            total: order.totalAmount,
+            items: order.products.length,
+            date: new Date(order.createdAt).toLocaleDateString(),
+            address: order.address || "N/A",
+            size: productSizes.join(", "), // Join sizes if there are multiple products
+          };
+        })
       );
     }
   }, [allorder]);
+
+  useEffect(() => {
+    let result = [...localOrders];
+
+    if (searchTerm) {
+      const searchLower = searchTerm.toLowerCase();
+      result = result.filter(
+        (order) =>
+          order.customer.toLowerCase().includes(searchLower) ||
+          order.email.toLowerCase().includes(searchLower) ||
+          order.id.toLowerCase().includes(searchLower) ||
+          order.address.toLowerCase().includes(searchLower)
+      );
+    }
+
+    if (statusFilter !== "All") {
+      result = result.filter((order) => order.status === statusFilter);
+    }
+
+    setFilteredOrders(result);
+  }, [searchTerm, statusFilter, localOrders]);
+
+  // Initialize filteredOrders
+  useEffect(() => {
+    setFilteredOrders(localOrders);
+  }, [localOrders]);
 
   const normalizeStatus = (status: string): OrderStatus => {
     const statusMap: Record<string, OrderStatus> = {
@@ -195,25 +234,21 @@ const OrderManagement: NextPage = () => {
       return;
     }
     try {
-      const response = await dispatch(
+      await dispatch(
         updateOrderAction({
           orderId: selectedOrder.id,
           status: selectedOrder.status,
         }) as any
       );
-      if (response) {
-        setLocalOrders(localOrders.map(order =>
-          order.id === selectedOrder.id ? selectedOrder : order
-        ));
-        setShowModal(false);
-        alert("Order updated successfully!");
-      }
+      // Refetch orders
+      await dispatch(getAllOrdersAction());
+      setShowModal(false);
+      alert("Order updated successfully!");
     } catch (error) {
       console.error("Order update failed:", error);
       alert("Failed to update order. Please try again.");
     }
   };
-
   const matchedAddress = addressDetails.find(
     (a: any) => a.id === selectedOrder?.address
   );
@@ -284,7 +319,6 @@ const OrderManagement: NextPage = () => {
                 </select>
               </div>
             </div>
-          
           </div>
         </div>
 
@@ -318,7 +352,7 @@ const OrderManagement: NextPage = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {localOrders.map((order: Order) => (
+                {filteredOrders.map((order: Order) => (
                   <tr key={order.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4">{order.id}</td>
                     <td className="px-6 py-4">
@@ -338,7 +372,7 @@ const OrderManagement: NextPage = () => {
                         </span>
                       </span>
                     </td>
-                    <td className="px-6 py-4">${order.total.toFixed(2)}</td>
+                    <td className="px-6 py-4">₹ {order.total.toFixed(2)}</td>
                     <td className="px-6 py-4">{order.items}</td>
                     <td className="px-6 py-4">{order.date}</td>
                     <td className="px-6 py-4">
@@ -397,7 +431,10 @@ const OrderManagement: NextPage = () => {
                       : selectedOrder?.status}
                   </div>
                   <div>
-                    <strong>Total:</strong> ${selectedOrder?.total.toFixed(2)}
+                    <strong>Size:</strong> {selectedOrder?.size}
+                  </div>
+                  <div>
+                    <strong>Total:</strong> ₹{selectedOrder?.total.toFixed(2)}
                   </div>
                   <div>
                     <strong>Items:</strong> {selectedOrder?.items}
@@ -448,7 +485,7 @@ const OrderManagement: NextPage = () => {
                     <strong>Customer:</strong> {selectedOrder?.customer}
                   </div>
                   <div>
-                    <strong>Total:</strong> ${selectedOrder?.total.toFixed(2)}
+                    <strong>Total:</strong> ₹{selectedOrder?.total.toFixed(2)}
                   </div>
                   <div>
                     <strong>Items:</strong> {selectedOrder?.items}

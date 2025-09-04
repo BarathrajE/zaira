@@ -7,8 +7,6 @@ import {
   BarChart3,
   Menu,
   X,
-  TrendingUp,
-  TrendingDown,
   DollarSign,
   LogOut,
 } from "lucide-react";
@@ -71,6 +69,7 @@ const AdminPanel = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  
 
   useEffect(() => {
     const adminId = localStorage.getItem("adminId");
@@ -88,33 +87,34 @@ const AdminPanel = () => {
     monthlyGrowth: 12.5,
     pendingOrders: 23,
   };
+  type LucideIcon = React.ComponentType<{ className?: string }>;
+  interface StatCardProps {
+    title: string;
+    value: number;
+    icon: LucideIcon; 
+    color?: string;
+
+    
+  }
 
   const menuItems = [
     { id: "dashboard", label: "Dashboard", icon: BarChart3 },
     { id: "users", label: "Users", icon: Users },
     { id: "products", label: "Products", icon: Package },
     { id: "orders", label: "Orders", icon: ShoppingBag },
+    
   ];
 
-  const StatCard = ({ title, value, change, icon: Icon, color = "blue" }) => (
+  const StatCard = ({
+    title,
+    value,
+    icon: Icon,
+    color = "blue",
+  }: StatCardProps) => (
     <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
       <div className="flex items-center justify-between mb-4">
         <div className={`p-3 rounded-lg bg-${color}-100`}>
           <Icon className={`w-6 h-6 text-${color}-600`} />
-        </div>
-        <div className="flex items-center space-x-1">
-          {change > 0 ? (
-            <TrendingUp className="w-4 h-4 text-green-500" />
-          ) : (
-            <TrendingDown className="w-4 h-4 text-red-500" />
-          )}
-          <span
-            className={`text-sm font-medium ${
-              change > 0 ? "text-green-500" : "text-red-500"
-            }`}
-          >
-            {Math.abs(change)}%
-          </span>
         </div>
       </div>
       <h3 className="text-2xl font-bold text-gray-900 mb-1">
@@ -130,28 +130,18 @@ const AdminPanel = () => {
         <StatCard
           title="Total Users"
           value={stats.totalUsers}
-          change={stats.monthlyGrowth}
           icon={Users}
           color="blue"
         />
         <StatCard
           title="Total Orders"
           value={stats.totalOrders}
-          change={8.2}
           icon={ShoppingBag}
           color="green"
         />
         <StatCard
-          title="Total Products"
-          value={stats.totalProducts}
-          change={-2.1}
-          icon={Package}
-          color="purple"
-        />
-        <StatCard
           title="Total Revenue"
           value={stats.totalRevenue}
-          change={stats.monthlyGrowth}
           icon={DollarSign}
           color="yellow"
         />

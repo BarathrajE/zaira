@@ -14,6 +14,7 @@ import { RootState } from "../redux/store";
 import { getAddressesAction } from "../redux/action/profile/addressGet";
 import { toast } from "sonner";
 import Checkout from "../onlinePayment/page";
+import { getSingleUserAddressAction } from "../redux/action/profile/singleAddressGet";
 
 type PaymentOption = {
   id: string;
@@ -65,6 +66,8 @@ const PaymentPage = () => {
   const productsId = searchParams.get("ids");
   const productsIds = searchParams.get("id");
   const Sizeid = searchParams.get("sizeId");
+  const addresssingleUser = searchParams.get("addressId");
+  console.log(addresssingleUser);
   console.log("Sizeid:", Sizeid);
 
   const quantity = searchParams.get("quantity");
@@ -94,9 +97,9 @@ const PaymentPage = () => {
 
     const options = {
       key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID, // Add your Razorpay key
-      amount: 4374900,
+      amount: itemTotal,
       currency: "INR",
-      name: "Your Store Name",
+      name: "Zaira ",
       description: "Order Payment",
       order_id: "", // This should come from your backend
       handler: function (response: any) {
@@ -130,19 +133,21 @@ const PaymentPage = () => {
   };
 
   const addresses = useSelector(
-    (state: RootState) => state.AddressGet.addresses
+    (state: RootState) => state.singleuser.address
   );
-  const addressId = addresses?.[0]?._id || null;
+  const addressId = addresses?._id
+  console.log(addressId,"adkjsadjkbasjdbsajdasjdjd");
+  
 
   const userId = useSelector(
     (state: RootState) => state.login.login.data.user?._id
   );
 
   useEffect(() => {
-    if (userId) {
-      dispatch(getAddressesAction(userId) as any);
+    if (addresssingleUser) {
+      dispatch(getSingleUserAddressAction( addresssingleUser) as any);
     }
-  }, [dispatch, userId]);
+  }, [dispatch, addresssingleUser]);
 
   useEffect(() => {
     const rawIds = productsId || productsIds;

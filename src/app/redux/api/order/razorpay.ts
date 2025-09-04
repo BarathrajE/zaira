@@ -11,7 +11,7 @@ export async function POST(req: Request) {
     });
 
     const order = await razorpay.orders.create({
-      amount: amount * 100, // amount in paise
+      amount: amount * 100,
       currency: "INR",
       receipt: `receipt_${Date.now()}`,
     });
@@ -19,6 +19,9 @@ export async function POST(req: Request) {
     return NextResponse.json(order);
   } catch (error) {
     console.error("Order creation failed:", error);
-    return NextResponse.json({ error: "Order creation failed" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Order creation failed" },
+      { status: 500 }
+    );
   }
 }
