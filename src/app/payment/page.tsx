@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-
-import React, { useState, ChangeEvent, FormEvent, useEffect } from "react";
+import React, { useState, FormEvent, useEffect } from "react";
 import { ArrowLeft, CreditCard, Banknote, Loader2 } from "lucide-react";
 import Footer from "@/footer/page";
 import Header from "@/header/pages";
@@ -11,19 +10,23 @@ import { useSearchParams } from "next/navigation";
 import { createOrderAction } from "../redux/action/order/createOrder";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
-import { getAddressesAction } from "../redux/action/profile/addressGet";
-import { toast } from "sonner";
-import Checkout from "../onlinePayment/page";
 import { getSingleUserAddressAction } from "../redux/action/profile/singleAddressGet";
+import { toast } from "sonner";
+import CheckoutButton from "../onlinePayment/page";
 
 type PaymentOption = {
   id: string;
   title: string;
   subtitle: string;
-  icon: React.ComponentType<any>;
+  icon: React.ComponentType<{ className?: string }>;
 };
 
-// Simplified payment options - only Cash on Delivery and Online Payment
+interface ProductItem {
+  productId: string;
+  quantity: number;
+  size: string | null;
+}
+
 const paymentOptions: PaymentOption[] = [
   {
     id: "cashOnDelivery",
@@ -39,40 +42,66 @@ const paymentOptions: PaymentOption[] = [
   },
 ];
 
-interface ProductItem {
-  productId: string | null;
-  quantity: number | string | null;
-  size?: string | null;
-}
 const PaymentPage = () => {
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    // Simulate page load (e.g. images, API, etc.)
-    const timer = setTimeout(() => setLoading(false), 1500);
-    return () => clearTimeout(timer);
-  }, []);
-
-  const [selectedPayment, setSelectedPayment] = useState("cashOnDelivery");
+  const [selectedPayment, setSelectedPayment] = useState<
+    "cashOnDelivery" | "onlinePayment"
+  >("cashOnDelivery");
   const [isOpen, setIsOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
-
   const [validProducts, setValidProducts] = useState<ProductItem[]>([]);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const itemTotal = searchParams.get("itemTotal");
-  const savings = searchParams.get("savings");
-  const billTotal = searchParams.get("billTotal");
+  const itemTotal = searchParams.get("itemTotal") || "0";
+  const savings = searchParams.get("savings") || "0";
+  const billTotal = searchParams.get("billTotal") || "0";
   const productsId = searchParams.get("ids");
   const productsIds = searchParams.get("id");
   const Sizeid = searchParams.get("sizeId");
   const addresssingleUser = searchParams.get("addressId");
-  console.log(addresssingleUser);
-  console.log("Sizeid:", Sizeid);
-
   const quantity = searchParams.get("quantity");
 
   const dispatch = useDispatch();
+  const addresses = useSelector((state: RootState) => state.singleuser.address);
+  const addressId = addresses?._id;
+  const userId = useSelector(
+    (state: RootState) => state.login.login.data.user?._id
+  );
+
+  // Simulate page load
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Fetch address if addressId is provided
+  useEffect(() => {
+    if (addresssingleUser) {
+      dispatch(getSingleUserAddressAction(addresssingleUser) as any);
+    }
+  }, [dispatch, addresssingleUser]);
+
+  // Parse product IDs and quantities from URL
+  useEffect(() => {
+    const rawIds = productsId || productsIds;
+    if (!rawIds) {
+      console.error("Missing product ID");
+      return;
+    }
+    const ids = rawIds
+      .split(",")
+      .map((id) => id.trim())
+      .filter((id) => id !== "");
+    const productsPayload: ProductItem[] = ids
+      .map((id) => ({
+        productId: id,
+        quantity: quantity ? Number(quantity) : 1,
+        size: Sizeid || null,
+      }))
+      .filter((product) => product.productId && product.quantity > 0);
+    setValidProducts(productsPayload);
+  }, [productsId, productsIds, quantity, Sizeid]);
+
   const handlePaymentComplete = () => {
     setIsOpen(true);
   };
@@ -88,138 +117,41 @@ const PaymentPage = () => {
   };
 
   const goToAddressPage = () => {
-    window.history.back(); // or router.push("/address")
+    window.history.back();
   };
-
-  // Handle Razorpay payment
-  const initiateRazorpayPayment = () => {
-    setIsProcessing(true);
-
-    const options = {
-      key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID, // Add your Razorpay key
-      amount: itemTotal,
-      currency: "INR",
-      name: "Zaira ",
-      description: "Order Payment",
-      order_id: "", // This should come from your backend
-      handler: function (response: any) {
-        console.log("Payment successful:", response);
-        setIsProcessing(false);
-        handlePaymentComplete();
-        setIsOpen(true);
-      },
-      prefill: {
-        name: "Customer Name",
-        email: "customer@example.com",
-        contact: "9999999999",
-      },
-      theme: {
-        color: "#535e51",
-      },
-      modal: {
-        ondismiss: function () {
-          setIsProcessing(false);
-        },
-      },
-    };
-
-    if (typeof window !== "undefined" && (window as any).Razorpay) {
-      const razorpay = new (window as any).Razorpay(options);
-      razorpay.open();
-    } else {
-      console.error("Razorpay SDK not loaded");
-      setIsProcessing(false);
-    }
-  };
-
-  const addresses = useSelector(
-    (state: RootState) => state.singleuser.address
-  );
-  const addressId = addresses?._id
-  console.log(addressId,"adkjsadjkbasjdbsajdasjdjd");
-  
-
-  const userId = useSelector(
-    (state: RootState) => state.login.login.data.user?._id
-  );
-
-  useEffect(() => {
-    if (addresssingleUser) {
-      dispatch(getSingleUserAddressAction( addresssingleUser) as any);
-    }
-  }, [dispatch, addresssingleUser]);
-
-  useEffect(() => {
-    const rawIds = productsId || productsIds;
-
-    if (!rawIds) {
-      console.error("Missing product ID");
-      return;
-    }
-
-    const ids = rawIds
-      .split(",")
-      .map((id) => id.trim())
-      .filter((id) => id !== "");
-
-    const productsPayload: ProductItem[] = ids.map((id) => ({
-      productId: id,
-      quantity: Number(quantity) || 1,
-      size: Sizeid || null,
-    }));
-
-    setValidProducts(productsPayload);
-  }, [productsId, productsIds, quantity, Sizeid]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    if (selectedPayment === "onlinePayment") return; // Online payment is handled by CheckoutButton
 
     if (!validProducts.length) {
       toast.error("No valid products to order.");
       return;
     }
-
     if (!userId) {
       toast.error("User not logged in.");
       return;
     }
-
     if (!addressId) {
       toast.error("Please select a delivery address.");
       return;
     }
 
-    console.log("Submitting order with:", {
-      userId,
-      validProducts,
-      addressId,
-      selectedPayment,
-      billTotal,
-    });
-
     const payload = {
       products: validProducts,
       address: addressId,
-      paymentMethod: selectedPayment === "cashOnDelivery" ? "COD" : "Online",
+      paymentMethod: "COD",
       status: "Placed",
       designPrint: false,
       designId: null,
     };
 
-    console.log("Final payload:", payload);
-
     try {
-      if (selectedPayment === "cashOnDelivery") {
-        setIsProcessing(true);
-        const result = await dispatch<any>(createOrderAction(userId, payload));
-        setIsProcessing(false);
-
-        if (result?.status === 200) {
-          setIsOpen(true);
-        } else {
-        }
-      } else if (selectedPayment === "onlinePayment") {
-        initiateRazorpayPayment();
+      setIsProcessing(true);
+      const result = await dispatch<any>(createOrderAction(userId, payload));
+      setIsProcessing(false);
+      if (result?.status === 200) {
+        handlePaymentComplete();
       }
     } catch (error) {
       setIsProcessing(false);
@@ -253,7 +185,6 @@ const PaymentPage = () => {
               Payment
             </h1>
           </div>
-
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Payment Form */}
             <div className="md:col-span-2 space-y-4">
@@ -267,12 +198,16 @@ const PaymentPage = () => {
                   </h2>
                   <div className="space-y-3">
                     {paymentOptions.map((option) => {
-                      const Icon = option?.icon;
+                      const Icon = option.icon;
                       const isSelected = selectedPayment === option.id;
                       return (
                         <div
                           key={option.id}
-                          onClick={() => setSelectedPayment(option.id)}
+                          onClick={() =>
+                            setSelectedPayment(
+                              option.id as "cashOnDelivery" | "onlinePayment"
+                            )
+                          }
                           className={`flex items-center justify-between p-4 rounded-xl cursor-pointer transition-all border-2 ${
                             isSelected
                               ? "border-[#535e51] bg-[#f1f5f4]"
@@ -308,7 +243,6 @@ const PaymentPage = () => {
                     })}
                   </div>
                 </div>
-
                 {/* Payment Info */}
                 <div className="bg-gray-50 p-4 rounded-lg">
                   {selectedPayment === "cashOnDelivery" && (
@@ -334,7 +268,6 @@ const PaymentPage = () => {
                     </div>
                   )}
                 </div>
-
                 <div>
                   {selectedPayment === "cashOnDelivery" ? (
                     <button
@@ -348,19 +281,22 @@ const PaymentPage = () => {
                       Place Order
                     </button>
                   ) : (
-                    <Checkout />
+                    <CheckoutButton
+                      orderData={{
+                        products: validProducts,
+                        paymentMethod: "Online",
+                        designPrint: false,
+                        designId: null,
+                        address: addressId || "",
+                      }}
+                      totalAmount={Number(billTotal)}
+                      onSuccess={handlePaymentComplete}
+                      isProcessing={isProcessing}
+                    />
                   )}
-
-                  <PaymentSuccessDialog
-                    isOpen={isOpen}
-                    setIsOpen={setIsOpen}
-                    goToOrderPage={goToOrderPage}
-                    goToHome={goToHome}
-                  />
                 </div>
               </form>
             </div>
-
             {/* Order Summary */}
             <div className="space-y-4">
               <div className="bg-gray-50 p-4 rounded-lg shadow">
@@ -402,7 +338,12 @@ const PaymentPage = () => {
           </div>
         </div>
       </div>
-
+      <PaymentSuccessDialog
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        goToOrderPage={goToOrderPage}
+        goToHome={goToHome}
+      />
       <Footer />
     </>
   );

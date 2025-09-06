@@ -1,10 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Plus, Edit2, Trash2, Save, X, Search, Filter } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { menuGetAction } from "../redux/action/menu/menuGet";
+import { RootState } from "../redux/store";
+import Image from "next/image";
 
 type Size = { size: string; _id?: string };
-
 type Product = {
   _id?: string;
   name: string;
@@ -20,7 +23,6 @@ type Product = {
   isTrending: boolean;
   isMainpage: boolean;
 };
-
 type FormData = {
   name: string;
   heading: string;
@@ -64,21 +66,19 @@ export default function AdminProductDashboard() {
       subMenuId: "sub2",
       price: "2499",
       description: "Beautiful traditional saree made with premium silk.",
-      imageUrl: "https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=300",
+      imageUrl:
+        "https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=300",
       sizes: [{ size: "Free Size" }],
       isTrending: false,
       isMainpage: true,
     },
   ]);
-
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterTrending, setFilterTrending] = useState("");
   const [filterMainpage, setFilterMainpage] = useState("");
-
   const availableSizes = ["XS", "S", "M", "L", "XL", "XXL", "Free Size"];
-
   const [formData, setFormData] = useState<FormData>({
     name: "",
     heading: "",
@@ -117,6 +117,13 @@ export default function AdminProductDashboard() {
     resetForm();
   };
 
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(menuGetAction() as any);
+  }, [dispatch]);
+
+  const menuData = useSelector((state: RootState) => state.menuGet.menu);
+
   const handleEditProduct = (product: Product) => {
     setEditingProduct(product);
     setFormData({
@@ -143,24 +150,28 @@ export default function AdminProductDashboard() {
   };
 
   const handleSaveProduct = () => {
-    if (!formData.name || !formData.heading || !formData.price || !formData.menuId) {
+    if (
+      !formData.name ||
+      !formData.heading ||
+      !formData.price ||
+      !formData.menuId
+    ) {
       alert("Please fill in all required fields");
       return;
     }
-
     const productData: Product = {
       ...formData,
       rating: parseFloat(formData.rating),
       sizes: formData.sizes.filter((s) => s.size.trim() !== ""),
       _id: editingProduct ? editingProduct._id : `temp_${Date.now()}`,
     };
-
     if (editingProduct) {
-      setProducts(products.map((p) => (p._id === editingProduct._id ? productData : p)));
+      setProducts(
+        products.map((p) => (p._id === editingProduct._id ? productData : p))
+      );
     } else {
       setProducts([...products, productData]);
     }
-
     setShowAddForm(false);
     setEditingProduct(null);
     resetForm();
@@ -173,23 +184,30 @@ export default function AdminProductDashboard() {
   const handleSizeChange = (index: number, value: string) => {
     setFormData((prev) => ({
       ...prev,
-      sizes: prev.sizes.map((size, i) => (i === index ? { ...size, size: value } : size)),
+      sizes: prev.sizes.map((size, i) =>
+        i === index ? { ...size, size: value } : size
+      ),
     }));
   };
 
-  const addSize = () => setFormData((prev) => ({ ...prev, sizes: [...prev.sizes, { size: "" }] }));
+  const addSize = () =>
+    setFormData((prev) => ({ ...prev, sizes: [...prev.sizes, { size: "" }] }));
+
   const removeSize = (index: number) =>
-    setFormData((prev) => ({ ...prev, sizes: prev.sizes.filter((_, i) => i !== index) }));
+    setFormData((prev) => ({
+      ...prev,
+      sizes: prev.sizes.filter((_, i) => i !== index),
+    }));
 
   const filteredProducts = products.filter((product) => {
     const matchesSearch =
       product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       product.heading.toLowerCase().includes(searchTerm.toLowerCase()) ||
       product.description.toLowerCase().includes(searchTerm.toLowerCase());
-
-    const matchesTrending = !filterTrending || product.isTrending.toString() === filterTrending;
-    const matchesMainpage = !filterMainpage || product.isMainpage.toString() === filterMainpage;
-
+    const matchesTrending =
+      !filterTrending || product.isTrending.toString() === filterTrending;
+    const matchesMainpage =
+      !filterMainpage || product.isMainpage.toString() === filterMainpage;
     return matchesSearch && matchesTrending && matchesMainpage;
   });
 
@@ -199,7 +217,9 @@ export default function AdminProductDashboard() {
         {/* Header */}
         <div className="bg-white rounded-lg shadow-sm p-6 mb-6 flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Product Management</h1>
+            <h1 className="text-3xl font-bold text-gray-900">
+              Product Management
+            </h1>
             <p className="text-gray-600 mt-1">Manage your product inventory</p>
           </div>
           <button
@@ -256,7 +276,10 @@ export default function AdminProductDashboard() {
                   <h2 className="text-2xl font-bold text-gray-900">
                     {editingProduct ? "Edit Product" : "Add New Product"}
                   </h2>
-                  <button onClick={() => setShowAddForm(false)} className="text-gray-400 hover:text-gray-600">
+                  <button
+                    onClick={() => setShowAddForm(false)}
+                    className="text-gray-400 hover:text-gray-600"
+                  >
                     <X className="w-6 h-6" />
                   </button>
                 </div>
@@ -265,50 +288,85 @@ export default function AdminProductDashboard() {
                 <div className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Product Name *</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Product Name *
+                      </label>
                       <input
                         type="text"
                         value={formData.name}
-                        onChange={(e) => handleFormChange("name", e.target.value)}
+                        onChange={(e) =>
+                          handleFormChange("name", e.target.value)
+                        }
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Heading *</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Heading *
+                      </label>
                       <input
                         type="text"
                         value={formData.heading}
-                        onChange={(e) => handleFormChange("heading", e.target.value)}
+                        onChange={(e) =>
+                          handleFormChange("heading", e.target.value)
+                        }
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
                   </div>
 
+                  {/* Menu and Sub Menu Dropdowns */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Menu ID *</label>
-                      <input
-                        type="text"
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Menu *
+                      </label>
+                      <select
                         value={formData.menuId}
-                        onChange={(e) => handleFormChange("menuId", e.target.value)}
+                        onChange={(e) => {
+                          handleFormChange("menuId", e.target.value);
+                          handleFormChange("subMenuId", "");
+                        }}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      />
+                      >
+                        <option value="">Select a Menu</option>
+                        {menuData?.map((menu: any) => (
+                          <option key={menu._id} value={menu._id}>
+                            {menu.name}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Sub Menu ID</label>
-                      <input
-                        type="text"
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Sub Menu
+                      </label>
+                      <select
                         value={formData.subMenuId}
                         onChange={(e) => handleFormChange("subMenuId", e.target.value)}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      />
+                        disabled={!formData.menuId}
+                      >
+                        <option value="">Select a Sub Menu</option>
+                        {menuData
+                          ?.find((menu: any) => menu._id === formData.menuId)
+                          ?.subMenus?.map((subMenu: any) => (
+                            <option key={subMenu._id} value={subMenu._id}>
+                              {subMenu.name}
+                            </option>
+                          ))}
+                      </select>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Price *</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Price *
+                      </label>
                       <input
                         type="text"
                         value={formData.price}
-                        onChange={(e) => handleFormChange("price", e.target.value)}
+                        onChange={(e) =>
+                          handleFormChange("price", e.target.value)
+                        }
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
@@ -316,24 +374,38 @@ export default function AdminProductDashboard() {
 
                   {/* Image */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Image URL</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Image URL
+                    </label>
                     <input
                       type="url"
                       value={formData.imageUrl}
-                      onChange={(e) => handleFormChange("imageUrl", e.target.value)}
+                      onChange={(e) =>
+                        handleFormChange("imageUrl", e.target.value)
+                      }
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                     {formData.imageUrl && (
-                      <img src={formData.imageUrl} alt="Preview" className="w-20 h-20 mt-2 object-cover rounded" />
+                      <Image
+                        src={formData.imageUrl}
+                        alt="Preview"
+                        width={80}
+                        height={80}
+                        className="mt-2 object-cover rounded"
+                      />
                     )}
                   </div>
 
                   {/* Description */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Description
+                    </label>
                     <textarea
                       value={formData.description}
-                      onChange={(e) => handleFormChange("description", e.target.value)}
+                      onChange={(e) =>
+                        handleFormChange("description", e.target.value)
+                      }
                       rows={3}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
@@ -341,12 +413,16 @@ export default function AdminProductDashboard() {
 
                   {/* Sizes */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Available Sizes</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Available Sizes
+                    </label>
                     {formData.sizes.map((size, idx) => (
                       <div key={idx} className="flex items-center gap-2 mb-2">
                         <select
                           value={size.size}
-                          onChange={(e) => handleSizeChange(idx, e.target.value)}
+                          onChange={(e) =>
+                            handleSizeChange(idx, e.target.value)
+                          }
                           className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         >
                           <option value="">Select Size</option>
@@ -357,13 +433,21 @@ export default function AdminProductDashboard() {
                           ))}
                         </select>
                         {formData.sizes.length > 1 && (
-                          <button type="button" onClick={() => removeSize(idx)} className="text-red-500 hover:text-red-700">
+                          <button
+                            type="button"
+                            onClick={() => removeSize(idx)}
+                            className="text-red-500 hover:text-red-700"
+                          >
                             <X className="w-4 h-4" />
                           </button>
                         )}
                       </div>
                     ))}
-                    <button type="button" onClick={addSize} className="text-blue-600 hover:text-blue-800 flex items-center gap-1 text-sm">
+                    <button
+                      type="button"
+                      onClick={addSize}
+                      className="text-blue-600 hover:text-blue-800 flex items-center gap-1 text-sm"
+                    >
                       <Plus className="w-4 h-4" /> Add Size
                     </button>
                   </div>
@@ -374,19 +458,27 @@ export default function AdminProductDashboard() {
                       <input
                         type="checkbox"
                         checked={formData.isTrending}
-                        onChange={(e) => handleFormChange("isTrending", e.target.checked)}
+                        onChange={(e) =>
+                          handleFormChange("isTrending", e.target.checked)
+                        }
                         className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
                       />
-                      <label className="ml-2 text-sm font-medium text-gray-700">Is Trending</label>
+                      <label className="ml-2 text-sm font-medium text-gray-700">
+                        Is Trending
+                      </label>
                     </div>
                     <div className="flex items-center">
                       <input
                         type="checkbox"
                         checked={formData.isMainpage}
-                        onChange={(e) => handleFormChange("isMainpage", e.target.checked)}
+                        onChange={(e) =>
+                          handleFormChange("isMainpage", e.target.checked)
+                        }
                         className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
                       />
-                      <label className="ml-2 text-sm font-medium text-gray-700">Show on Main Page</label>
+                      <label className="ml-2 text-sm font-medium text-gray-700">
+                        Show on Main Page
+                      </label>
                     </div>
                   </div>
                 </div>
@@ -431,7 +523,10 @@ export default function AdminProductDashboard() {
             <tbody>
               {filteredProducts.length === 0 ? (
                 <tr>
-                  <td colSpan={9} className="px-4 py-4 text-center text-gray-500">
+                  <td
+                    colSpan={9}
+                    className="px-4 py-4 text-center text-gray-500"
+                  >
                     No products found.
                   </td>
                 </tr>
@@ -440,7 +535,13 @@ export default function AdminProductDashboard() {
                   <tr key={product._id} className="border-t">
                     <td className="px-4 py-2">
                       {product.imageUrl ? (
-                        <img src={product.imageUrl} alt={product.name} className="w-12 h-12 object-cover rounded" />
+                        <Image
+                          src={product.imageUrl}
+                          alt={product.name}
+                          width={48}
+                          height={48}
+                          className="object-cover rounded"
+                        />
                       ) : (
                         <div className="w-12 h-12 bg-gray-200 rounded flex items-center justify-center text-xs text-gray-400">
                           No Image
@@ -449,25 +550,46 @@ export default function AdminProductDashboard() {
                     </td>
                     <td className="px-4 py-2 font-medium">{product.name}</td>
                     <td className="px-4 py-2">{product.heading}</td>
-                    <td className="px-4 py-2 font-semibold">₹{product.price}</td>
-                    <td className="px-4 py-2 flex items-center gap-1 text-yellow-500">★ {product.rating}</td>
+                    <td className="px-4 py-2 font-semibold">
+                      ₹{product.price}
+                    </td>
+                    <td className="px-4 py-2 flex items-center gap-1 text-yellow-500">
+                      ★ {product.rating}
+                    </td>
                     <td className="px-4 py-2 flex flex-wrap gap-1">
                       {product.sizes.slice(0, 3).map((s, idx) => (
-                        <span key={idx} className="px-2 py-1 bg-gray-100 text-xs rounded">
+                        <span
+                          key={idx}
+                          className="px-2 py-1 bg-gray-100 text-xs rounded"
+                        >
                           {s.size}
                         </span>
                       ))}
                       {product.sizes.length > 3 && (
-                        <span className="px-2 py-1 bg-gray-100 text-xs rounded">+{product.sizes.length - 3}</span>
+                        <span className="px-2 py-1 bg-gray-100 text-xs rounded">
+                          +{product.sizes.length - 3}
+                        </span>
                       )}
                     </td>
                     <td className="px-4 py-2">
-                      <span className={`px-2 py-1 text-xs rounded ${product.isTrending ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}`}>
+                      <span
+                        className={`px-2 py-1 text-xs rounded ${
+                          product.isTrending
+                            ? "bg-green-100 text-green-800"
+                            : "bg-gray-100 text-gray-800"
+                        }`}
+                      >
                         {product.isTrending ? "Yes" : "No"}
                       </span>
                     </td>
                     <td className="px-4 py-2">
-                      <span className={`px-2 py-1 text-xs rounded ${product.isMainpage ? "bg-blue-100 text-blue-800" : "bg-gray-100 text-gray-800"}`}>
+                      <span
+                        className={`px-2 py-1 text-xs rounded ${
+                          product.isMainpage
+                            ? "bg-blue-100 text-blue-800"
+                            : "bg-gray-100 text-gray-800"
+                        }`}
+                      >
                         {product.isMainpage ? "Yes" : "No"}
                       </span>
                     </td>
